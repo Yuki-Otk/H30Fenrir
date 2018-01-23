@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.Iterator;
 
+import com.example.otkyu.h30fenrir.Model.Secret.AccessKey;
 import com.fasterxml.jackson.databind.*;
 
 /*******************************************************************************
@@ -20,7 +21,9 @@ import com.fasterxml.jackson.databind.*;
 public class GnaviAPI {
     public static void main(String[] args) {
         // アクセスキー
-        String acckey = "input your accesskey";
+//        String acckey = "input your accesskey";
+        AccessKey accessKey=new AccessKey();
+        String acckey=accessKey.getKey();//please show "./Secret/readme.txt"
         // 緯度
         String lat = "35.670082";
         // 経度
