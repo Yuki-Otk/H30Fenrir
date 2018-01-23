@@ -4,6 +4,8 @@ package com.example.otkyu.h30fenrir.Model;
  * Created by otkyu on 2018/01/23 023.
  */
 
+import android.os.AsyncTask;
+
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.Iterator;
@@ -18,8 +20,8 @@ import com.fasterxml.jackson.databind.*;
  *      JsonをパースするためにライブラリにJacksonを追加しています。
  ******************************************************************************/
 
-public class GnaviAPI {
-    public static void main(String[] args) {
+public class GnaviAPI extends AsyncTask<String, String,String> {
+    private void useApi(){
         // アクセスキー
 //        String acckey = "input your accesskey";
         AccessKey accessKey=new AccessKey();
@@ -59,12 +61,15 @@ public class GnaviAPI {
             HttpURLConnection http = (HttpURLConnection) restSearch.openConnection();
             http.setRequestMethod("GET");
             http.connect();
+//            System.out.println("uer="+url);
             //Jackson
             ObjectMapper mapper = new ObjectMapper();
             viewJsonNode(mapper.readTree(http.getInputStream()));
 
         } catch (Exception e) {
             //TODO: 例外を考慮していません
+            System.out.println("error");
+            System.out.println(e);
         }
     }
 
@@ -92,5 +97,11 @@ public class GnaviAPI {
                 System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys);
             }
         }
+    }
+
+    @Override
+    protected String doInBackground(String... integers) {
+        useApi();
+        return null;
     }
 }
