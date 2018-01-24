@@ -1,7 +1,6 @@
 package com.example.otkyu.h30fenrir.Model;
-
 /**
- * Created by otkyu on 2018/01/23 023.
+ * Created by YukiOtake on 2018/01/23 023.
  */
 
 import android.os.AsyncTask;
@@ -34,6 +33,10 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
         String range = "1";
         // 返却形式
         String format = "json";
+        //出力数
+        String hitPerPage="20";
+        //ページ数
+        String offsetPage="1";
         // エンドポイント
         String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
         String prmFormat = "?format=" + format;
@@ -41,6 +44,8 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
         String prmLat = "&latitude=" + lat;
         String prmLon = "&longitude=" + lon;
         String prmRange = "&range=" + range;
+        String prmHitPerPage="&hit_per_page="+hitPerPage;
+        String prmOffsetPage="&offset_page="+offsetPage;
 
         // URI組み立て
         StringBuffer uri = new StringBuffer();
@@ -50,6 +55,8 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
         uri.append(prmLat);
         uri.append(prmLon);
         uri.append(prmRange);
+        uri.append(prmHitPerPage);
+        uri.append(prmOffsetPage);
 
         // API実行、結果を取得し出力
         getNodeList(uri.toString());
@@ -82,6 +89,7 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
             JsonNode restList = nodeList.path("rest");
             Iterator<JsonNode> rest = restList.iterator();
             //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
+            int count=0;
             while (rest.hasNext()) {
                 JsonNode r = rest.next();
                 String id = r.path("id").asText();
@@ -94,7 +102,8 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
                 for (JsonNode n : r.path("code").path("category_name_s")) {
                     categorys += n.asText();
                 }
-                System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys);
+                System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys+"count="+count);
+                count++;
             }
         }
     }
