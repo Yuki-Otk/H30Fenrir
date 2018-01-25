@@ -19,45 +19,55 @@ import com.fasterxml.jackson.databind.*;
  *      JsonをパースするためにライブラリにJacksonを追加しています。
  ******************************************************************************/
 
-public class GnaviAPI extends AsyncTask<String, String,String> {
-    private void useApi(){
+public class GnaviAPI extends AsyncTask<String, String, String> {
+    private double[] gps = new double[2];
+
+    private void useApi() {
         // アクセスキー
 //        String acckey = "input your accesskey";
-        AccessKey accessKey=new AccessKey();
-        String acckey=accessKey.getKey();//please show "./Secret/readme.txt"
+        AccessKey accessKey = new AccessKey();
+        String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
         // 緯度
-        String lat = "35.670082";
+//        String lat = "35.670082";
+        String lat= String.valueOf(gps[0]);
+//        String lat = "37.358386";
         // 経度
-        String lon = "139.763267";
+//        String lon = "139.763267";
+        String lon= String.valueOf(gps[1]);
+//        String lon = "140.383444";
+        System.out.println("!!!!GPS is " + gps[0] + ":" + gps[1]);
         // 範囲
-        String range = "1";
+        String range = "5"; //大学の近くにお店がなかった orz
         // 返却形式
         String format = "json";
         //出力数
-        String hitPerPage="20";
+        String hitPerPage = "20";
         //ページ数
-        String offsetPage="1";
+        String offsetPage = "1";
         // エンドポイント
         String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
         String prmFormat = "?format=" + format;
         String prmKeyid = "&keyid=" + acckey;
+        String prmInputCoordinatesMode = "&input_coordinates_mode=2";//入力測地系タイプを変更
         String prmLat = "&latitude=" + lat;
         String prmLon = "&longitude=" + lon;
         String prmRange = "&range=" + range;
-        String prmHitPerPage="&hit_per_page="+hitPerPage;
-        String prmOffsetPage="&offset_page="+offsetPage;
+        String prmHitPerPage = "&hit_per_page=" + hitPerPage;
+        String prmOffsetPage = "&offset_page=" + offsetPage;
 
         // URI組み立て
         StringBuffer uri = new StringBuffer();
         uri.append(gnaviRestUri);
         uri.append(prmFormat);
         uri.append(prmKeyid);
+        uri.append(prmInputCoordinatesMode);
         uri.append(prmLat);
         uri.append(prmLon);
         uri.append(prmRange);
         uri.append(prmHitPerPage);
         uri.append(prmOffsetPage);
 
+        System.out.println("url="+uri);
         // API実行、結果を取得し出力
         getNodeList(uri.toString());
     }
@@ -89,7 +99,7 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
             JsonNode restList = nodeList.path("rest");
             Iterator<JsonNode> rest = restList.iterator();
             //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
-            int count=0;
+            int count = 0;
             while (rest.hasNext()) {
                 JsonNode r = rest.next();
                 String id = r.path("id").asText();
@@ -102,7 +112,7 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
                 for (JsonNode n : r.path("code").path("category_name_s")) {
                     categorys += n.asText();
                 }
-                System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys+"count="+count);
+                System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys + "count=" + count);
                 count++;
             }
         }
@@ -112,5 +122,9 @@ public class GnaviAPI extends AsyncTask<String, String,String> {
     protected String doInBackground(String... integers) {
         useApi();
         return null;
+    }
+
+    public void setGps(double[] gps) {
+        this.gps = gps;
     }
 }

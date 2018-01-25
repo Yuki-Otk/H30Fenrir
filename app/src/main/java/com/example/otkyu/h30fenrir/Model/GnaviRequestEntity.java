@@ -4,9 +4,10 @@ import java.io.Serializable;
 
 /**
  * Created by YukiOtake on 2018/01/25 025.
+ * ぐるなびAPIを使用する際のパラメータを保管
  */
 
-public class GnaviEntity implements Serializable {
+public class GnaviRequestEntity implements Serializable {
     private double[] gps=new double[2];
 
     public double[] getGps() {
