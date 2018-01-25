@@ -90,6 +90,10 @@ public class MainActivity extends AppCompatActivity {
     private void locationActivity() {
         Intent intent = new Intent(getApplication(), LocationActivity.class);
         startActivity(intent);
+//        TestGPS testGPS=new TestGPS();
+//        testGPS.start();
+//        double[] gps=testGPS.getGps();
+//        System.out.println(gps[0]+":"+gps[1]);
 
     }
 }
