@@ -33,6 +33,8 @@ public class ShowListActivity extends AppCompatActivity {
         GnaviEntity gnaviEntity= (GnaviEntity) intent.getSerializableExtra("entity");
         double[] gps=gnaviEntity.getGps();
         System.out.println("get data is"+gps[0]+":"+gps[1]);
+
     }
+
 
 }
