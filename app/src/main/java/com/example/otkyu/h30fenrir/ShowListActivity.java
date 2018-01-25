@@ -6,7 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
-import com.example.otkyu.h30fenrir.Model.GnaviEntity;
+import com.example.otkyu.h30fenrir.Model.GnaviAPI;
+import com.example.otkyu.h30fenrir.Model.GnaviRequestEntity;
 
 /**
  * Created by YukiOtake on 2018/01/24 024.
@@ -30,9 +31,13 @@ public class ShowListActivity extends AppCompatActivity {
             }
         });
         Intent intent = getIntent();
-        GnaviEntity gnaviEntity= (GnaviEntity) intent.getSerializableExtra("entity");
-        double[] gps=gnaviEntity.getGps();
+        GnaviRequestEntity gnaviRequestEntity = (GnaviRequestEntity) intent.getSerializableExtra("entity");
+        double[] gps= gnaviRequestEntity.getGps();
         System.out.println("get data is"+gps[0]+":"+gps[1]);
+        GnaviAPI gnaviAPI=new GnaviAPI();
+        gnaviAPI.setGps(gps);
+        gnaviAPI.execute(null,null,null);
+
 
     }
 

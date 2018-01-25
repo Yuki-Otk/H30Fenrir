@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.otkyu.h30fenrir.Model.GnaviEntity;
+import com.example.otkyu.h30fenrir.Model.GnaviRequestEntity;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -42,9 +41,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class LocationActivity extends AppCompatActivity {
 
@@ -110,9 +107,9 @@ public class LocationActivity extends AppCompatActivity {
 
     private void jump() {
         Intent intent = new Intent(getApplication(), ShowListActivity.class);
-        GnaviEntity gnaviEntity = new GnaviEntity();
-        gnaviEntity.setGps(gps);
-        intent.putExtra("entity", gnaviEntity);
+        GnaviRequestEntity gnaviRequestEntity = new GnaviRequestEntity();
+        gnaviRequestEntity.setGps(gps);
+        intent.putExtra("entity", gnaviRequestEntity);
         intent.setAction(Intent.ACTION_VIEW);
 //        String str="hogehoge";
 //        intent.putExtra("MESSAGE1", str);
