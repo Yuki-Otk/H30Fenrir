@@ -19,7 +19,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+//import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -59,8 +59,8 @@ public class LocationActivity extends AppCompatActivity {
     private Boolean requestingLocationUpdates;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
-    private TextView textView;
-    private String textLog;
+//    private TextView textView;
+//    private String textLog;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI = new GnaviAPI();
 
@@ -78,22 +78,22 @@ public class LocationActivity extends AppCompatActivity {
         createLocationRequest();
         buildLocationSettingsRequest();
 
-        textView = (TextView) findViewById(R.id.text_view);
-        textLog = "onCreate()\n";
-        textView.setText(textLog);
+//        textView = (TextView) findViewById(R.id.text_view);
+//        textLog = "onCreate()\n";
+//        textView.setText(textLog);
 
         // 測位開始
-        Button buttonStart = (Button) findViewById(R.id.button_start);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startLocationUpdates();
-            }
-        });
+//        Button buttonStart = (Button) findViewById(R.id.button_start);
+//        buttonStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startLocationUpdates();
+//            }
+//        });
 
-        // 測位終了
-        Button buttonStop = (Button) findViewById(R.id.button_stop);
-        buttonStop.setOnClickListener(new View.OnClickListener() {
+        // 検索
+        Button buttonSearch = (Button) findViewById(R.id.button_search);
+        buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                System.out.println("gps1="+gps[0]);
@@ -193,8 +193,8 @@ public class LocationActivity extends AppCompatActivity {
             strBuf.append(lastUpdateTime);
             strBuf.append("\n");
 
-            textLog += strBuf;
-            textView.setText(textLog);
+//            textLog += strBuf;
+//            textView.setText(textLog);
         }
 
     }
@@ -344,8 +344,8 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void stopLocationUpdates() {
-        textLog += "onStop()\n";
-        textView.setText(textLog);
+//        textLog += "onStop()\n";
+//        textView.setText(textLog);
 
         if (!requestingLocationUpdates) {
             Log.d("debug", "stopLocationUpdates: " +

@@ -2,9 +2,12 @@ package com.example.otkyu.h30fenrir;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.model.GnaviAPI;
 import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
 
@@ -32,20 +35,21 @@ public class ShowListActivity extends AppCompatActivity {
                 finish();
             }
         });
-//        Intent intent = getIntent();
-//        GnaviRequestEntity gnaviRequestEntity = (GnaviRequestEntity) intent.getSerializableExtra("entity");
-//        double[] gps = gnaviRequestEntity.getGps();
-//        System.out.println("get data is" + gps[0] + ":" + gps[1]);
-//        GnaviAPI gnaviAPI = new GnaviAPI(gps);
-//        gnaviAPI.execute();
 
-//        List<GnaviResultEntity> list = GnaviAPI.getList();
-//        System.out.println("list size="+list.size());
         List<GnaviResultEntity> list = GnaviAPI.getList();
-        System.out.println("list size="+list.size());
-        for (int i=0;i<list.size();i++){
-            System.out.println("name is="+list.get(i).getName());
+        System.out.println("list size=" + list.size());
+        for (int i = 0; i < list.size(); i++) {
+            System.out.println("name is=" + list.get(i).getName());
         }
+        //layout
+        RecyclerView rv = (RecyclerView) findViewById(R.id.casarealRecyclerView);
+        CasarealRecycleViewAdapter adapter = new CasarealRecycleViewAdapter();
+        LinearLayoutManager llm = new LinearLayoutManager(this);
+        rv.setHasFixedSize(true);
+
+        rv.setLayoutManager(llm);
+
+        rv.setAdapter(adapter);
 
 
     }
