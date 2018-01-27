@@ -13,7 +13,6 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,7 +23,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.otkyu.h30fenrir.Model.GnaviEntity;
+import com.example.otkyu.h30fenrir.Model.GnaviAPI;
+import com.example.otkyu.h30fenrir.Model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.Model.GnaviResultEntity;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -65,6 +66,7 @@ public class LocationActivity extends AppCompatActivity {
     private TextView textView;
     private String textLog;
     private double[] gps = new double[2];
+    private GnaviAPI gnaviAPI = new GnaviAPI();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +102,18 @@ public class LocationActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                System.out.println("gps1="+gps[0]);
 //                stopLocationUpdates();//画面移動した際に強制的に終了されるため書かなくてもよい?
-                jump();
+                boolean flag = gnaviRequest();
+                ;
+                if (flag) {
+//                    List<GnaviResultEntity> list = GnaviAPI.getList();
+//                    System.out.println("list is=" + list.size());
+//                    for(int i=0;i<list.size();i++){
+//                        System.out.println("list name "+list.get(i).getName()+"index is "+i);
+//                    }
+                    jump();
+                } else {
+                    System.out.println("検索することができませんでした。");
+                }
             }
         });
 
@@ -108,15 +121,31 @@ public class LocationActivity extends AppCompatActivity {
 
     }
 
+    private boolean gnaviRequest() {
+        boolean flag = false;
+        gnaviAPI.setGps(gps);
+        gnaviAPI.execute();
+        while (true) {
+            if (GnaviAPI.isResultFlag()) {
+                if (GnaviAPI.isFinishFlag()) {
+                    return true;
+                }
+            } else if (GnaviAPI.isFinishFlag()) {
+                return false;
+            }
+        }
+    }
+
     private void jump() {
         Intent intent = new Intent(getApplication(), ShowListActivity.class);
-        GnaviEntity gnaviEntity = new GnaviEntity();
-        gnaviEntity.setGps(gps);
-        intent.putExtra("entity", gnaviEntity);
-        intent.setAction(Intent.ACTION_VIEW);
+//        GnaviRequestEntity gnaviRequestEntity = new GnaviRequestEntity();
+//        gnaviRequestEntity.setGps(gps);
+//        intent.putExtra("entity", gnaviRequestEntity);
+//        intent.setAction(Intent.ACTION_VIEW);
+
 //        String str="hogehoge";
 //        intent.putExtra("MESSAGE1", str);
-        startActivity(intent);
+        startActivity(intent);//listをglobal変数にしたため何も持って行かない
     }
 
     // locationのコールバックを受け取る
