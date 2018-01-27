@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.Model;
+package com.example.otkyu.h30fenrir.model;
 
 /**
  * Created by YukiOtake on 2018/01/25 025.

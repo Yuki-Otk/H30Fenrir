@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.Model;
+package com.example.otkyu.h30fenrir.model;
 /**
  * Created by YukiOtake on 2018/01/23 023.
  */
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.example.otkyu.h30fenrir.Model.Secret.AccessKey;
+import com.example.otkyu.h30fenrir.model.secret.AccessKey;
 import com.fasterxml.jackson.databind.*;
 
 /*******************************************************************************

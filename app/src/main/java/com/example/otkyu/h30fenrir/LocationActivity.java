@@ -23,9 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.otkyu.h30fenrir.Model.GnaviAPI;
-import com.example.otkyu.h30fenrir.Model.GnaviRequestEntity;
-import com.example.otkyu.h30fenrir.Model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.model.GnaviAPI;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -43,9 +41,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class LocationActivity extends AppCompatActivity {
 
