@@ -15,13 +15,15 @@ import java.util.List;
 
 public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealViewHolder> {
     private List<GnaviResultEntity> list;
+    private View.OnClickListener listener;
 
     public CasarealRecycleViewAdapter() {
-        this.list=GnaviAPI.getList();
+        this.list = GnaviAPI.getList();
     }
+
     @Override
     public CasarealViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.format_row, parent,false);
+        View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.format_row, parent, false);
         CasarealViewHolder vh = new CasarealViewHolder(inflate);
         return vh;
     }
@@ -30,6 +32,17 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
     public void onBindViewHolder(CasarealViewHolder holder, int position) {
         holder.titleView.setText(list.get(position).getName());
         holder.detailView.setText(list.get(position).getNameKana());
+        holder.linearLayout.setId(holder.getAdapterPosition());
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                listener.onClick(view);
+            }
+        });
+    }
+
+    public void setOnItemClickListener(View.OnClickListener listener) {
+        this.listener = listener;
     }
 
     @Override
