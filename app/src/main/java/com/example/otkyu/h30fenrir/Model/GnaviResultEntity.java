@@ -6,7 +6,8 @@ package com.example.otkyu.h30fenrir.Model;
  */
 
 public class GnaviResultEntity {
-    private String name=null,nameKana=null,address=null,tel=null,opentime=null;
+    private String name=null,nameKana=null,address=null,tel=null,opentime=null,howGo=null;
+    private String[] img=new String[2];
 
     public String getName() {
         return name;
@@ -46,5 +47,21 @@ public class GnaviResultEntity {
 
     public void setOpentime(String opentime) {
         this.opentime = opentime;
+    }
+
+    public String getHowGo() {
+        return howGo;
+    }
+
+    public void setHowGo(String howGo) {
+        this.howGo = howGo;
+    }
+
+    public String[] getImg() {
+        return img;
+    }
+
+    public void setImg(String[] img) {
+        this.img = img;
     }
 }
