@@ -5,7 +5,7 @@ package com.example.otkyu.h30fenrir.model.secret;
  */
 
 public class AccessKey {
-    private String key="input your accesskey";
+    private String key="input your accesskey!!";
 
     public String getKey() {
         return key;
