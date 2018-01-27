@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.Model;
+package com.example.otkyu.h30fenrir.model;
 
 import java.io.Serializable;
 
