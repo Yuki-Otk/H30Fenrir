@@ -4,6 +4,7 @@ package com.example.otkyu.h30fenrir.model;
  */
 
 import android.os.AsyncTask;
+import android.widget.EditText;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -143,20 +144,35 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                     categorys += n.asText();
                 }
                 System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys + "count=" + count);
+                System.out.println(count+":"+gnaviResultEntity.getName());
+//                System.out.println("opentime='"+opentime+"'");
+                name=checkString(name);
                 gnaviResultEntity.setName(name);
+                address=checkString(address);
                 gnaviResultEntity.setAddress(address);
+                nameKana=checkString(nameKana);
                 gnaviResultEntity.setNameKana(nameKana);
+                opentime=checkString(opentime);
                 gnaviResultEntity.setOpentime(opentime);
+                tel=checkString(tel);
                 gnaviResultEntity.setTel(tel);
+                howGo=checkString(howGo);
                 gnaviResultEntity.setHowGo(howGo);
+                img[0]=checkString(img[0]);
+                img[1]=checkString(img[1]);
                 gnaviResultEntity.setImg(img);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);
-                System.out.println(count+":"+gnaviResultEntity.getName());
                 count++;
             }
             finishFlag = true;
         }
+    }
+    private static String checkString(String str){
+        if (str.equals("")){
+            return "登録されていません";
+        }
+        return str;
     }
 
     private static boolean isCheckInteger(String a) {//数字にできるか判定

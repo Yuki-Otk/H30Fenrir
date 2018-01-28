@@ -8,4 +8,10 @@
     <string name="tel">電話番号</string>
     <string name="opentime">営業時間</string>
     <string name="howGo">行き方</string>
+    <string name="rangeJa">検索範囲</string>
+    <string name="threeM">300m</string>
+    <string name="oneKm">1km</string>
+    <string name="fivem">500m</string>
+    <string name="twoKm">2km</string>
+    <string name="fiveKm">5km</string>
 </resources>

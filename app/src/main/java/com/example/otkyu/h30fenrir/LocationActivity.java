@@ -20,6 +20,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 //import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 
@@ -118,6 +121,15 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private boolean gnaviRequest() {
+        // ラジオグループのオブジェクトを取得
+        RadioGroup rg = (RadioGroup)findViewById(R.id.radiogroup);
+        // チェックされているラジオボタンの ID を取得
+        int id = rg.getCheckedRadioButtonId();
+        // チェックされているラジオボタンオブジェクトを取得
+        RadioButton radioButton = (RadioButton)findViewById(id);
+        System.out.println("radio="+radioButton.getText().toString());
+        EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
+        System.out.println("keyword="+keywordEditText.getText().toString());
         boolean flag = false;
         gnaviAPI.setGps(gps);
         gnaviAPI.execute();

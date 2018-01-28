@@ -8,6 +8,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.Toast;
 
 import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.model.GnaviAPI;
@@ -29,7 +32,6 @@ public class ShowListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list_show);
-
         Button returnButton = findViewById(R.id.return_button);
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +39,7 @@ public class ShowListActivity extends AppCompatActivity {
                 finish();
             }
         });
+
         LinearLayout linearLayout = findViewById(R.id.shop_linearLayout);
 
         final List<GnaviResultEntity> list = GnaviAPI.getList();
@@ -57,8 +60,8 @@ public class ShowListActivity extends AppCompatActivity {
 //                Toast.makeText(ShowListActivity.this, String.valueOf(list.get(view.getId()).getName()), Toast.LENGTH_SHORT).show();
                 int index = view.getId();
 //                System.out.println("index=" + index);
-                Intent intent=new Intent(getApplication(),ShowDetailsActivity.class);
-                intent.putExtra("index",index);
+                Intent intent = new Intent(getApplication(), ShowDetailsActivity.class);
+                intent.putExtra("index", index);
                 startActivity(intent);
             }
         });
