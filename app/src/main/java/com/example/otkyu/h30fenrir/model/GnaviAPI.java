@@ -48,29 +48,24 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //        String acckey = "input your accesskey";
         AccessKey accessKey = new AccessKey();
         String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
-        // 緯度
-//        String lat = "35.670082";
         double[] gps=getGnaviRequestEntity().getGps();
+        // 緯度
         String lat = String.valueOf(gps[0]);
-//        String lat = "37.358386";
         // 経度
-//        String lon = "139.763267";
         String lon = String.valueOf(gps[1]);
-//        String lon = "140.383444";
-//        System.out.println("!!!!GPS is " + gps[0] + ":" + gps[1]);
         // 範囲
-//        String range = "1"; //大学の近くにお店がなかった orz
         String range=getGnaviRequestEntity().getRange();
-        System.out.println("GnaviApi range is "+range);
+//        System.out.println("GnaviApi range is "+range);
         // 返却形式
         String format = "json";
         //出力数Integer.valueOf(hitPerPage);
         String hitPerPage = "20";
-//        requestNum =
-
         //ページ数
         String offsetPage = "1";
         pageNum= Integer.parseInt(offsetPage);
+        //フリーワード
+        String freeword= getGnaviRequestEntity().getFreeword();
+        boolean freewordFlag=isCheckNull(freeword);
         // エンドポイント
         String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
         String prmFormat = "?format=" + format;
@@ -93,6 +88,11 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         uri.append(prmRange);
         uri.append(prmHitPerPage);
         uri.append(prmOffsetPage);
+        System.out.println("freeword flag="+freewordFlag);
+        if(freewordFlag){
+            String prmFreeword="&freeword="+freeword;
+            uri.append(prmFreeword);
+        }
 
         System.out.println("url=" + uri);
         // API実行、結果を取得し出力
@@ -188,13 +188,22 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         return str;
     }
 
-    private static boolean isCheckInteger(String a) {//数字にできるか判定
+    private static boolean isCheckInteger(String str) {//数字にできるか判定
         try {
-            Integer hoge = Integer.valueOf(a);
+            Integer hoge = Integer.valueOf(str);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+    private boolean isCheckNull(String str){
+        if (str==null){
+            return false;
+        }
+        if (str.equals("")){
+            return false;
+        }
+        return true;
     }
 
     @Override
