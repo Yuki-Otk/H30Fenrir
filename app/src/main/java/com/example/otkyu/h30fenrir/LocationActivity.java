@@ -19,11 +19,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+//import android.widget.TextView;
+import android.widget.EditText;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
 
 import com.example.otkyu.h30fenrir.model.GnaviAPI;
+import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -59,8 +63,8 @@ public class LocationActivity extends AppCompatActivity {
     private Boolean requestingLocationUpdates;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
-    private TextView textView;
-    private String textLog;
+    //    private TextView textView;
+//    private String textLog;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI = new GnaviAPI();
 
@@ -78,22 +82,22 @@ public class LocationActivity extends AppCompatActivity {
         createLocationRequest();
         buildLocationSettingsRequest();
 
-        textView = (TextView) findViewById(R.id.text_view);
-        textLog = "onCreate()\n";
-        textView.setText(textLog);
+//        textView = (TextView) findViewById(R.id.text_view);
+//        textLog = "onCreate()\n";
+//        textView.setText(textLog);
 
         // 測位開始
-        Button buttonStart = (Button) findViewById(R.id.button_start);
-        buttonStart.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startLocationUpdates();
-            }
-        });
+//        Button buttonStart = (Button) findViewById(R.id.button_start);
+//        buttonStart.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startLocationUpdates();
+//            }
+//        });
 
-        // 測位終了
-        Button buttonStop = (Button) findViewById(R.id.button_stop);
-        buttonStop.setOnClickListener(new View.OnClickListener() {
+        // 検索
+        Button buttonSearch = (Button) findViewById(R.id.button_search);
+        buttonSearch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                System.out.println("gps1="+gps[0]);
@@ -108,7 +112,9 @@ public class LocationActivity extends AppCompatActivity {
 //                    }
                     jump();
                 } else {
-                    System.out.println("検索することができませんでした。");
+                    String str = "検索結果はありませんでした。";
+                    Toast.makeText(LocationActivity.this, str, Toast.LENGTH_LONG).show();
+                    System.out.println(str);
                 }
             }
         });
@@ -118,8 +124,20 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private boolean gnaviRequest() {
+        GnaviRequestEntity gnaviRequestEntity = new GnaviRequestEntity();
+        gnaviRequestEntity.setGps(gps);
+        RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
+        int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
+        RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
+        String checkStr = radioButton.getText().toString();
+        System.out.println("range=" + checkStr);
+        gnaviRequestEntity.setRange(checkStr);
+        EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
+        String freeword = keywordEditText.getText().toString();
+        gnaviRequestEntity.setFreeword(freeword);
+        System.out.println("keyword=" + freeword);
+        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
         boolean flag = false;
-        gnaviAPI.setGps(gps);
         gnaviAPI.execute();
         while (true) {
             if (GnaviAPI.isResultFlag()) {
@@ -193,8 +211,8 @@ public class LocationActivity extends AppCompatActivity {
             strBuf.append(lastUpdateTime);
             strBuf.append("\n");
 
-            textLog += strBuf;
-            textView.setText(textLog);
+//            textLog += strBuf;
+//            textView.setText(textLog);
         }
 
     }
@@ -328,24 +346,20 @@ public class LocationActivity extends AppCompatActivity {
                                 }
                                 break;
                             case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                                String errorMessage = "Location settings are inadequate, and cannot be " +
-                                        "fixed here. Fix in Settings.";
+//                                String errorMessage = "Location settings are inadequate, and cannot be " +"fixed here. Fix in Settings.";
+                                String errorMessage = "GPSを取得できない設定になっています。\n設定を変更してください。";
                                 Log.e("debug", errorMessage);
-                                Toast.makeText(LocationActivity.this,
-                                        errorMessage, Toast.LENGTH_LONG).show();
-
+                                Toast.makeText(LocationActivity.this, errorMessage, Toast.LENGTH_LONG).show();
                                 requestingLocationUpdates = false;
                         }
-
                     }
                 });
-
         requestingLocationUpdates = true;
     }
 
     private void stopLocationUpdates() {
-        textLog += "onStop()\n";
-        textView.setText(textLog);
+//        textLog += "onStop()\n";
+//        textView.setText(textLog);
 
         if (!requestingLocationUpdates) {
             Log.d("debug", "stopLocationUpdates: " +
