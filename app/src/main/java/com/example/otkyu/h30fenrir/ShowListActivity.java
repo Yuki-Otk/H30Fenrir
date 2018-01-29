@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
@@ -47,8 +48,11 @@ public class ShowListActivity extends AppCompatActivity {
 //        for (int i = 0; i < list.size(); i++) {
 //            System.out.println("name is=" + list.get(i).getName());
 //        }
+        String resultStr="合計"+GnaviAPI.getTotalNum()+"件\t"+GnaviAPI.getPageNum()+"ページ目("+GnaviAPI.getDataNum()+"件表示)";
         //layout
-        RecyclerView rv = (RecyclerView) findViewById(R.id.casarealRecyclerView);
+        TextView resultTextView=(TextView)findViewById(R.id.result_textView);
+        resultTextView.setText(resultStr);
+        RecyclerView rv = (RecyclerView) findViewById(R.id.casareal_recyclerView);
         CasarealRecycleViewAdapter adapter = new CasarealRecycleViewAdapter();
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setHasFixedSize(true);
