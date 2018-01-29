@@ -30,8 +30,13 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
 
     @Override
     public void onBindViewHolder(CasarealViewHolder holder, int position) {
-        holder.titleView.setText(list.get(position).getName());
-        holder.detailView.setText(list.get(position).getNameKana());
+        String name=list.get(position).getName();
+        String nameKana=list.get(position).getNameKana();
+        String howGo=list.get(position).getHowGo();
+        String[] img=list.get(position).getImg();
+        String title=name+"("+nameKana+")";
+        holder.titleView.setText(title);
+        holder.detailView.setText(howGo);
         holder.linearLayout.setId(holder.getAdapterPosition());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.model.GnaviAPI;
+import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
 
 import java.util.List;
@@ -27,13 +28,18 @@ import java.util.List;
 
 public class ShowListActivity extends AppCompatActivity {
 
+    Button backPageButton, nextPageButton;
+    private GnaviRequestEntity gnaviRequestEntity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list_show);
+        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra("gnaviRequestEntity");
 
+        backPageButton = (Button) findViewById(R.id.backPage_button);
+        nextPageButton = (Button) findViewById(R.id.nextPage_button);
         Button returnButton = (Button) findViewById(R.id.backHome_button);
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,36 +48,68 @@ public class ShowListActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout linearLayout =(LinearLayout) findViewById(R.id.shop_linearLayout);
-        Button backPageButton = (Button) findViewById(R.id.backPage_button);
-        Button nextPageButton=(Button)findViewById(R.id.nextPage_button);
-        final List<GnaviResultEntity> list = GnaviAPI.getList();
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.shop_linearLayout);
+
+        List<GnaviResultEntity> list = GnaviAPI.getList();
         System.out.println("list size=" + list.size());
-//        for (int i = 0; i < list.size(); i++) {
-//            System.out.println("name is=" + list.get(i).getName());
-//        }
-        int total=GnaviAPI.getTotalNum(),page=GnaviAPI.getPageNum(),dataNum=GnaviAPI.getDataNum();
-        String resultStr = "合計" + total + "件\t" + page + "ページ目(" + (dataNum*page-dataNum)+"～"+dataNum*page + "件表示)";
-        //backPageButtonの有効化・無効化
-        if(GnaviAPI.getPageNum()==1){
-            backPageButton.setEnabled(false);
+        makeList();
+        checkButton();
+
+        //next and back
+        nextPageButton.setOnClickListener(new View.OnClickListener() {//次のページを表示
+            @Override
+            public void onClick(View v) {
+                int newPage = GnaviAPI.getPageNum() + 1;
+                redraw(newPage);
+            }
+        });
+        backPageButton.setOnClickListener(new View.OnClickListener() {//前のページを表示
+            @Override
+            public void onClick(View v) {
+                int newPage = GnaviAPI.getPageNum() - 1;
+                redraw(newPage);
+            }
+        });
+    }
+
+    private void redraw(int newPage) {
+        GnaviAPI gnaviAPI = new GnaviAPI();
+        System.out.println("new page is " + newPage);
+        gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));
+        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
+        gnaviAPI.execute();
+        while (true) {//api結果取得するまでweit
+            if (GnaviAPI.isFinishFlag()) {
+                break;
+            }
         }
-        else{
+        makeList();
+        checkButton();
+    }
+
+    private void checkButton() {
+        int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), requestNum = GnaviAPI.getRequestNum();
+        //backPageButtonの有効化・無効化
+        if (GnaviAPI.getPageNum() == 1) {
+            backPageButton.setEnabled(false);
+        } else {
             backPageButton.setEnabled(true);
         }
         //nextPageButtonの有効化・無効化
 //        System.out.println("total");
-        double temp=Math.ceil((double) total/dataNum);
-        int pageMax= (int) temp;
-        System.out.println("pageMax="+pageMax);
-        if (page==pageMax){
+        double temp = Math.ceil((double) total / requestNum);
+        int pageMax = (int) temp;
+        System.out.println("pageMax=" + pageMax);
+        if (page == pageMax) {
             nextPageButton.setEnabled(false);
-        }
-        else{
+        } else {
             nextPageButton.setEnabled(true);
         }
+    }
 
-
+    private void makeList() {
+        int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), dataNum = GnaviAPI.getDataNum(), requestNum = GnaviAPI.getRequestNum();
+        String resultStr = "合計" + total + "件\t" + page + "ページ目(" + (requestNum * page - requestNum + 1) + "～" + (requestNum * (page - 1) + dataNum) + "件表示)";
         //layout
         TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
@@ -92,5 +130,6 @@ public class ShowListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+
     }
 }

@@ -29,7 +29,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //    private static Integer requestNum;
     private static boolean finishFlag;
     private static boolean resultFlag;
-    private static int totalNum,pageNum,dataNum;
+    private static int totalNum,pageNum,dataNum,requestNum;
 
     public GnaviAPI() {
 //        gps = new double[2];
@@ -41,6 +41,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         totalNum=0;
         pageNum=0;
         dataNum=0;
+        requestNum=0;
     }
 
     private void useApi() {
@@ -60,8 +61,10 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         String format = "json";
         //出力数Integer.valueOf(hitPerPage);
         String hitPerPage = "20";
+        requestNum= Integer.parseInt(hitPerPage);
         //ページ数
-        String offsetPage = "1";
+//        String offsetPage = "1";
+        String offsetPage=getGnaviRequestEntity().getOffsetPage();
         pageNum= Integer.parseInt(offsetPage);
         //フリーワード
         String freeword= getGnaviRequestEntity().getFreeword();
@@ -245,5 +248,9 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 
     public static int getDataNum() {
         return dataNum;
+    }
+
+    public static int getRequestNum() {
+        return requestNum;
     }
 }
