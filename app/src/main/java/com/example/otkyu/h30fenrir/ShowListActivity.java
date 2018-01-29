@@ -33,7 +33,8 @@ public class ShowListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list_show);
-        Button returnButton = findViewById(R.id.return_button);
+
+        Button returnButton = (Button) findViewById(R.id.backHome_button);
         returnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,14 +42,36 @@ public class ShowListActivity extends AppCompatActivity {
             }
         });
 
-        LinearLayout linearLayout = findViewById(R.id.shop_linearLayout);
-
+        LinearLayout linearLayout =(LinearLayout) findViewById(R.id.shop_linearLayout);
+        Button backPageButton = (Button) findViewById(R.id.backPage_button);
+        Button nextPageButton=(Button)findViewById(R.id.nextPage_button);
         final List<GnaviResultEntity> list = GnaviAPI.getList();
         System.out.println("list size=" + list.size());
 //        for (int i = 0; i < list.size(); i++) {
 //            System.out.println("name is=" + list.get(i).getName());
 //        }
-        String resultStr = "合計" + GnaviAPI.getTotalNum() + "件\t" + GnaviAPI.getPageNum() + "ページ目(" + GnaviAPI.getDataNum() + "件表示)";
+        int total=GnaviAPI.getTotalNum(),page=GnaviAPI.getPageNum(),dataNum=GnaviAPI.getDataNum();
+        String resultStr = "合計" + total + "件\t" + page + "ページ目(" + (dataNum*page-dataNum)+"～"+dataNum*page + "件表示)";
+        //backPageButtonの有効化・無効化
+        if(GnaviAPI.getPageNum()==1){
+            backPageButton.setEnabled(false);
+        }
+        else{
+            backPageButton.setEnabled(true);
+        }
+        //nextPageButtonの有効化・無効化
+//        System.out.println("total");
+        double temp=Math.ceil((double) total/dataNum);
+        int pageMax= (int) temp;
+        System.out.println("pageMax="+pageMax);
+        if (page==pageMax){
+            nextPageButton.setEnabled(false);
+        }
+        else{
+            nextPageButton.setEnabled(true);
+        }
+
+
         //layout
         TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
