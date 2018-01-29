@@ -4,6 +4,7 @@ package com.example.otkyu.h30fenrir.model;
  */
 
 import android.os.AsyncTask;
+import android.widget.EditText;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -22,14 +23,16 @@ import com.fasterxml.jackson.databind.*;
  ******************************************************************************/
 
 public class GnaviAPI extends AsyncTask<String, String, String> {
-    private double[] gps;
+//    private double[] gps;
+    private GnaviRequestEntity gnaviRequestEntity;
     private static List<GnaviResultEntity> list;
 //    private static Integer requestNum;
     private static boolean finishFlag;
     private static boolean resultFlag;
 
     public GnaviAPI() {
-        gps = new double[2];
+//        gps = new double[2];
+//        gnaviRequestEntity=new GnaviRequestEntity();
         list = new ArrayList<>();
 //        requestNum = 0;
         finishFlag = false;
@@ -43,6 +46,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
         // 緯度
 //        String lat = "35.670082";
+        double[] gps=getGnaviRequestEntity().getGps();
         String lat = String.valueOf(gps[0]);
 //        String lat = "37.358386";
         // 経度
@@ -51,12 +55,14 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //        String lon = "140.383444";
 //        System.out.println("!!!!GPS is " + gps[0] + ":" + gps[1]);
         // 範囲
-        String range = "1"; //大学の近くにお店がなかった orz
+//        String range = "1"; //大学の近くにお店がなかった orz
+        String range=getGnaviRequestEntity().getRange();
+        System.out.println("GnaviApi range is "+range);
         // 返却形式
         String format = "json";
-        //出力数
+        //出力数Integer.valueOf(hitPerPage);
         String hitPerPage = "20";
-//        requestNum = Integer.valueOf(hitPerPage);
+//        requestNum =
 
         //ページ数
         String offsetPage = "1";
@@ -136,27 +142,43 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 String tel=r.path("tel").asText();//電話番号
                 String opentime=r.path("opentime").asText();//営業時間
                 String[] img=new String[2];
-                img[0]=r.path("shop_image1").asText();
-                img[1]=r.path("shop_image2").asText();
+                img[0]=r.path("image_url").path("shop_image1").asText();
+                img[1]=r.path("image_url").path("shop_image2").asText();
                 String categorys = "";
                 for (JsonNode n : r.path("code").path("category_name_s")) {
                     categorys += n.asText();
                 }
                 System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys + "count=" + count);
+//                System.out.println(count+":"+gnaviResultEntity.getName());
+//                System.out.println("opentime='"+opentime+"'");
+                name=checkString(name);
                 gnaviResultEntity.setName(name);
+                address=checkString(address);
                 gnaviResultEntity.setAddress(address);
+                nameKana=checkString(nameKana);
                 gnaviResultEntity.setNameKana(nameKana);
+                opentime=checkString(opentime);
                 gnaviResultEntity.setOpentime(opentime);
+                tel=checkString(tel);
                 gnaviResultEntity.setTel(tel);
+                howGo=checkString(howGo);
                 gnaviResultEntity.setHowGo(howGo);
+                img[0]=checkString(img[0]);
+                img[1]=checkString(img[1]);
                 gnaviResultEntity.setImg(img);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);
-                System.out.println(count+":"+gnaviResultEntity.getName());
                 count++;
+                System.out.println("img url="+img[0]);
             }
             finishFlag = true;
         }
+    }
+    private static String checkString(String str){
+        if (str.equals("")){
+            return "登録されていません";
+        }
+        return str;
     }
 
     private static boolean isCheckInteger(String a) {//数字にできるか判定
@@ -174,10 +196,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         return null;
     }
 
-    public void setGps(double[] gps) {
-        this.gps = gps;
-    }
-
     public static List<GnaviResultEntity> getList() {
 //        for(int i=0;i<list.size();i++){
 //            System.out.println("list "+i+"="+list.get(i).getName());
@@ -191,5 +209,13 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 
     public static boolean isResultFlag() {
         return resultFlag;
+    }
+
+    public GnaviRequestEntity getGnaviRequestEntity() {
+        return gnaviRequestEntity;
+    }
+
+    public void setGnaviRequestEntity(GnaviRequestEntity gnaviRequestEntity) {
+        this.gnaviRequestEntity = gnaviRequestEntity;
     }
 }
