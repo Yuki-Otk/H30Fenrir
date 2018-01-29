@@ -67,6 +67,7 @@ public class LocationActivity extends AppCompatActivity {
 //    private String textLog;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
+    GnaviRequestEntity gnaviRequestEntity ;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,11 +104,6 @@ public class LocationActivity extends AppCompatActivity {
                 gnaviAPI=new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
                 boolean flag = gnaviRequest();
                 if (flag) {
-//                    List<GnaviResultEntity> list = GnaviAPI.getList();
-//                    System.out.println("list is=" + list.size());
-//                    for(int i=0;i<list.size();i++){
-//                        System.out.println("list name "+list.get(i).getName()+"index is "+i);
-//                    }
                     jump();
                 } else {
                     String str = "検索結果はありませんでした。";
@@ -122,7 +118,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private boolean gnaviRequest() {
-        GnaviRequestEntity gnaviRequestEntity = new GnaviRequestEntity();
+        gnaviRequestEntity= new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
         RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
         int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
@@ -137,7 +133,7 @@ public class LocationActivity extends AppCompatActivity {
         gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
         boolean flag = false;
         gnaviAPI.execute();
-        while (true) {
+        while (true) {//api結果取得するまでweit
             if (GnaviAPI.isResultFlag()) {
                 if (GnaviAPI.isFinishFlag()) {
                     return true;
@@ -150,14 +146,8 @@ public class LocationActivity extends AppCompatActivity {
 
     private void jump() {
         Intent intent = new Intent(getApplication(), ShowListActivity.class);
-//        GnaviRequestEntity gnaviRequestEntity = new GnaviRequestEntity();
-//        gnaviRequestEntity.setGps(gps);
-//        intent.putExtra("entity", gnaviRequestEntity);
-//        intent.setAction(Intent.ACTION_VIEW);
-
-//        String str="hogehoge";
-//        intent.putExtra("MESSAGE1", str);
-        startActivity(intent);//listをglobal変数にしたため何も持って行かない
+        intent.putExtra("gnaviRequestEntity",gnaviRequestEntity);
+        startActivity(intent);
     }
 
     // locationのコールバックを受け取る

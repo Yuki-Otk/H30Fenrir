@@ -9,12 +9,13 @@ import java.io.Serializable;
 
 public class GnaviRequestEntity implements Serializable {
     private double[] gps;
-    private String range, freeword;
+    private String range, freeword,offsetPage;
 
     public GnaviRequestEntity() {
         gps = new double[2];
         range = null;
         freeword = null;
+        offsetPage="1";
     }
 
     public double[] getGps() {
@@ -54,5 +55,13 @@ public class GnaviRequestEntity implements Serializable {
 
     public void setFreeword(String freeword) {
         this.freeword = freeword;
+    }
+
+    public String getOffsetPage() {
+        return offsetPage;
+    }
+
+    public void setOffsetPage(String offsetPage) {
+        this.offsetPage = offsetPage;
     }
 }
