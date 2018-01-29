@@ -29,6 +29,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //    private static Integer requestNum;
     private static boolean finishFlag;
     private static boolean resultFlag;
+    private static int totalNum,pageNum,dataNum;
 
     public GnaviAPI() {
 //        gps = new double[2];
@@ -37,6 +38,9 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //        requestNum = 0;
         finishFlag = false;
         resultFlag = false;
+        totalNum=0;
+        pageNum=0;
+        dataNum=0;
     }
 
     private void useApi() {
@@ -66,6 +70,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 
         //ページ数
         String offsetPage = "1";
+        pageNum= Integer.parseInt(offsetPage);
         // エンドポイント
         String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
         String prmFormat = "?format=" + format;
@@ -119,6 +124,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //            Integer total= Integer.valueOf(nodeList.path("total_hit_count").asText());
             if (isCheckInteger(total)) {//数字にできるか判定
                 resultFlag = true;//検索結果はある！
+                totalNum= Integer.parseInt(total);
             }
 //            String hitcount = "total:" + nodeList.path("total_hit_count").asText();
             String hitcount = "total:" + total;
@@ -171,6 +177,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 count++;
                 System.out.println("img url="+img[0]);
             }
+            dataNum=count;
             finishFlag = true;
         }
     }
@@ -217,5 +224,17 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 
     public void setGnaviRequestEntity(GnaviRequestEntity gnaviRequestEntity) {
         this.gnaviRequestEntity = gnaviRequestEntity;
+    }
+
+    public static int getTotalNum() {
+        return totalNum;
+    }
+
+    public static int getPageNum() {
+        return pageNum;
+    }
+
+    public static int getDataNum() {
+        return dataNum;
     }
 }
