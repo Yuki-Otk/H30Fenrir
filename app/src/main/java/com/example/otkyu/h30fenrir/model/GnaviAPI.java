@@ -144,7 +144,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 String walk = r.path("access").path("walk").asText() + "分";
                 String address=r.path("address").asText();//住所
                 String nameKana=r.path("name_kana").asText();//ナマエ
-                String howGo=line+station+"から徒歩"+walk;//行き方
+                String howGo=line+station+"から"+walk;//行き方
                 String tel=r.path("tel").asText();//電話番号
                 String opentime=r.path("opentime").asText();//営業時間
                 String[] img=new String[2];
@@ -182,7 +182,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         }
     }
     private static String checkString(String str){
-        if (str.equals("")){
+        if (str.equals("") || str.equals("から分")){
             return "登録されていません";
         }
         return str;

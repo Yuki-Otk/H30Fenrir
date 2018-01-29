@@ -15,4 +15,7 @@
     <string name="twoKm">2km</string>
     <string name="fiveKm">5km</string>
     <string name="name">店名</string>
+    <string name="backHome">検索画面に戻る</string>
+    <string name="nextPage">次のページ</string>
+    <string name="backPage">前のページ</string>
 </resources>
