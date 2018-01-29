@@ -48,9 +48,9 @@ public class ShowListActivity extends AppCompatActivity {
 //        for (int i = 0; i < list.size(); i++) {
 //            System.out.println("name is=" + list.get(i).getName());
 //        }
-        String resultStr="合計"+GnaviAPI.getTotalNum()+"件\t"+GnaviAPI.getPageNum()+"ページ目("+GnaviAPI.getDataNum()+"件表示)";
+        String resultStr = "合計" + GnaviAPI.getTotalNum() + "件\t" + GnaviAPI.getPageNum() + "ページ目(" + GnaviAPI.getDataNum() + "件表示)";
         //layout
-        TextView resultTextView=(TextView)findViewById(R.id.result_textView);
+        TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
         RecyclerView rv = (RecyclerView) findViewById(R.id.casareal_recyclerView);
         CasarealRecycleViewAdapter adapter = new CasarealRecycleViewAdapter();

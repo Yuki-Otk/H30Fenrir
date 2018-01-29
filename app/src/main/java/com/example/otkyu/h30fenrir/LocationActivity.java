@@ -75,9 +75,7 @@ public class LocationActivity extends AppCompatActivity {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         settingsClient = LocationServices.getSettingsClient(this);
-
         priority = 0;
-
         createLocationCallback();
         createLocationRequest();
         buildLocationSettingsRequest();
@@ -102,7 +100,7 @@ public class LocationActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                System.out.println("gps1="+gps[0]);
 //                stopLocationUpdates();//画面移動した際に強制的に終了されるため書かなくてもよい?
-                gnaviAPI=new GnaviAPI();
+                gnaviAPI=new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
                 boolean flag = gnaviRequest();
                 if (flag) {
 //                    List<GnaviResultEntity> list = GnaviAPI.getList();
@@ -125,17 +123,17 @@ public class LocationActivity extends AppCompatActivity {
 
     private boolean gnaviRequest() {
         GnaviRequestEntity gnaviRequestEntity = new GnaviRequestEntity();
-        gnaviRequestEntity.setGps(gps);
+        gnaviRequestEntity.setGps(gps);//gps情報をセット
         RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
         int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
         RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
         String checkStr = radioButton.getText().toString();
-        System.out.println("range=" + checkStr);
-        gnaviRequestEntity.setRange(checkStr);
+//        System.out.println("range=" + checkStr);
+        gnaviRequestEntity.setRange(checkStr);//範囲をセット
         EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();
-        gnaviRequestEntity.setFreeword(freeword);
-        System.out.println("keyword=" + freeword);
+        gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
+//        System.out.println("keyword=" + freeword);
         gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
         boolean flag = false;
         gnaviAPI.execute();
