@@ -66,7 +66,7 @@ public class LocationActivity extends AppCompatActivity {
     //    private TextView textView;
 //    private String textLog;
     private double[] gps = new double[2];
-    private GnaviAPI gnaviAPI = new GnaviAPI();
+    private GnaviAPI gnaviAPI;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,8 +102,8 @@ public class LocationActivity extends AppCompatActivity {
             public void onClick(View v) {
 //                System.out.println("gps1="+gps[0]);
 //                stopLocationUpdates();//画面移動した際に強制的に終了されるため書かなくてもよい?
+                gnaviAPI=new GnaviAPI();
                 boolean flag = gnaviRequest();
-                ;
                 if (flag) {
 //                    List<GnaviResultEntity> list = GnaviAPI.getList();
 //                    System.out.println("list is=" + list.size());
