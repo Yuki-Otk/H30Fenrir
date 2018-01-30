@@ -62,6 +62,15 @@ public class GnaviResultEntity {
     }
 
     public void setImg(String[] img) {
+        String url="https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
+//        String url="https://uds.gnst.jp/rest/img/c4bdzhxp0000/t_0000.jpg";
+        String error="登録されていません";
+        if (img[0].equals(error)){
+            img[0]=url;
+        }
+        if(img[1].equals(error)){
+            img[1]=url;
+        }
         this.img = img;
     }
 }

@@ -1,9 +1,12 @@
 package com.example.otkyu.h30fenrir.model;
 
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.example.otkyu.h30fenrir.R;
 
@@ -16,8 +19,9 @@ import java.util.List;
 public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealViewHolder> {
     private List<GnaviResultEntity> list;
     private View.OnClickListener listener;
+    private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
 
-    public CasarealRecycleViewAdapter() {
+    public CasarealRecycleViewAdapter(){
         this.list = GnaviAPI.getList();
     }
 
@@ -37,6 +41,15 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
         String title=name+"("+nameKana+")";
         holder.titleView.setText(title);
         holder.detailView.setText(howGo);
+        //img
+//        String url="https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
+        String[] temp=list.get(position).getImg();
+        String url=temp[0];
+        imgAsyncTaskHttpRequest=new ImgAsyncTaskHttpRequest();
+        imgAsyncTaskHttpRequest.setListener(createListener(holder));
+        imgAsyncTaskHttpRequest.execute(url);
+
+
         holder.linearLayout.setId(holder.getAdapterPosition());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -44,6 +57,14 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
                 listener.onClick(view);
             }
         });
+    }
+    private ImgAsyncTaskHttpRequest.Listener createListener(final CasarealViewHolder holder) {
+        return new ImgAsyncTaskHttpRequest.Listener() {
+            @Override
+            public void onSuccess(Bitmap bmp) {
+                holder.imageView.setImageBitmap(bmp);
+            }
+        };
     }
 
     public void setOnItemClickListener(View.OnClickListener listener) {
@@ -54,4 +75,6 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
     public int getItemCount() {
         return list.size();
     }
+
+
 }
