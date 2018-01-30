@@ -174,6 +174,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 gnaviResultEntity.setHowGo(howGo);
                 img[0]=checkString(img[0]);
                 img[1]=checkString(img[1]);
+                System.out.println("img url="+img[0]);
                 gnaviResultEntity.setImg(img);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);

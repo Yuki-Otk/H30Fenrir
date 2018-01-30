@@ -42,13 +42,6 @@ public class ShowDetailsActivity  extends AppCompatActivity {
         Intent intent=getIntent();
         int index=intent.getIntExtra("index",0);
 //        System.out.println("get index="+index);
-
-        String url="https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
-        imageView=(ImageView)findViewById(R.id.imageView);
-        imgAsyncTaskHttpRequest=new ImgAsyncTaskHttpRequest();
-        imgAsyncTaskHttpRequest.setListener(createListener());
-        imgAsyncTaskHttpRequest.execute(url);
-
         init();
         setAll(index);
 
