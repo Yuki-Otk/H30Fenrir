@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--src:https://akira-watson.com/android/scrollview.html-->
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -20,9 +21,17 @@
             android:id="@+id/name_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
             android:gravity="right"
             android:text="店名"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/nameKana_textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"
+            android:gravity="right"
+            android:text="店名(カナ)"
             tools:ignore="RtlHardcoded" />
 
         <TextView
@@ -35,7 +44,7 @@
             android:id="@+id/genre_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginBottom="5dp"
             android:gravity="right"
             android:text="ジャンル"
             tools:ignore="RtlHardcoded" />
@@ -50,7 +59,7 @@
             android:id="@+id/address_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginBottom="5dp"
             android:gravity="right"
             android:text="住所"
             tools:ignore="RtlHardcoded" />
@@ -65,7 +74,7 @@
             android:id="@+id/tel_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginBottom="5dp"
             android:gravity="right"
             android:text="電話番号"
             tools:ignore="RtlHardcoded" />
@@ -80,7 +89,7 @@
             android:id="@+id/opentime_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginBottom="5dp"
             android:gravity="right"
             android:text="営業時間"
             tools:ignore="RtlHardcoded" />
@@ -95,7 +104,7 @@
             android:id="@+id/howGo_textView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="70dp"
+            android:layout_marginBottom="5dp"
             android:gravity="right"
             android:text="行き方"
             tools:ignore="RtlHardcoded" />
@@ -104,6 +113,7 @@
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_launcher_round" />
 
@@ -111,6 +121,7 @@
             android:id="@+id/change_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_margin="5dp"
             android:text="@string/changeImg" />
 
         <Button
