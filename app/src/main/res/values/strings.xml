@@ -17,7 +17,9 @@
     <string name="backHome">検索画面に戻る</string>
     <string name="nextPage">次のページ</string>
     <string name="backPage">前のページ</string>
-    <string name="changeImg">画面を切り替える</string>
+    <string name="changeImg">画像を切り替える</string>
     <string name="back">戻る</string>
     <string name="genre">ジャンル</string>
+    <string name="freewordHint">キーワード(入力しなくても検索できます)</string>
+    <string name="pageHint">1ページの検索表示量(入力しなくても検索できます)</string>
 </resources>

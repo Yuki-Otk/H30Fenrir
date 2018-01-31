@@ -98,7 +98,7 @@
             android:id="@+id/howGo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/address" />
+            android:text="@string/howGo" />
 
         <TextView
             android:id="@+id/howGo_textView"

@@ -60,7 +60,8 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         // 返却形式
         String format = "json";
         //出力数Integer.valueOf(hitPerPage);
-        String hitPerPage = "20";
+//        String hitPerPage = "20";
+        String hitPerPage=gnaviRequestEntity.getPage();
         requestNum = Integer.parseInt(hitPerPage);
         //ページ数
 //        String offsetPage = "1";
