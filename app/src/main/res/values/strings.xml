@@ -3,7 +3,6 @@
     <string name="stop">stop</string>
     <string name="start">start</string>
     <string name="search">検索</string>
-    <string name="nameKana">店名(カナ)</string>
     <string name="address">住所</string>
     <string name="tel">電話番号</string>
     <string name="opentime">営業時間</string>
@@ -14,8 +13,11 @@
     <string name="fivem">500m</string>
     <string name="twoKm">2km</string>
     <string name="fiveKm">5km</string>
-    <string name="name">店名</string>
+    <string name="name">店名(カナ)</string>
     <string name="backHome">検索画面に戻る</string>
     <string name="nextPage">次のページ</string>
     <string name="backPage">前のページ</string>
+    <string name="changeImg">画面を切り替える</string>
+    <string name="back">戻る</string>
+    <string name="genre">ジャンル</string>
 </resources>
