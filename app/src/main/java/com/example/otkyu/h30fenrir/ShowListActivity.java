@@ -117,7 +117,7 @@ public class ShowListActivity extends AppCompatActivity {
         int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), dataNum = GnaviAPI.getDataNum(), requestNum = GnaviAPI.getRequestNum();
         double temp = Math.ceil((double) total / requestNum);
         int pageMax = (int) temp;
-        String resultStr = "合計" + total + "件\t" + page +"/"+pageMax+ "ページ目(" + (requestNum * page - requestNum + 1) + "～" + (requestNum * (page - 1) + dataNum) + "件表示)";
+        String resultStr = "合計" + total + "件\t" + page + "/" + pageMax + "ページ目(" + (requestNum * page - requestNum + 1) + "～" + (requestNum * (page - 1) + dataNum) + "件表示)";
         //layout
         TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
@@ -141,6 +141,7 @@ public class ShowListActivity extends AppCompatActivity {
         //img
 //        imageView=(ImageView)findViewById(R.id.imageView);
     }
+
     @Override
     protected void onDestroy() {
 //        imgAsyncTaskHttpRequest.setListener(null);//多分listenerがずっと生き続けるためもったいない？
