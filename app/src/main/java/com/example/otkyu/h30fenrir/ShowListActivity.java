@@ -1,12 +1,14 @@
 package com.example.otkyu.h30fenrir;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -17,6 +19,7 @@ import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.model.GnaviAPI;
 import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.model.ImgAsyncTaskHttpRequest;
 
 import java.util.List;
 
@@ -28,8 +31,10 @@ import java.util.List;
 
 public class ShowListActivity extends AppCompatActivity {
 
-    Button backPageButton, nextPageButton;
+    private Button backPageButton, nextPageButton;
     private GnaviRequestEntity gnaviRequestEntity;
+    ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
+    private CasarealRecycleViewAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,7 +119,7 @@ public class ShowListActivity extends AppCompatActivity {
         TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
         RecyclerView rv = (RecyclerView) findViewById(R.id.casareal_recyclerView);
-        CasarealRecycleViewAdapter adapter = new CasarealRecycleViewAdapter();
+        adapter = new CasarealRecycleViewAdapter();
         LinearLayoutManager llm = new LinearLayoutManager(this);
         rv.setHasFixedSize(true);
         rv.setLayoutManager(llm);
@@ -130,6 +135,12 @@ public class ShowListActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
+        //img
+//        imageView=(ImageView)findViewById(R.id.imageView);
+    }
+    @Override
+    protected void onDestroy() {
+//        imgAsyncTaskHttpRequest.setListener(null);//多分listenerがずっと生き続けるためもったいない？
+        super.onDestroy();
     }
 }

@@ -23,13 +23,13 @@ import com.fasterxml.jackson.databind.*;
  ******************************************************************************/
 
 public class GnaviAPI extends AsyncTask<String, String, String> {
-//    private double[] gps;
+    //    private double[] gps;
     private GnaviRequestEntity gnaviRequestEntity;
     private static List<GnaviResultEntity> list;
-//    private static Integer requestNum;
+    //    private static Integer requestNum;
     private static boolean finishFlag;
     private static boolean resultFlag;
-    private static int totalNum,pageNum,dataNum,requestNum;
+    private static int totalNum, pageNum, dataNum, requestNum;
 
     public GnaviAPI() {
 //        gps = new double[2];
@@ -38,10 +38,10 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //        requestNum = 0;
         finishFlag = false;
         resultFlag = false;
-        totalNum=0;
-        pageNum=0;
-        dataNum=0;
-        requestNum=0;
+        totalNum = 0;
+        pageNum = 0;
+        dataNum = 0;
+        requestNum = 0;
     }
 
     private void useApi() {
@@ -49,26 +49,26 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //        String acckey = "input your accesskey";
         AccessKey accessKey = new AccessKey();
         String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
-        double[] gps=getGnaviRequestEntity().getGps();
+        double[] gps = getGnaviRequestEntity().getGps();
         // 緯度
         String lat = String.valueOf(gps[0]);
         // 経度
         String lon = String.valueOf(gps[1]);
         // 範囲
-        String range=getGnaviRequestEntity().getRange();
+        String range = getGnaviRequestEntity().getRange();
 //        System.out.println("GnaviApi range is "+range);
         // 返却形式
         String format = "json";
         //出力数Integer.valueOf(hitPerPage);
         String hitPerPage = "20";
-        requestNum= Integer.parseInt(hitPerPage);
+        requestNum = Integer.parseInt(hitPerPage);
         //ページ数
 //        String offsetPage = "1";
-        String offsetPage=getGnaviRequestEntity().getOffsetPage();
-        pageNum= Integer.parseInt(offsetPage);
+        String offsetPage = getGnaviRequestEntity().getOffsetPage();
+        pageNum = Integer.parseInt(offsetPage);
         //フリーワード
-        String freeword= getGnaviRequestEntity().getFreeword();
-        boolean freewordFlag=isCheckNull(freeword);
+        String freeword = getGnaviRequestEntity().getFreeword();
+        boolean freewordFlag = isCheckNull(freeword);
         // エンドポイント
         String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
         String prmFormat = "?format=" + format;
@@ -91,9 +91,9 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         uri.append(prmRange);
         uri.append(prmHitPerPage);
         uri.append(prmOffsetPage);
-        System.out.println("freeword flag="+freewordFlag);
-        if(freewordFlag){
-            String prmFreeword="&freeword="+freeword;
+        System.out.println("freeword flag=" + freewordFlag);
+        if (freewordFlag) {
+            String prmFreeword = "&freeword=" + freeword;
             uri.append(prmFreeword);
         }
 
@@ -127,17 +127,39 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 //            Integer total= Integer.valueOf(nodeList.path("total_hit_count").asText());
             if (isCheckInteger(total)) {//数字にできるか判定
                 resultFlag = true;//検索結果はある！
-                totalNum= Integer.parseInt(total);
+                totalNum = Integer.parseInt(total);
+            } else {
+                System.out.println("検索結果なし");
+                finishFlag = true;
+                return;//検索結果がなければ終了
             }
 //            String hitcount = "total:" + nodeList.path("total_hit_count").asText();
             String hitcount = "total:" + total;
+            int pageOffset = nodeList.path("page_offset").asInt();
+            int hitPerPage = nodeList.path("hit_per_page").asInt();
             System.out.println(hitcount);
             //restのみ取得
             JsonNode restList = nodeList.path("rest");
             Iterator<JsonNode> rest = restList.iterator();
-            //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
             int count = 0;
-            while (rest.hasNext()) {
+            int max;
+            if (totalNum > pageOffset * hitPerPage) {
+                max = hitPerPage;
+            } else {
+                max = totalNum - (pageOffset - 1) * hitPerPage;
+            }
+            System.out.println("page=" + pageOffset);
+            System.out.println("hitPage=" + hitPerPage);
+            System.out.println("max=" + max);
+            System.out.println("rest=" + restList.get(0));
+            //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
+//            while (rest.hasNext()) {
+            if (max == 1) {//暫定実行停止中
+                resultFlag = false;
+                finishFlag = true;
+                return;
+            }
+            for (int i = 0; i < max; i++) {
                 GnaviResultEntity gnaviResultEntity = new GnaviResultEntity();
                 JsonNode r = rest.next();
                 String id = r.path("id").asText();
@@ -145,14 +167,14 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 String line = r.path("access").path("line").asText();
                 String station = r.path("access").path("station").asText();
                 String walk = r.path("access").path("walk").asText() + "分";
-                String address=r.path("address").asText();//住所
-                String nameKana=r.path("name_kana").asText();//ナマエ
-                String howGo=line+station+"から"+walk;//行き方
-                String tel=r.path("tel").asText();//電話番号
-                String opentime=r.path("opentime").asText();//営業時間
-                String[] img=new String[2];
-                img[0]=r.path("image_url").path("shop_image1").asText();
-                img[1]=r.path("image_url").path("shop_image2").asText();
+                String address = r.path("address").asText();//住所
+                String nameKana = r.path("name_kana").asText();//ナマエ
+                String howGo = line + station + "から" + walk;//行き方
+                String tel = r.path("tel").asText();//電話番号
+                String opentime = r.path("opentime").asText();//営業時間
+                String[] img = new String[2];
+                img[0] = r.path("image_url").path("shop_image1").asText();
+                img[1] = r.path("image_url").path("shop_image2").asText();
                 String categorys = "";
                 for (JsonNode n : r.path("code").path("category_name_s")) {
                     categorys += n.asText();
@@ -160,32 +182,34 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys + "count=" + count);
 //                System.out.println(count+":"+gnaviResultEntity.getName());
 //                System.out.println("opentime='"+opentime+"'");
-                name=checkString(name);
+                name = checkString(name);
                 gnaviResultEntity.setName(name);
-                address=checkString(address);
+                address = checkString(address);
                 gnaviResultEntity.setAddress(address);
-                nameKana=checkString(nameKana);
+                nameKana = checkString(nameKana);
                 gnaviResultEntity.setNameKana(nameKana);
-                opentime=checkString(opentime);
+                opentime = checkString(opentime);
                 gnaviResultEntity.setOpentime(opentime);
-                tel=checkString(tel);
+                tel = checkString(tel);
                 gnaviResultEntity.setTel(tel);
-                howGo=checkString(howGo);
+                howGo = checkString(howGo);
                 gnaviResultEntity.setHowGo(howGo);
-                img[0]=checkString(img[0]);
-                img[1]=checkString(img[1]);
+                img[0] = checkString(img[0]);
+                img[1] = checkString(img[1]);
+                System.out.println("img url=" + img[0]);
                 gnaviResultEntity.setImg(img);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);
                 count++;
-                System.out.println("img url="+img[0]);
+                System.out.println("img url=" + img[0]);
             }
-            dataNum=count;
+            dataNum = count;
             finishFlag = true;
         }
     }
-    private static String checkString(String str){
-        if (str.equals("") || str.equals("から分")){
+
+    private static String checkString(String str) {
+        if (str.equals("") || str.equals("から分")) {
             return "登録されていません";
         }
         return str;
@@ -199,11 +223,12 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
             return false;
         }
     }
-    private boolean isCheckNull(String str){
-        if (str==null){
+
+    private boolean isCheckNull(String str) {
+        if (str == null) {
             return false;
         }
-        if (str.equals("")){
+        if (str.equals("")) {
             return false;
         }
         return true;
