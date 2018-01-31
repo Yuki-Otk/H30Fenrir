@@ -30,7 +30,20 @@ public class GnaviResultEntity {
     }
 
     public void setAddress(String address) {
-        this.address = address;
+        String[] temp=address.split(" ");
+        address="";
+        for(int i=0;i<temp.length;i++){
+            address=address+"\n"+temp[i];
+        }
+//        int num=address.indexOf("町");
+//        if(num==-1){
+//            num=address.indexOf("市");
+//        }
+//        StringBuilder stringBuilder=new StringBuilder();
+//        stringBuilder.append(address);
+//        stringBuilder.insert(num+1,"\n");
+//        this.address = new String(stringBuilder);
+        this.address=address;
     }
 
     public String getTel() {
@@ -46,7 +59,12 @@ public class GnaviResultEntity {
     }
 
     public void setOpentime(String opentime) {
-        this.opentime = opentime;
+        String[] temp=opentime.split("<BR>");
+        String str="";
+        for(int i=0;i<temp.length;i++){
+            str=str+"\n"+temp[i];
+        }
+        this.opentime = str;
     }
 
     public String getHowGo() {
@@ -64,7 +82,6 @@ public class GnaviResultEntity {
     public void setImg(String[] img) {
         String url1 = "https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
         String url2 = "https://raw.githubusercontent.com/Yuki-Otk/H30Fenrir/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png";
-
 //        String url="https://uds.gnst.jp/rest/img/c4bdzhxp0000/t_0000.jpg";
         String error = "登録されていません";
         if (img[0].equals(error)) {

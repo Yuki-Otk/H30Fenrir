@@ -67,7 +67,8 @@ public class LocationActivity extends AppCompatActivity {
 //    private String textLog;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
-    GnaviRequestEntity gnaviRequestEntity ;
+    GnaviRequestEntity gnaviRequestEntity;
+    private Button searchButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,13 +96,14 @@ public class LocationActivity extends AppCompatActivity {
 //        });
 
         // 検索
-        Button buttonSearch = (Button) findViewById(R.id.button_search);
-        buttonSearch.setOnClickListener(new View.OnClickListener() {
+        searchButton = (Button) findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
 //                System.out.println("gps1="+gps[0]);
 //                stopLocationUpdates();//画面移動した際に強制的に終了されるため書かなくてもよい?
-                gnaviAPI=new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
+                gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
                 boolean flag = gnaviRequest();
                 if (flag) {
                     jump();
@@ -118,7 +120,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private boolean gnaviRequest() {
-        gnaviRequestEntity= new GnaviRequestEntity();
+        gnaviRequestEntity = new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
         RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
         int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
@@ -146,7 +148,7 @@ public class LocationActivity extends AppCompatActivity {
 
     private void jump() {
         Intent intent = new Intent(getApplication(), ShowListActivity.class);
-        intent.putExtra("gnaviRequestEntity",gnaviRequestEntity);
+        intent.putExtra("gnaviRequestEntity", gnaviRequestEntity);
         startActivity(intent);
     }
 

@@ -33,7 +33,7 @@
     <!--&lt;!&ndash;android:textSize="18sp" />&ndash;&gt;-->
 
     <Button
-        android:id="@+id/button_search"
+        android:id="@+id/search_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="5dp"

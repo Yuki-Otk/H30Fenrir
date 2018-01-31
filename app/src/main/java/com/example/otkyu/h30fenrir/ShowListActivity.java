@@ -27,6 +27,7 @@ import java.util.List;
  * Created by YukiOtake on 2018/01/24 024.
  * src:https://akira-watson.com/android/activity-2.html
  * src:https://qiita.com/so-ma1221/items/d1b84bf764bf82fe1ac3
+ * src:https://akira-watson.com/android/scrollview.html
  */
 
 public class ShowListActivity extends AppCompatActivity {
@@ -114,7 +115,9 @@ public class ShowListActivity extends AppCompatActivity {
 
     private void makeList() {
         int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), dataNum = GnaviAPI.getDataNum(), requestNum = GnaviAPI.getRequestNum();
-        String resultStr = "合計" + total + "件\t" + page + "ページ目(" + (requestNum * page - requestNum + 1) + "～" + (requestNum * (page - 1) + dataNum) + "件表示)";
+        double temp = Math.ceil((double) total / requestNum);
+        int pageMax = (int) temp;
+        String resultStr = "合計" + total + "件\t" + page +"/"+pageMax+ "ページ目(" + (requestNum * page - requestNum + 1) + "～" + (requestNum * (page - 1) + dataNum) + "件表示)";
         //layout
         TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
