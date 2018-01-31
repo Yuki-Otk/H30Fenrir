@@ -20,6 +20,7 @@
     <string name="changeImg">画像を切り替える</string>
     <string name="back">戻る</string>
     <string name="genre">ジャンル</string>
-    <string name="freewordHint">キーワード(入力しなくても検索できます)</string>
-    <string name="pageHint">1ページの検索表示量(入力しなくても検索できます)</string>
+    <string name="freewordHint">キーワード(入力しなくても可)</string>
+    <string name="pageHint">1ページの表示量(入力しなくても可)</string>
+    <string name="shopimg">shopImg</string>
 </resources>

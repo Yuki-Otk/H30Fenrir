@@ -1,7 +1,7 @@
 # H30Fenrir
 簡易仕様書
 
-作者     ：YukiOtake
+作者     :YukiOtake
 
 アプリ名 ：H30Fenrir
 
@@ -26,8 +26,7 @@ git      ：https://github.com/Yuki-Otk/H30Fenrir
 
 ・レストラン情報取得 ：ぐるなびAPIを使用して、飲食店の詳細情報を取得する。
 
-・レストラン検索の絞り込み ：ぐるなびAPIを使用して、現在地周辺の飲食店を検索し絞り込むことができる。
-
+・レストラン検索の絞り込み ：ぐるなびAPIを使用して、現在地周辺の飲食店を検索し絞り込むことができる。表示項目も自ら設定できる。
 
 ＜画面一覧＞
 
@@ -38,7 +37,6 @@ git      ：https://github.com/Yuki-Otk/H30Fenrir
 ・一覧画面(activity_list_show.xml,format_row.xml) ：検索結果の飲食店を一覧を表示する。
 
 ・詳細画面(activity_details_show_scroll.xml) ：一覧で選択した飲食店の詳細について観覧することができる。
-
 
 ＜使用しているAPI,SDKなど＞
 
