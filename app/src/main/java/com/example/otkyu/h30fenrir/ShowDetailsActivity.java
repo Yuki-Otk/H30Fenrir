@@ -26,32 +26,34 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private TextView nameTextView, nameKanaTextView, telTextView, addressTextView, opentimeTextView, howGoTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
+    private int index,count=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_show);
 
+        Intent intent = getIntent();
+        index = intent.getIntExtra("index", 0);
+//        System.out.println("get index="+index);
+        init();
+        setAll(index,count);
 
-        Button backButton = findViewById(R.id.back_button);
+        Button backButton = findViewById(R.id.back_button);//listに戻る
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        Intent intent = getIntent();
-        int index = intent.getIntExtra("index", 0);
-//        System.out.println("get index="+index);
-
-        String url = "https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
-        imageView = (ImageView) findViewById(R.id.imageView);
-        imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
-        imgAsyncTaskHttpRequest.setListener(createListener());
-        imgAsyncTaskHttpRequest.execute(url);
-
-        init();
-        setAll(index);
+        Button changeButton = findViewById(R.id.change_button);//画像を切り替える
+        changeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                count++;
+                setAll(index,count);
+            }
+        });
 
     }
 
@@ -62,16 +64,22 @@ public class ShowDetailsActivity extends AppCompatActivity {
         addressTextView = (TextView) findViewById(R.id.address_textView);
         opentimeTextView = (TextView) findViewById(R.id.opentime_textView);
         howGoTextView = (TextView) findViewById(R.id.howGo_textView);
+        imageView = (ImageView) findViewById(R.id.imageView);
     }
 
-    private void setAll(int n) {
+    private void setAll(int index,int count) {
         List<GnaviResultEntity> list = GnaviAPI.getList();
-        nameTextView.setText(list.get(n).getName());
-        nameKanaTextView.setText(list.get(n).getNameKana());
-        telTextView.setText(list.get(n).getTel());
-        addressTextView.setText(list.get(n).getAddress());
-        opentimeTextView.setText(list.get(n).getOpentime());
-        howGoTextView.setText(list.get(n).getHowGo());
+        nameTextView.setText(list.get(index).getName());
+        nameKanaTextView.setText(list.get(index).getNameKana());
+        telTextView.setText(list.get(index).getTel());
+        addressTextView.setText(list.get(index).getAddress());
+        opentimeTextView.setText(list.get(index).getOpentime());
+        howGoTextView.setText(list.get(index).getHowGo());
+        String[] temp = list.get(index).getImg();
+        String url = temp[count%2];
+        imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
+        imgAsyncTaskHttpRequest.setListener(createListener());
+        imgAsyncTaskHttpRequest.execute(url);
     }
 
     @Override
