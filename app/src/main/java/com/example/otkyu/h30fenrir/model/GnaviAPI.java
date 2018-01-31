@@ -4,7 +4,6 @@ package com.example.otkyu.h30fenrir.model;
  */
 
 import android.os.AsyncTask;
-import android.widget.EditText;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
