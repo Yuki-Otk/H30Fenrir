@@ -5,7 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-
     <Button
         android:id="@+id/back_button"
         android:layout_width="wrap_content"
@@ -141,6 +140,15 @@
             android:layout_column="0"
             android:layout_row="12"
             app:srcCompat="@drawable/ic_launcher_round" />
+
+        <Button
+            android:id="@+id/change_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_column="0"
+            android:layout_row="13"
+            android:text="画像を切り替える" />
+
 
     </GridLayout>
 
