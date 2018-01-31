@@ -23,7 +23,7 @@ public class CasarealViewHolder extends RecyclerView.ViewHolder {
         super(itemView);
         titleView = (TextView) itemView.findViewById(R.id.title);
         detailView = (TextView) itemView.findViewById(R.id.detail);
-        linearLayout=(LinearLayout) itemView.findViewById(R.id.shop_linearLayout);
-        imageView=(ImageView)itemView.findViewById(R.id.imageView);
+        linearLayout = (LinearLayout) itemView.findViewById(R.id.shop_linearLayout);
+        imageView = (ImageView) itemView.findViewById(R.id.imageView);
     }
 }

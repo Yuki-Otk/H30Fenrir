@@ -21,7 +21,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
     private View.OnClickListener listener;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
 
-    public CasarealRecycleViewAdapter(){
+    public CasarealRecycleViewAdapter() {
         this.list = GnaviAPI.getList();
     }
 
@@ -34,18 +34,18 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
 
     @Override
     public void onBindViewHolder(CasarealViewHolder holder, int position) {
-        String name=list.get(position).getName();
-        String nameKana=list.get(position).getNameKana();
-        String howGo=list.get(position).getHowGo();
-        String[] img=list.get(position).getImg();
-        String title=name+"("+nameKana+")";
+        String name = list.get(position).getName();
+        String nameKana = list.get(position).getNameKana();
+        String howGo = list.get(position).getHowGo();
+        String[] img = list.get(position).getImg();
+        String title = name + "(" + nameKana + ")";
         holder.titleView.setText(title);
         holder.detailView.setText(howGo);
         //img
 //        String url="https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
-        String[] temp=list.get(position).getImg();
-        String url=temp[0];
-        imgAsyncTaskHttpRequest=new ImgAsyncTaskHttpRequest();
+        String[] temp = list.get(position).getImg();
+        String url = temp[0];
+        imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener(holder));
         imgAsyncTaskHttpRequest.execute(url);
 
@@ -58,6 +58,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
             }
         });
     }
+
     private ImgAsyncTaskHttpRequest.Listener createListener(final CasarealViewHolder holder) {
         return new ImgAsyncTaskHttpRequest.Listener() {
             @Override
