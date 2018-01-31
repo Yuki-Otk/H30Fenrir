@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class ShowDetailsActivity extends AppCompatActivity {
-    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView;
+    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView,nameKanaTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
     private int index,count=0;
@@ -60,6 +60,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
     private void init() {
         nameTextView = (TextView) findViewById(R.id.name_textView);
+        nameKanaTextView=(TextView)findViewById(R.id.nameKana_textView);
         genreTextView = (TextView) findViewById(R.id.genre_textView);
         telTextView = (TextView) findViewById(R.id.tel_textView);
         addressTextView = (TextView) findViewById(R.id.address_textView);
@@ -70,8 +71,9 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
     private void setAll(int index,int count) {
         List<GnaviResultEntity> list = GnaviAPI.getList();
-        String name=list.get(index).getName()+"("+list.get(index).getNameKana()+")";
-        nameTextView.setText(name);
+//        String name=list.get(index).getName()+"("+list.get(index).getNameKana()+")";
+        nameTextView.setText(list.get(index).getName());
+        nameKanaTextView.setText(list.get(index).getNameKana());
         genreTextView.setText(list.get(index).getGenre());
         telTextView.setText(list.get(index).getTel());
         addressTextView.setText(list.get(index).getAddress());
