@@ -132,19 +132,18 @@ public class LocationActivity extends AppCompatActivity {
         String freeword = keywordEditText.getText().toString();
         EditText pageEditText = (EditText) findViewById(R.id.page_editText);
         String page = pageEditText.getText().toString();
-        if (page.equals("")){
-            page="20";
+        if (page.equals("")) {
+            page = "20";
         }
-        System.out.println("page="+page);
+        System.out.println("page=" + page);
         try {
-            int hoge= Integer.parseInt(page);
-        }
-        catch (Exception e){
-            System.out.println("error="+e);
+            int hoge = Integer.parseInt(page);
+        } catch (Exception e) {
+            System.out.println("error=" + e);
             Toast.makeText(LocationActivity.this, "ページ数に誤りがあります", Toast.LENGTH_LONG).show();
             return false;
         }
-        if (Integer.parseInt(page)>100){
+        if (Integer.parseInt(page) > 100) {
             Toast.makeText(LocationActivity.this, "100件以上一度に表示することはできません", Toast.LENGTH_LONG).show();
             return false;
         }
