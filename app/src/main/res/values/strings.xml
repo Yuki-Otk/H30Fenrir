@@ -20,4 +20,5 @@
     <string name="changeImg">画面を切り替える</string>
     <string name="back">戻る</string>
     <string name="genre">ジャンル</string>
+    <string name="shopimg">shopImg</string>
 </resources>

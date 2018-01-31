@@ -27,6 +27,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
     private int index,count=0;
+    private String homePage=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,14 +41,14 @@ public class ShowDetailsActivity extends AppCompatActivity {
         init();
         setAll(index,count);
 
-        Button backButton = findViewById(R.id.back_button);//listに戻る
+        Button backButton =(Button) findViewById(R.id.back_button);//listに戻る
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        Button changeButton = findViewById(R.id.change_button);//画像を切り替える
+        Button changeButton =(Button) findViewById(R.id.change_button);//画像を切り替える
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +56,14 @@ public class ShowDetailsActivity extends AppCompatActivity {
                 setAll(index,count);
             }
         });
-
+        Button jumpButton=(Button)findViewById(R.id.jump_button);
+        jumpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(homePage));
+                startActivity(intent);
+            }
+        });
     }
 
     private void init() {
@@ -84,6 +92,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener());
         imgAsyncTaskHttpRequest.execute(url);
+        homePage=list.get(index).getHomePage();
     }
 
     @Override
