@@ -144,6 +144,10 @@ public class LocationActivity extends AppCompatActivity {
             Toast.makeText(LocationActivity.this, "ページ数に誤りがあります", Toast.LENGTH_LONG).show();
             return false;
         }
+        if (Integer.parseInt(page)>100){
+            Toast.makeText(LocationActivity.this, "100件以上一度に表示することはできません", Toast.LENGTH_LONG).show();
+            return false;
+        }
 //        int page= Integer.parseInt(temp);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
         gnaviRequestEntity.setPage(page);
