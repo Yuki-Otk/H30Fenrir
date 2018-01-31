@@ -22,4 +22,5 @@
     <string name="genre">ジャンル</string>
     <string name="freewordHint">キーワード(入力しなくても検索できます)</string>
     <string name="pageHint">1ページの検索表示量(入力しなくても検索できます)</string>
+    <string name="shopimg">shopImg</string>
 </resources>

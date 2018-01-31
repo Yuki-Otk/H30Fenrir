@@ -36,15 +36,15 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
     public void onBindViewHolder(CasarealViewHolder holder, int position) {
         String name = list.get(position).getName();
         String nameKana = list.get(position).getNameKana();
+        String genre = list.get(position).getGenre();
         String howGo = list.get(position).getHowGo();
         String[] img = list.get(position).getImg();
-        String title = name + "(" + nameKana + ")";
+        String title = name + "(" + genre + ")";
         holder.titleView.setText(title);
         holder.detailView.setText(howGo);
         //img
 //        String url="https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
-        String[] temp = list.get(position).getImg();
-        String url = temp[0];
+        String url = img[0];
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener(holder));
         imgAsyncTaskHttpRequest.execute(url);
