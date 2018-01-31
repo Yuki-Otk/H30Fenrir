@@ -130,7 +130,23 @@ public class LocationActivity extends AppCompatActivity {
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
         EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();
+        EditText pageEditText = (EditText) findViewById(R.id.page_editText);
+        String page = pageEditText.getText().toString();
+        if (page.equals("")){
+            page="20";
+        }
+        System.out.println("page="+page);
+        try {
+            int hoge= Integer.parseInt(page);
+        }
+        catch (Exception e){
+            System.out.println("error="+e);
+            Toast.makeText(LocationActivity.this, "ページ数に誤りがあります", Toast.LENGTH_LONG).show();
+            return false;
+        }
+//        int page= Integer.parseInt(temp);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
+        gnaviRequestEntity.setPage(page);
 //        System.out.println("keyword=" + freeword);
         gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
         boolean flag = false;
