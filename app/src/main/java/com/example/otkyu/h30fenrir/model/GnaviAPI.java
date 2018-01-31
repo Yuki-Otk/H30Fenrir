@@ -129,15 +129,34 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 resultFlag = true;//検索結果はある！
                 totalNum= Integer.parseInt(total);
             }
+            else{
+                System.out.println("検索結果なし");
+                finishFlag=true;
+                return;//検索結果がなければ終了
+            }
 //            String hitcount = "total:" + nodeList.path("total_hit_count").asText();
             String hitcount = "total:" + total;
+            int pageOffset=nodeList.path("page_offset").asInt();
+            int hitPerPage=nodeList.path("hit_per_page").asInt();
             System.out.println(hitcount);
             //restのみ取得
             JsonNode restList = nodeList.path("rest");
             Iterator<JsonNode> rest = restList.iterator();
-            //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
             int count = 0;
-            while (rest.hasNext()) {
+            int max;
+            if(totalNum>pageOffset*hitPerPage){
+                max=hitPerPage;
+            }
+            else{
+                max=totalNum-(pageOffset-1)*hitPerPage;
+            }
+            System.out.println("page="+pageOffset);
+            System.out.println("hitPage="+hitPerPage);
+            System.out.println("max="+max);
+            System.out.println("rest="+restList.get(0));
+            //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
+//            while (rest.hasNext()) {
+            for(int i=0;i<max;i++){
                 GnaviResultEntity gnaviResultEntity = new GnaviResultEntity();
                 JsonNode r = rest.next();
                 String id = r.path("id").asText();
