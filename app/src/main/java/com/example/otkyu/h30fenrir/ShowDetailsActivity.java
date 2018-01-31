@@ -23,11 +23,11 @@ import java.util.List;
  */
 
 public class ShowDetailsActivity extends AppCompatActivity {
-    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView,nameKanaTextView;
+    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
-    private int index,count=0;
-    private String homePage=null;
+    private int index, count = 0;
+    private String homePage = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,28 +39,28 @@ public class ShowDetailsActivity extends AppCompatActivity {
         index = intent.getIntExtra("index", 0);
 //        System.out.println("get index="+index);
         init();
-        setAll(index,count);
+        setAll(index, count);
 
-        Button backButton =(Button) findViewById(R.id.back_button);//listに戻る
+        Button backButton = (Button) findViewById(R.id.back_button);//listに戻る
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-        Button changeButton =(Button) findViewById(R.id.change_button);//画像を切り替える
+        Button changeButton = (Button) findViewById(R.id.change_button);//画像を切り替える
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 count++;
-                setAll(index,count);
+                setAll(index, count);
             }
         });
-        Button jumpButton=(Button)findViewById(R.id.jump_button);
+        Button jumpButton = (Button) findViewById(R.id.jump_button);
         jumpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse(homePage));
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(homePage));
                 startActivity(intent);
             }
         });
@@ -68,7 +68,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
     private void init() {
         nameTextView = (TextView) findViewById(R.id.name_textView);
-        nameKanaTextView=(TextView)findViewById(R.id.nameKana_textView);
+        nameKanaTextView = (TextView) findViewById(R.id.nameKana_textView);
         genreTextView = (TextView) findViewById(R.id.genre_textView);
         telTextView = (TextView) findViewById(R.id.tel_textView);
         addressTextView = (TextView) findViewById(R.id.address_textView);
@@ -77,7 +77,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
     }
 
-    private void setAll(int index,int count) {
+    private void setAll(int index, int count) {
         List<GnaviResultEntity> list = GnaviAPI.getList();
 //        String name=list.get(index).getName()+"("+list.get(index).getNameKana()+")";
         nameTextView.setText(list.get(index).getName());
@@ -88,11 +88,11 @@ public class ShowDetailsActivity extends AppCompatActivity {
         opentimeTextView.setText(list.get(index).getOpentime());
         howGoTextView.setText(list.get(index).getHowGo());
         String[] temp = list.get(index).getImg();
-        String url = temp[count%2];
+        String url = temp[count % 2];
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener());
         imgAsyncTaskHttpRequest.execute(url);
-        homePage=list.get(index).getHomePage();
+        homePage = list.get(index).getHomePage();
     }
 
     @Override
