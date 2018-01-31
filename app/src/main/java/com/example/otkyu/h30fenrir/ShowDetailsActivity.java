@@ -23,7 +23,7 @@ import java.util.List;
  */
 
 public class ShowDetailsActivity extends AppCompatActivity {
-    private TextView nameTextView, nameKanaTextView, telTextView, addressTextView, opentimeTextView, howGoTextView;
+    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
     private int index,count=0;
@@ -31,7 +31,8 @@ public class ShowDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_details_show);
+//        setContentView(R.layout.activity_details_show);
+        setContentView(R.layout.activity_details_show_scroll);//スクロールできるように変更
 
         Intent intent = getIntent();
         index = intent.getIntExtra("index", 0);
@@ -59,7 +60,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
     private void init() {
         nameTextView = (TextView) findViewById(R.id.name_textView);
-        nameKanaTextView = (TextView) findViewById(R.id.nameKana_textView);
+        genreTextView = (TextView) findViewById(R.id.genre_textView);
         telTextView = (TextView) findViewById(R.id.tel_textView);
         addressTextView = (TextView) findViewById(R.id.address_textView);
         opentimeTextView = (TextView) findViewById(R.id.opentime_textView);
@@ -69,8 +70,9 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
     private void setAll(int index,int count) {
         List<GnaviResultEntity> list = GnaviAPI.getList();
-        nameTextView.setText(list.get(index).getName());
-        nameKanaTextView.setText(list.get(index).getNameKana());
+        String name=list.get(index).getName()+"("+list.get(index).getNameKana()+")";
+        nameTextView.setText(name);
+        genreTextView.setText(list.get(index).getGenre());
         telTextView.setText(list.get(index).getTel());
         addressTextView.setText(list.get(index).getAddress());
         opentimeTextView.setText(list.get(index).getOpentime());

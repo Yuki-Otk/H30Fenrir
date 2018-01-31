@@ -198,6 +198,8 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 img[1] = checkString(img[1]);
                 System.out.println("img url=" + img[0]);
                 gnaviResultEntity.setImg(img);
+                categorys=checkString(categorys);
+                gnaviResultEntity.setGenre(categorys);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);
                 count++;
