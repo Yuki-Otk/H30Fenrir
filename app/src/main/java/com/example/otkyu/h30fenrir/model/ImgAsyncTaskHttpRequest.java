@@ -17,6 +17,7 @@ import java.net.URL;
 
 public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     private Listener listener;
+
     @Override
     protected Bitmap doInBackground(String... strings) {
         return downloadImage(strings[0]);
@@ -37,7 +38,6 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     }
 
 
-
     private Bitmap downloadImage(String address) {
         Bitmap bmp = null;
 
@@ -46,7 +46,7 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
         HttpURLConnection urlConnection = null;
 
         try {
-            URL url = new URL( address );
+            URL url = new URL(address);
 
             // HttpURLConnection インスタンス生成
             urlConnection = (HttpURLConnection) url.openConnection();
@@ -69,17 +69,17 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
 
             int resp = urlConnection.getResponseCode();
 
-            switch (resp){
+            switch (resp) {
                 case HttpURLConnection.HTTP_OK:
                     InputStream is = null;
-                    try{
+                    try {
                         is = urlConnection.getInputStream();
                         bmp = BitmapFactory.decodeStream(is);
                         is.close();
-                    } catch(IOException e){
+                    } catch (IOException e) {
                         e.printStackTrace();
-                    } finally{
-                        if(is != null){
+                    } finally {
+                        if (is != null) {
                             is.close();
                         }
                     }
