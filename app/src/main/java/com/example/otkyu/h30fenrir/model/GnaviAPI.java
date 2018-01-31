@@ -173,6 +173,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 String howGo = line + station + "から" + walk;//行き方
                 String tel = r.path("tel").asText();//電話番号
                 String opentime = r.path("opentime").asText();//営業時間
+                String homePage = r.path("url").asText();//homePage
                 String[] img = new String[2];
                 img[0] = r.path("image_url").path("shop_image1").asText();
                 img[1] = r.path("image_url").path("shop_image2").asText();
@@ -201,6 +202,8 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 gnaviResultEntity.setImg(img);
                 categorys=checkString(categorys);
                 gnaviResultEntity.setGenre(categorys);
+                homePage=checkString(homePage);
+                gnaviResultEntity.setHomePage(homePage);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);
                 count++;
