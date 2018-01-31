@@ -6,7 +6,7 @@ package com.example.otkyu.h30fenrir.model;
  */
 
 public class GnaviResultEntity {
-    private String name = null, nameKana = null, address = null, tel = null, opentime = null, howGo = null, genre = null,homePage=null;
+    private String name = null, nameKana = null, address = null, tel = null, opentime = null, howGo = null, genre = null, homePage = null;
     private String[] img = new String[2];
 
     public String getName() {
@@ -30,10 +30,10 @@ public class GnaviResultEntity {
     }
 
     public void setAddress(String address) {
-        String[] temp=address.split(" ");
-        address="";
-        for(int i=0;i<temp.length;i++){
-            address=address+"\n"+temp[i];
+        String[] temp = address.split(" ");
+        address = "";
+        for (int i = 0; i < temp.length; i++) {
+            address = address + "\n" + temp[i];
         }
 //        int num=address.indexOf("町");
 //        if(num==-1){
@@ -43,7 +43,7 @@ public class GnaviResultEntity {
 //        stringBuilder.append(address);
 //        stringBuilder.insert(num+1,"\n");
 //        this.address = new String(stringBuilder);
-        this.address=address;
+        this.address = address;
     }
 
     public String getTel() {
@@ -59,10 +59,10 @@ public class GnaviResultEntity {
     }
 
     public void setOpentime(String opentime) {
-        String[] temp=opentime.split("<BR>");
-        String str="";
-        for(int i=0;i<temp.length;i++){
-            str=str+"\n"+temp[i];
+        String[] temp = opentime.split("<BR>");
+        String str = "";
+        for (int i = 0; i < temp.length; i++) {
+            str = str + "\n" + temp[i];
         }
         this.opentime = str;
     }
