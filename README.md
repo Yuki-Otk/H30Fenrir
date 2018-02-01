@@ -7,6 +7,7 @@
 
 
 URL      ：https://itunes.apple.com/jp/app/xxxxxxxx //開発者アカウントを持っていないため公開できない
+
 git      ：https://github.com/Yuki-Otk/H30Fenrir
 
 対象OS  ：Android
