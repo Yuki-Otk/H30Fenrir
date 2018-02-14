@@ -22,6 +22,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -67,6 +69,8 @@ public class LocationActivity extends AppCompatActivity {
     private GnaviAPI gnaviAPI;
     GnaviRequestEntity gnaviRequestEntity;
     private Button searchButton;
+    TextView pageTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +83,34 @@ public class LocationActivity extends AppCompatActivity {
         createLocationCallback();
         createLocationRequest();
         buildLocationSettingsRequest();
+
+        //スニークバー
+        SeekBar seekBar = (SeekBar) findViewById(R.id.page_seekBar);//pageスニーク
+        pageTextView = (TextView) findViewById(R.id.page_textView);//page表示
+        String num = String.valueOf(seekBar.getProgress());
+        pageTextView.setText(num);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {//動かしたとき
+                if(i==0){
+                    seekBar.setProgress(1);
+                    i=1;
+                }
+                String num = String.valueOf(i);
+                pageTextView.setText(num);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         // 検索
         searchButton = (Button) findViewById(R.id.search_button);
@@ -97,7 +129,6 @@ public class LocationActivity extends AppCompatActivity {
                 }
             }
         });
-
         startLocationUpdates();//強制開始
 
     }
@@ -112,8 +143,7 @@ public class LocationActivity extends AppCompatActivity {
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
         EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();
-        EditText pageEditText = (EditText) findViewById(R.id.page_editText);
-        String page = pageEditText.getText().toString();
+        String page = (String) pageTextView.getText();
         if (page.equals("")) {
             page = "20";
         }
