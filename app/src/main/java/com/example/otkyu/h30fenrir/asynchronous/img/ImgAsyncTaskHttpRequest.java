@@ -26,7 +26,6 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     // 途中経過をメインスレッドに返す
     @Override
     protected void onProgressUpdate(Void... progress) {
-        //working cursor を表示させるようにしてもいいでしょう
     }
 
     // 非同期処理が終了後、結果をメインスレッドに返す

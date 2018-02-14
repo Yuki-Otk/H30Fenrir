@@ -32,7 +32,6 @@ public class GnaviRequestEntity implements Serializable {
     }
 
     public void setRange(String range) {
-//        System.out.println("get range is "+range);
         switch (range){
             case "300m":
                 range="1";
