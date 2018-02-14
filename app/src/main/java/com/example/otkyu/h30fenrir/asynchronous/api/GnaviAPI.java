@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.asynchronous.api;
 /**
  * Created by YukiOtake on 2018/01/23 023.
  */
@@ -11,7 +11,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.example.otkyu.h30fenrir.model.secret.AccessKey;
+import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
+import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
 import com.fasterxml.jackson.databind.*;
 
 /*******************************************************************************
@@ -60,7 +62,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         String format = "json";
         //出力数Integer.valueOf(hitPerPage);
 //        String hitPerPage = "20";
-        String hitPerPage=gnaviRequestEntity.getPage();
+        String hitPerPage = gnaviRequestEntity.getPage();
         requestNum = Integer.parseInt(hitPerPage);
         //ページ数
 //        String offsetPage = "1";
@@ -199,9 +201,9 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 img[1] = checkString(img[1]);
                 System.out.println("img url=" + img[0]);
                 gnaviResultEntity.setImg(img);
-                categorys=checkString(categorys);
+                categorys = checkString(categorys);
                 gnaviResultEntity.setGenre(categorys);
-                homePage=checkString(homePage);
+                homePage = checkString(homePage);
                 gnaviResultEntity.setHomePage(homePage);
                 list.add(gnaviResultEntity);
 //                list.get(count).setName(name);

@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.asynchronous.img;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

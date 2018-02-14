@@ -25,7 +25,7 @@ import android.widget.RadioGroup;
 import android.widget.Toast;
 
 
-import com.example.otkyu.h30fenrir.model.GnaviAPI;
+import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
 import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
