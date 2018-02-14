@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.view;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;

@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.view;
 
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
@@ -7,6 +7,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.otkyu.h30fenrir.R;
+import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
+import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
+import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
 
 import java.util.List;
 

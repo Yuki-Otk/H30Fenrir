@@ -10,11 +10,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
-import com.example.otkyu.h30fenrir.model.GnaviAPI;
+import com.example.otkyu.h30fenrir.view.CasarealRecycleViewAdapter;
+import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
 import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
-import com.example.otkyu.h30fenrir.model.ImgAsyncTaskHttpRequest;
+import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
 import java.util.List;
 
