@@ -60,19 +60,19 @@ public class ShowListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int newPage = GnaviAPI.getPageNum() + 1;
-                redraw(newPage);
+                reload(newPage);
             }
         });
         backPageButton.setOnClickListener(new View.OnClickListener() {//前のページを表示
             @Override
             public void onClick(View v) {
                 int newPage = GnaviAPI.getPageNum() - 1;
-                redraw(newPage);
+                reload(newPage);
             }
         });
     }
 
-    private void redraw(int newPage) {
+    private void reload(int newPage) {
         GnaviAPI gnaviAPI = new GnaviAPI();
         System.out.println("new page is " + newPage);
         gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));
