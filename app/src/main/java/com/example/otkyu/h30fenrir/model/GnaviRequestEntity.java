@@ -33,20 +33,25 @@ public class GnaviRequestEntity implements Serializable {
 
     public void setRange(String range) {
 //        System.out.println("get range is "+range);
-        if (range.equals("300m")) {
-            range = "1";
-        } else if (range.equals("500m")) {
-            range = "2";
-        } else if (range.equals("1km")) {
-            range = "3";
-        } else if (range.equals("2km")) {
-            range = "4";
-        } else if (range.equals("5km")) {
-            range = "5";
-        } else {
-            range = "2";
+        switch (range){
+            case "300m":
+                range="1";
+                break;
+            case "500m":
+                range="2";
+                break;
+            case "1km":
+                range="3";
+                break;
+            case "2km":
+                range="4";
+                break;
+            case "5km":
+                range="5";
+                break;
+            default:
+                range="2";
         }
-//        System.out.println("change range is "+range);
         this.range = range;
     }
 
