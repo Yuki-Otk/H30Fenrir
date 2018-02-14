@@ -114,7 +114,6 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:max="100"
-        android:min="1"
         android:progress="20"
         app:layout_constraintEnd_toStartOf="@+id/page_textView"
         app:layout_constraintHorizontal_bias="0.051"
