@@ -68,7 +68,6 @@ public class LocationActivity extends AppCompatActivity {
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
     GnaviRequestEntity gnaviRequestEntity;
-    private Button searchButton;
     TextView pageTextView;
 
 
@@ -92,12 +91,12 @@ public class LocationActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
             @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {//動かしたとき
-                if(i==0){
+            public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
+                if (position == 0) {
                     seekBar.setProgress(1);
-                    i=1;
+                    position = 1;
                 }
-                String num = String.valueOf(i);
+                String num = String.valueOf(position);
                 pageTextView.setText(num);
             }
 
@@ -113,7 +112,7 @@ public class LocationActivity extends AppCompatActivity {
         });
 
         // 検索
-        searchButton = (Button) findViewById(R.id.search_button);
+        Button searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -136,8 +135,8 @@ public class LocationActivity extends AppCompatActivity {
     private boolean gnaviRequest() {
         gnaviRequestEntity = new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
-        RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
-        int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
+        int id = radioGroup.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
         RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
         String checkStr = radioButton.getText().toString();
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
@@ -188,9 +187,7 @@ public class LocationActivity extends AppCompatActivity {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-
                 location = locationResult.getLastLocation();
-
                 lastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                 updateLocationUI();
             }
@@ -215,21 +212,20 @@ public class LocationActivity extends AppCompatActivity {
                     location.getBearing()
             };
 
-            StringBuilder strBuf =
-                    new StringBuilder("---------- UpdateLocation ---------- \n");
+            StringBuilder stringBuilder = new StringBuilder("---------- UpdateLocation ---------- \n");
 
             for (int i = 0; i < fusedName.length; i++) {
-                strBuf.append(fusedName[i]);
-                strBuf.append(" = ");
-                strBuf.append(String.valueOf(fusedData[i]));
-                strBuf.append("\n");
+                stringBuilder.append(fusedName[i]);
+                stringBuilder.append(" = ");
+                stringBuilder.append(String.valueOf(fusedData[i]));
+                stringBuilder.append("\n");
             }
             System.out.println(fusedData[0] + ":" + fusedData[1]);
             setGps(fusedData[0], fusedData[1]);
-            strBuf.append("Time");
-            strBuf.append(" = ");
-            strBuf.append(lastUpdateTime);
-            strBuf.append("\n");
+            stringBuilder.append("Time");
+            stringBuilder.append(" = ");
+            stringBuilder.append(lastUpdateTime);
+            stringBuilder.append("\n");
         }
 
     }
