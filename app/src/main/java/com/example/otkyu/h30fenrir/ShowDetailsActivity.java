@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
-import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
 import java.util.List;
@@ -76,7 +76,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
     }
 
     private void setAll(int index, int count) {
-        List<GnaviResultEntity> list = GnaviAPI.getList();
+        List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
 //        String name=list.get(index).getName()+"("+list.get(index).getNameKana()+")";
         nameTextView.setText(list.get(index).getName());
         nameKanaTextView.setText(list.get(index).getNameKana());

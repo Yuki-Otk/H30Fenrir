@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.asynchronous.api.model;
 
 import java.io.Serializable;
 

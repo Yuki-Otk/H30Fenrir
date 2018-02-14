@@ -12,8 +12,8 @@ import android.widget.TextView;
 
 import com.example.otkyu.h30fenrir.view.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
-import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
-import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
 import java.util.List;
@@ -31,7 +31,6 @@ public class ShowListActivity extends AppCompatActivity {
     private GnaviRequestEntity gnaviRequestEntity;
     ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private CasarealRecycleViewAdapter adapter;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,7 +50,7 @@ public class ShowListActivity extends AppCompatActivity {
 
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.shop_linearLayout);
 
-        List<GnaviResultEntity> list = GnaviAPI.getList();
+        List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
         System.out.println("list size=" + list.size());
         makeList();
         checkButton();
