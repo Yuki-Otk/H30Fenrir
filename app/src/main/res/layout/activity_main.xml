@@ -6,32 +6,6 @@
     android:layout_height="match_parent"
     tools:context="com.example.otkyu.h30fenrir.MainActivity">
 
-    <!--<LinearLayout-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="20dp"-->
-    <!--android:background="#8af"-->
-    <!--android:gravity="center"-->
-    <!--android:orientation="horizontal">-->
-
-    <!--&lt;!&ndash;<TextView&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_width="wrap_content"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:text="Hello World!"&ndash;&gt;-->
-    <!--&lt;!&ndash;app:layout_constraintBottom_toBottomOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;app:layout_constraintLeft_toLeftOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;app:layout_constraintRight_toRightOf="parent"&ndash;&gt;-->
-    <!--&lt;!&ndash;app:layout_constraintTop_toTopOf="parent" />&ndash;&gt;-->
-
-    <!--&lt;!&ndash;<Button&ndash;&gt;-->
-    <!--&lt;!&ndash;android:id="@+id/button_start"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_width="0dp"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_height="wrap_content"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_margin="5dp"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:layout_weight="1"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:text="@string/start"&ndash;&gt;-->
-    <!--&lt;!&ndash;android:textSize="18sp" />&ndash;&gt;-->
-
     <Button
         android:id="@+id/search_button"
         android:layout_width="0dp"
@@ -134,25 +108,4 @@
             android:layout_marginTop="8dp"
             android:text="@string/fiveKm" />
     </RadioGroup>
-
-    <!--<ScrollView-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="20dp"-->
-    <!--android:layout_marginBottom="8dp"-->
-    <!--android:layout_marginEnd="8dp"-->
-    <!--android:layout_marginStart="8dp"-->
-    <!--android:layout_marginTop="8dp"-->
-    <!--app:layout_constraintBottom_toBottomOf="parent"-->
-    <!--app:layout_constraintEnd_toEndOf="parent"-->
-    <!--app:layout_constraintStart_toStartOf="parent"-->
-    <!--app:layout_constraintTop_toTopOf="parent"-->
-    <!--tools:ignore="MissingConstraints">-->
-
-    <!--<TextView-->
-    <!--android:id="@+id/text_view"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:textColor="#000" />-->
-    <!--</ScrollView>-->
 </android.support.constraint.ConstraintLayout>
