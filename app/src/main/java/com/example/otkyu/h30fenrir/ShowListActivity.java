@@ -96,7 +96,6 @@ public class ShowListActivity extends AppCompatActivity {
             backPageButton.setEnabled(true);
         }
         //nextPageButtonの有効化・無効化
-//        System.out.println("total");
         double temp = Math.ceil((double) total / requestNum);
         int pageMax = (int) temp;
         System.out.println("pageMax=" + pageMax);
@@ -124,21 +123,16 @@ public class ShowListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(ShowListActivity.this, String.valueOf(list.get(view.getId()).getName()), Toast.LENGTH_SHORT).show();
                 int index = view.getId();
-//                System.out.println("index=" + index);
                 Intent intent = new Intent(getApplication(), ShowDetailsActivity.class);
                 intent.putExtra("index", index);
                 startActivity(intent);
             }
         });
-        //img
-//        imageView=(ImageView)findViewById(R.id.imageView);
     }
 
     @Override
     protected void onDestroy() {
-//        imgAsyncTaskHttpRequest.setListener(null);//多分listenerがずっと生き続けるためもったいない？
         super.onDestroy();
     }
 }

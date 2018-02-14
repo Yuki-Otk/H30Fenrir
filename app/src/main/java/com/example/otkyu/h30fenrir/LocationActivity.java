@@ -63,7 +63,6 @@ public class LocationActivity extends AppCompatActivity {
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
     //    private TextView textView;
-//    private String textLog;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
     GnaviRequestEntity gnaviRequestEntity;
@@ -81,27 +80,12 @@ public class LocationActivity extends AppCompatActivity {
         createLocationRequest();
         buildLocationSettingsRequest();
 
-//        textView = (TextView) findViewById(R.id.text_view);
-//        textLog = "onCreate()\n";
-//        textView.setText(textLog);
-
-        // 測位開始
-//        Button buttonStart = (Button) findViewById(R.id.button_start);
-//        buttonStart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startLocationUpdates();
-//            }
-//        });
-
         // 検索
         searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-//                System.out.println("gps1="+gps[0]);
-//                stopLocationUpdates();//画面移動した際に強制的に終了されるため書かなくてもよい?
                 gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
                 boolean flag = gnaviRequest();
                 if (flag) {
@@ -125,7 +109,6 @@ public class LocationActivity extends AppCompatActivity {
         int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
         RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
         String checkStr = radioButton.getText().toString();
-//        System.out.println("range=" + checkStr);
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
         EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();
@@ -149,7 +132,6 @@ public class LocationActivity extends AppCompatActivity {
 //        int page= Integer.parseInt(temp);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
         gnaviRequestEntity.setPage(page);
-//        System.out.println("keyword=" + freeword);
         gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
         boolean flag = false;
         gnaviAPI.execute();
@@ -218,9 +200,6 @@ public class LocationActivity extends AppCompatActivity {
             strBuf.append(" = ");
             strBuf.append(lastUpdateTime);
             strBuf.append("\n");
-
-//            textLog += strBuf;
-//            textView.setText(textLog);
         }
 
     }
@@ -366,9 +345,6 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void stopLocationUpdates() {
-//        textLog += "onStop()\n";
-//        textView.setText(textLog);
-
         if (!requestingLocationUpdates) {
             Log.d("debug", "stopLocationUpdates: " +
                     "updates never requested, no-op.");

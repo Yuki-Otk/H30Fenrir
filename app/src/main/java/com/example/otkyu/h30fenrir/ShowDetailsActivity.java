@@ -30,12 +30,10 @@ public class ShowDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_details_show);
         setContentView(R.layout.activity_details_show_scroll);//スクロールできるように変更
 
         Intent intent = getIntent();
         index = intent.getIntExtra("index", 0);
-//        System.out.println("get index="+index);
         init();
         setAll(index, count);
 
@@ -77,7 +75,6 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
     private void setAll(int index, int count) {
         List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
-//        String name=list.get(index).getName()+"("+list.get(index).getNameKana()+")";
         nameTextView.setText(list.get(index).getName());
         nameKanaTextView.setText(list.get(index).getNameKana());
         genreTextView.setText(list.get(index).getGenre());
