@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import com.example.otkyu.h30fenrir.R;
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
-import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 
 import java.util.List;
 
@@ -23,7 +23,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealVie
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
 
     public CasarealRecycleViewAdapter() {
-        this.list = GnaviAPI.getList();
+        this.list = GnaviAPI.getGnaviResultEntityList();
     }
 
     @Override

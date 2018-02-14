@@ -12,8 +12,8 @@ import java.util.Iterator;
 import java.util.List;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
-import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
-import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.fasterxml.jackson.databind.*;
 
 /*******************************************************************************
@@ -26,7 +26,7 @@ import com.fasterxml.jackson.databind.*;
 public class GnaviAPI extends AsyncTask<String, String, String> {
     //    private double[] gps;
     private GnaviRequestEntity gnaviRequestEntity;
-    private static List<GnaviResultEntity> list;
+    private static List<GnaviResultEntity> gnaviResultEntityList;
     //    private static Integer requestNum;
     private static boolean finishFlag;
     private static boolean resultFlag;
@@ -35,7 +35,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
     public GnaviAPI() {
 //        gps = new double[2];
 //        gnaviRequestEntity=new GnaviRequestEntity();
-        list = new ArrayList<>();
+        gnaviResultEntityList = new ArrayList<>();
 //        requestNum = 0;
         finishFlag = false;
         resultFlag = false;
@@ -205,7 +205,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 gnaviResultEntity.setGenre(categorys);
                 homePage = checkString(homePage);
                 gnaviResultEntity.setHomePage(homePage);
-                list.add(gnaviResultEntity);
+                gnaviResultEntityList.add(gnaviResultEntity);
 //                list.get(count).setName(name);
                 count++;
                 System.out.println("img url=" + img[0]);
@@ -247,11 +247,11 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         return null;
     }
 
-    public static List<GnaviResultEntity> getList() {
+    public static List<GnaviResultEntity> getGnaviResultEntityList() {
 //        for(int i=0;i<list.size();i++){
 //            System.out.println("list "+i+"="+list.get(i).getName());
 //        }
-        return list;
+        return gnaviResultEntityList;
     }
 
     public static boolean isFinishFlag() {
