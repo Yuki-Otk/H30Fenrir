@@ -400,9 +400,9 @@ public class LocationActivity extends AppCompatActivity {
         stopLocationUpdates();
     }
 
-    public void setGps(double a, double b) {
-        gps[0] = a;
-        gps[1] = b;
+    public void setGps(double lat, double lon) {
+        gps[0] = lat;
+        gps[1] = lon;
         this.gps = gps;
     }
 
