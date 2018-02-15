@@ -172,6 +172,7 @@ public class LocationActivity extends AppCompatActivity {
             } else if (GnaviAPI.isFinishFlag()) {
                 return false;
             }
+
         }
     }
 
