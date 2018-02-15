@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -99,6 +101,9 @@ public class LocationActivity extends AppCompatActivity {
                 }
                 String num = String.valueOf(position);
                 pageTextView.setText(num);
+                pageTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                pageTextView.setTextColor(Color.RED);
+                pageTextView.setTextSize(20);
             }
 
             @Override
