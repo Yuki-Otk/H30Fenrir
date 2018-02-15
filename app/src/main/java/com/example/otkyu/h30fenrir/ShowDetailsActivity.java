@@ -2,6 +2,7 @@ package com.example.otkyu.h30fenrir;
 
 //import android.app.ActionBar;
 
+import android.app.Application;
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
@@ -33,14 +35,20 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private ImageView imageView;
     private int index, count = 0;
     private String webUrl = null, data = null, imgUrl = null, telNum = null;
+    private static final String INTENT_KEY="INTENT_KEY";
 
+    public static Intent createIntent(int index, Application activity) {
+        Intent intent = new Intent(activity, ShowDetailsActivity.class);
+        intent.putExtra(INTENT_KEY, index);
+        return intent;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_show_scroll);//スクロールできるように変更
 
         Intent intent = getIntent();
-        index = intent.getIntExtra("index", 0);
+        index = intent.getIntExtra(INTENT_KEY, 0);
         init();
         setAll(index, count);
 

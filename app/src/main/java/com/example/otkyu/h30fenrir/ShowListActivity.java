@@ -152,9 +152,7 @@ public class ShowListActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 int index = view.getId();
-                Intent intent = new Intent(getApplication(), ShowDetailsActivity.class);
-                intent.putExtra("index", index);
-                startActivity(intent);
+                startActivity(ShowDetailsActivity.createIntent(index,getApplication()));
             }
         });
     }
