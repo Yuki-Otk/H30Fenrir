@@ -376,8 +376,6 @@ public class LocationActivity extends AppCompatActivity {
         if (!requestingLocationUpdates) {
             Log.d("debug", "stopLocationUpdates: " +
                     "updates never requested, no-op.");
-
-
             return;
         }
 
@@ -400,8 +398,6 @@ public class LocationActivity extends AppCompatActivity {
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             startActivity(intent);
-            // 同時にアクティビティを終了させるならfinish()を実行する
-            finish();
             return super.onKeyDown(keyCode, event);
         } else {
             return super.onKeyDown(keyCode, event);
