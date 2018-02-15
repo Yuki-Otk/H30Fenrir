@@ -43,13 +43,6 @@ public class ShowDetailsActivity extends AppCompatActivity {
         init();
         setAll(index, count);
 
-        Button backButton = (Button) findViewById(R.id.back_button);//listに戻る
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
         Button changeButton = (Button) findViewById(R.id.change_button);//画像を切り替える
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,15 +56,6 @@ public class ShowDetailsActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
-        //jump
-        Button jumpButton = (Button) findViewById(R.id.jump_button);
-        jumpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
-                startActivity(intent);
-            }
-        });
     }
 
     private void init() {
@@ -169,5 +153,4 @@ public class ShowDetailsActivity extends AppCompatActivity {
             }
         };
     }
-
 }
