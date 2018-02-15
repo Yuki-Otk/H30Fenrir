@@ -15,6 +15,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
+        android:padding="8dp"
         android:layout_weight="1"
         android:text="@string/search"
         android:textSize="18sp"
@@ -29,6 +30,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:padding="8dp"
         android:ems="10"
         android:hint="@string/freewordHint"
         android:inputType="textPersonName"
@@ -40,11 +42,12 @@
         android:id="@+id/page_textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:paddingTop="4dp"
         android:text="20"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintTop_toBottomOf="@+id/radiogroup" />
 
     <TextView
         android:id="@+id/search_textView"
@@ -52,15 +55,19 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:paddingStart="8dp"
+        android:paddingTop="8dp"
         android:text="@string/rangeJa"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keyword_editText" />
+        app:layout_constraintTop_toBottomOf="@+id/keyword_editText"
+        tools:ignore="RtlSymmetry" />
 
     <RadioGroup
         android:id="@+id/radiogroup"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
+        android:paddingBottom="8dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toBottomOf="@+id/search_textView"
         tools:ignore="MissingConstraints">
@@ -111,12 +118,13 @@
         android:id="@+id/page_seekBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="25dp"
+        android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:max="100"
+        android:padding="3dp"
         android:progress="20"
-        app:layout_constraintEnd_toStartOf="@+id/page_textView"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView"
@@ -128,6 +136,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
+        android:padding="8dp"
         android:text="@string/resultPageNum"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/radiogroup" />
