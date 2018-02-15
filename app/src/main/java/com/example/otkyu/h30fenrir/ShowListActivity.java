@@ -2,9 +2,11 @@ package com.example.otkyu.h30fenrir;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -31,6 +33,7 @@ public class ShowListActivity extends AppCompatActivity {
     private GnaviRequestEntity gnaviRequestEntity;
     ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private CasarealRecycleViewAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,6 +73,23 @@ public class ShowListActivity extends AppCompatActivity {
                 reload(newPage);
             }
         });
+        //backButton
+        //backButton
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
     private void reload(int newPage) {
