@@ -1,6 +1,7 @@
 package com.example.otkyu.h30fenrir;
 
 //import android.app.ActionBar;
+
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
