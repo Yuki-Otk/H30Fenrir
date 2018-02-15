@@ -4,6 +4,7 @@ package com.example.otkyu.h30fenrir.asynchronous.api;
  */
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -229,6 +230,17 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
     protected String doInBackground(String... integers) {
         useApi();
         return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+        Log.d("hoge", "onProgressUpdate");
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
     }
 
     public static List<GnaviResultEntity> getGnaviResultEntityList() {

@@ -1,10 +1,14 @@
 package com.example.otkyu.h30fenrir;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -25,7 +29,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
     private int index, count = 0;
-    private String homePage = null;
+    private String webUrl = null,data=null,imgUrl=null,telNum=null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +60,10 @@ public class ShowDetailsActivity extends AppCompatActivity {
         jumpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(homePage));
-                startActivity(intent);
+//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+//                startActivity(intent);
+
+
             }
         });
     }
@@ -87,7 +93,54 @@ public class ShowDetailsActivity extends AppCompatActivity {
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener());
         imgAsyncTaskHttpRequest.execute(url);
-        homePage = list.get(index).getHomePage();
+        imgUrl=url;
+        webUrl = list.get(index).getHomePage();
+        telNum=list.get(index).getTel();
+        data=list.get(index).getName()+"("+list.get(index).getNameKana()+")\n"+list.get(index).getHowGo()+"\n"+webUrl;
+
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.details_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.tel_menu:
+                callTell();
+                return true;
+            case R.id.web_menu:
+                showWeb();
+                return true;
+            case R.id.share_menu:
+                String chooserTitle="共有する",subject="ぐるなび店舗情報";
+                share(ShowDetailsActivity.this,chooserTitle,subject,data, Uri.parse(imgUrl));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+    private void share(Activity activity, String chooserTitle, String subject, String text, Uri uri) {
+        ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(activity);
+        builder.setChooserTitle(chooserTitle);
+        builder.setSubject(subject);
+        builder.setText(text);
+        builder.setStream(uri);
+        builder.setType("image/jpeg");
+        builder.startChooser();
+    }
+
+    private void callTell() {
+        Uri uri=Uri.parse("tel:"+telNum);
+        Intent intent=new Intent(Intent.ACTION_DIAL,uri);
+        startActivity(intent);
+    }
+
+    private void showWeb() {
+        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+        startActivity(intent);
     }
 
     @Override
