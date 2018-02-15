@@ -1,5 +1,7 @@
 package com.example.otkyu.h30fenrir;
 
+//import android.app.ActionBar;
+import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -29,7 +31,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
     private int index, count = 0;
-    private String webUrl = null,data=null,imgUrl=null,telNum=null;
+    private String webUrl = null, data = null, imgUrl = null, telNum = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,14 +58,18 @@ public class ShowDetailsActivity extends AppCompatActivity {
                 setAll(index, count);
             }
         });
+        //backButton
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
+        //jump
         Button jumpButton = (Button) findViewById(R.id.jump_button);
         jumpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
-//                startActivity(intent);
-
-
+                Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(webUrl));
+                startActivity(intent);
             }
         });
     }
@@ -93,17 +99,19 @@ public class ShowDetailsActivity extends AppCompatActivity {
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener());
         imgAsyncTaskHttpRequest.execute(url);
-        imgUrl=url;
+        imgUrl = url;
         webUrl = list.get(index).getHomePage();
-        telNum=list.get(index).getTel();
-        data=list.get(index).getName()+"("+list.get(index).getNameKana()+")\n"+list.get(index).getHowGo()+"\n"+webUrl;
+        telNum = list.get(index).getTel();
+        data = list.get(index).getName() + "(" + list.get(index).getNameKana() + ")\n" + list.get(index).getHowGo() + "\n" + webUrl;
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.details_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
@@ -115,13 +123,17 @@ public class ShowDetailsActivity extends AppCompatActivity {
                 showWeb();
                 return true;
             case R.id.share_menu:
-                String chooserTitle="共有する",subject="ぐるなび店舗情報";
-                share(ShowDetailsActivity.this,chooserTitle,subject,data, Uri.parse(imgUrl));
+                String chooserTitle = "共有する", subject = "ぐるなび店舗情報";
+                share(ShowDetailsActivity.this, chooserTitle, subject, data, Uri.parse(imgUrl));
+                return true;
+            case android.R.id.home:
+                finish();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
+
     private void share(Activity activity, String chooserTitle, String subject, String text, Uri uri) {
         ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(activity);
         builder.setChooserTitle(chooserTitle);
@@ -133,8 +145,8 @@ public class ShowDetailsActivity extends AppCompatActivity {
     }
 
     private void callTell() {
-        Uri uri=Uri.parse("tel:"+telNum);
-        Intent intent=new Intent(Intent.ACTION_DIAL,uri);
+        Uri uri = Uri.parse("tel:" + telNum);
+        Intent intent = new Intent(Intent.ACTION_DIAL, uri);
         startActivity(intent);
     }
 
