@@ -1,5 +1,7 @@
 package com.example.otkyu.h30fenrir;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
@@ -31,15 +33,23 @@ public class ShowListActivity extends AppCompatActivity {
 
     private Button backPageButton, nextPageButton;
     private GnaviRequestEntity gnaviRequestEntity;
+    private static final String REQUEST_KEY = "gnaviRequestEntity";
     ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private CasarealRecycleViewAdapter adapter;
+
+
+    public static Intent createIntent(GnaviRequestEntity object, Application activity) {
+        Intent intent = new Intent(activity, ShowListActivity.class);
+        intent.putExtra(REQUEST_KEY, object);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list_show);
-        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra("gnaviRequestEntity");
+        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra(REQUEST_KEY);
 
         backPageButton = (Button) findViewById(R.id.backPage_button);
         nextPageButton = (Button) findViewById(R.id.nextPage_button);
@@ -50,9 +60,7 @@ public class ShowListActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.shop_linearLayout);
-
         List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
         System.out.println("list size=" + list.size());
         makeList();

@@ -183,9 +183,7 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void jump() {
-        Intent intent = new Intent(getApplication(), ShowListActivity.class);
-        intent.putExtra("gnaviRequestEntity", gnaviRequestEntity);
-        startActivity(intent);
+        startActivity(ShowListActivity.createIntent(gnaviRequestEntity,getApplication()));
     }
 
     // locationのコールバックを受け取る
