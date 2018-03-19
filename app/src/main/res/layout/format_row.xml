@@ -11,7 +11,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        tools:ignore="UselessParent">
+        android:paddingBottom="10dp"
+        android:clipChildren="false"
+        android:clipToPadding="false"
+        tools:ignore="RtlSymmetry,UselessParent">
 
         <ImageView
             android:id="@+id/imageView"
@@ -20,8 +23,11 @@
             android:src="@mipmap/ic_launcher" />
 
         <LinearLayout
+            android:clipChildren="false"
+            android:clipToPadding="false"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingStart="8dp"
             android:orientation="vertical">
 
             <TextView

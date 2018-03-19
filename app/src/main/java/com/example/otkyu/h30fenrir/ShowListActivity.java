@@ -1,20 +1,24 @@
 package com.example.otkyu.h30fenrir;
 
+import android.app.Activity;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.otkyu.h30fenrir.model.CasarealRecycleViewAdapter;
-import com.example.otkyu.h30fenrir.model.GnaviAPI;
-import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
-import com.example.otkyu.h30fenrir.model.GnaviResultEntity;
-import com.example.otkyu.h30fenrir.model.ImgAsyncTaskHttpRequest;
+import com.example.otkyu.h30fenrir.view.CasarealRecycleViewAdapter;
+import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
 import java.util.List;
 
@@ -29,15 +33,23 @@ public class ShowListActivity extends AppCompatActivity {
 
     private Button backPageButton, nextPageButton;
     private GnaviRequestEntity gnaviRequestEntity;
+    private static final String REQUEST_KEY = "gnaviRequestEntity";
     ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private CasarealRecycleViewAdapter adapter;
+
+
+    public static Intent createIntent(GnaviRequestEntity object, Application activity) {
+        Intent intent = new Intent(activity, ShowListActivity.class);
+        intent.putExtra(REQUEST_KEY, object);
+        return intent;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list_show);
-        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra("gnaviRequestEntity");
+        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra(REQUEST_KEY);
 
         backPageButton = (Button) findViewById(R.id.backPage_button);
         nextPageButton = (Button) findViewById(R.id.nextPage_button);
@@ -48,10 +60,8 @@ public class ShowListActivity extends AppCompatActivity {
                 finish();
             }
         });
-
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.shop_linearLayout);
-
-        List<GnaviResultEntity> list = GnaviAPI.getList();
+        List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
         System.out.println("list size=" + list.size());
         makeList();
         checkButton();
@@ -61,19 +71,36 @@ public class ShowListActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 int newPage = GnaviAPI.getPageNum() + 1;
-                redraw(newPage);
+                reload(newPage);
             }
         });
         backPageButton.setOnClickListener(new View.OnClickListener() {//前のページを表示
             @Override
             public void onClick(View v) {
                 int newPage = GnaviAPI.getPageNum() - 1;
-                redraw(newPage);
+                reload(newPage);
             }
         });
+        //backButton
+        //backButton
+        ActionBar actionBar = getSupportActionBar();
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+        }
     }
 
-    private void redraw(int newPage) {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void reload(int newPage) {
         GnaviAPI gnaviAPI = new GnaviAPI();
         System.out.println("new page is " + newPage);
         gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));
@@ -97,7 +124,6 @@ public class ShowListActivity extends AppCompatActivity {
             backPageButton.setEnabled(true);
         }
         //nextPageButtonの有効化・無効化
-//        System.out.println("total");
         double temp = Math.ceil((double) total / requestNum);
         int pageMax = (int) temp;
         System.out.println("pageMax=" + pageMax);
@@ -125,21 +151,14 @@ public class ShowListActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Toast.makeText(ShowListActivity.this, String.valueOf(list.get(view.getId()).getName()), Toast.LENGTH_SHORT).show();
                 int index = view.getId();
-//                System.out.println("index=" + index);
-                Intent intent = new Intent(getApplication(), ShowDetailsActivity.class);
-                intent.putExtra("index", index);
-                startActivity(intent);
+                startActivity(ShowDetailsActivity.createIntent(index,getApplication()));
             }
         });
-        //img
-//        imageView=(ImageView)findViewById(R.id.imageView);
     }
 
     @Override
     protected void onDestroy() {
-//        imgAsyncTaskHttpRequest.setListener(null);//多分listenerがずっと生き続けるためもったいない？
         super.onDestroy();
     }
 }

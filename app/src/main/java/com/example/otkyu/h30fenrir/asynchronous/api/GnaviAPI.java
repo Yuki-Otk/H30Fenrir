@@ -1,9 +1,10 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.asynchronous.api;
 /**
  * Created by YukiOtake on 2018/01/23 023.
  */
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.net.URL;
 import java.net.HttpURLConnection;
@@ -11,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import com.example.otkyu.h30fenrir.model.secret.AccessKey;
+import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.fasterxml.jackson.databind.*;
 
 /*******************************************************************************
@@ -22,19 +25,14 @@ import com.fasterxml.jackson.databind.*;
  ******************************************************************************/
 
 public class GnaviAPI extends AsyncTask<String, String, String> {
-    //    private double[] gps;
     private GnaviRequestEntity gnaviRequestEntity;
-    private static List<GnaviResultEntity> list;
-    //    private static Integer requestNum;
+    private static List<GnaviResultEntity> gnaviResultEntityList;
     private static boolean finishFlag;
     private static boolean resultFlag;
     private static int totalNum, pageNum, dataNum, requestNum;
 
     public GnaviAPI() {
-//        gps = new double[2];
-//        gnaviRequestEntity=new GnaviRequestEntity();
-        list = new ArrayList<>();
-//        requestNum = 0;
+        gnaviResultEntityList = new ArrayList<>();
         finishFlag = false;
         resultFlag = false;
         totalNum = 0;
@@ -45,7 +43,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 
     private void useApi() {
         // アクセスキー
-//        String acckey = "input your accesskey";
         AccessKey accessKey = new AccessKey();
         String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
         double[] gps = getGnaviRequestEntity().getGps();
@@ -55,15 +52,12 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         String lon = String.valueOf(gps[1]);
         // 範囲
         String range = getGnaviRequestEntity().getRange();
-//        System.out.println("GnaviApi range is "+range);
         // 返却形式
         String format = "json";
         //出力数Integer.valueOf(hitPerPage);
-//        String hitPerPage = "20";
-        String hitPerPage=gnaviRequestEntity.getPage();
+        String hitPerPage = gnaviRequestEntity.getPage();
         requestNum = Integer.parseInt(hitPerPage);
         //ページ数
-//        String offsetPage = "1";
         String offsetPage = getGnaviRequestEntity().getOffsetPage();
         pageNum = Integer.parseInt(offsetPage);
         //フリーワード
@@ -108,7 +102,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
             HttpURLConnection http = (HttpURLConnection) restSearch.openConnection();
             http.setRequestMethod("GET");
             http.connect();
-//            System.out.println("uer="+url);
             //Jackson
             ObjectMapper mapper = new ObjectMapper();
             viewJsonNode(mapper.readTree(http.getInputStream()));
@@ -124,7 +117,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         if (nodeList != null) {
             //トータルヒット件数
             String total = nodeList.path("total_hit_count").asText();
-//            Integer total= Integer.valueOf(nodeList.path("total_hit_count").asText());
             if (isCheckInteger(total)) {//数字にできるか判定
                 resultFlag = true;//検索結果はある！
                 totalNum = Integer.parseInt(total);
@@ -133,7 +125,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 finishFlag = true;
                 return;//検索結果がなければ終了
             }
-//            String hitcount = "total:" + nodeList.path("total_hit_count").asText();
             String hitcount = "total:" + total;
             int pageOffset = nodeList.path("page_offset").asInt();
             int hitPerPage = nodeList.path("hit_per_page").asInt();
@@ -153,7 +144,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
             System.out.println("max=" + max);
             System.out.println("rest=" + restList.get(0));
             //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
-//            while (rest.hasNext()) {
             if (max == 1) {//暫定実行停止中
                 resultFlag = false;
                 finishFlag = true;
@@ -181,8 +171,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                     categorys += n.asText();
                 }
                 System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys + "count=" + count);
-//                System.out.println(count+":"+gnaviResultEntity.getName());
-//                System.out.println("opentime='"+opentime+"'");
                 name = checkString(name);
                 gnaviResultEntity.setName(name);
                 address = checkString(address);
@@ -199,12 +187,11 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 img[1] = checkString(img[1]);
                 System.out.println("img url=" + img[0]);
                 gnaviResultEntity.setImg(img);
-                categorys=checkString(categorys);
+                categorys = checkString(categorys);
                 gnaviResultEntity.setGenre(categorys);
-                homePage=checkString(homePage);
+                homePage = checkString(homePage);
                 gnaviResultEntity.setHomePage(homePage);
-                list.add(gnaviResultEntity);
-//                list.get(count).setName(name);
+                gnaviResultEntityList.add(gnaviResultEntity);
                 count++;
                 System.out.println("img url=" + img[0]);
             }
@@ -245,11 +232,19 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         return null;
     }
 
-    public static List<GnaviResultEntity> getList() {
-//        for(int i=0;i<list.size();i++){
-//            System.out.println("list "+i+"="+list.get(i).getName());
-//        }
-        return list;
+    @Override
+    protected void onProgressUpdate(String... values) {
+        super.onProgressUpdate(values);
+        Log.d("hoge", "onProgressUpdate");
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+    }
+
+    public static List<GnaviResultEntity> getGnaviResultEntityList() {
+        return gnaviResultEntityList;
     }
 
     public static boolean isFinishFlag() {
