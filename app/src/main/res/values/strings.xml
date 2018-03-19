@@ -23,4 +23,7 @@
     <string name="freewordHint">キーワード(入力しなくても可)</string>
     <string name="pageHint">1ページの表示量(入力しなくても可)</string>
     <string name="shopimg">shopImg</string>
+    <string name="resultPageNum">検索結果表示数</string>
+    <string name="web">web</string>
+    <string name="share">share</string>
 </resources>

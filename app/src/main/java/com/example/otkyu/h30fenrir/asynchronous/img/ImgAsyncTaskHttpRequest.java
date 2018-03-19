@@ -1,4 +1,4 @@
-package com.example.otkyu.h30fenrir.model;
+package com.example.otkyu.h30fenrir.asynchronous.img;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,7 +26,6 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     // 途中経過をメインスレッドに返す
     @Override
     protected void onProgressUpdate(Void... progress) {
-        //working cursor を表示させるようにしてもいいでしょう
     }
 
     // 非同期処理が終了後、結果をメインスレッドに返す

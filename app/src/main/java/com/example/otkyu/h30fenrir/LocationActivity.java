@@ -10,6 +10,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.os.Looper;
@@ -17,16 +19,19 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.SeekBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
-import com.example.otkyu.h30fenrir.model.GnaviAPI;
-import com.example.otkyu.h30fenrir.model.GnaviRequestEntity;
+import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -63,11 +68,11 @@ public class LocationActivity extends AppCompatActivity {
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
     //    private TextView textView;
-//    private String textLog;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
     GnaviRequestEntity gnaviRequestEntity;
-    private Button searchButton;
+    TextView pageTextView;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,27 +86,43 @@ public class LocationActivity extends AppCompatActivity {
         createLocationRequest();
         buildLocationSettingsRequest();
 
-//        textView = (TextView) findViewById(R.id.text_view);
-//        textLog = "onCreate()\n";
-//        textView.setText(textLog);
+        //スニークバー
+        SeekBar seekBar = (SeekBar) findViewById(R.id.page_seekBar);//pageスニーク
+        pageTextView = (TextView) findViewById(R.id.page_textView);//page表示
+        String num = String.valueOf(seekBar.getProgress());
+        pageTextView.setText(num);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 
-        // 測位開始
-//        Button buttonStart = (Button) findViewById(R.id.button_start);
-//        buttonStart.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startLocationUpdates();
-//            }
-//        });
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
+                if (position == 0) {
+                    seekBar.setProgress(1);
+                    position = 1;
+                }
+                String num = String.valueOf(position);
+                pageTextView.setText(num);
+                pageTextView.setTypeface(Typeface.DEFAULT_BOLD);
+                pageTextView.setTextColor(Color.RED);
+                pageTextView.setTextSize(20);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
 
         // 検索
-        searchButton = (Button) findViewById(R.id.search_button);
+        Button searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-//                System.out.println("gps1="+gps[0]);
-//                stopLocationUpdates();//画面移動した際に強制的に終了されるため書かなくてもよい?
                 gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
                 boolean flag = gnaviRequest();
                 if (flag) {
@@ -113,7 +134,6 @@ public class LocationActivity extends AppCompatActivity {
                 }
             }
         });
-
         startLocationUpdates();//強制開始
 
     }
@@ -121,16 +141,14 @@ public class LocationActivity extends AppCompatActivity {
     private boolean gnaviRequest() {
         gnaviRequestEntity = new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
-        RadioGroup rg = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
-        int id = rg.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
+        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
+        int id = radioGroup.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
         RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
         String checkStr = radioButton.getText().toString();
-//        System.out.println("range=" + checkStr);
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
         EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();
-        EditText pageEditText = (EditText) findViewById(R.id.page_editText);
-        String page = pageEditText.getText().toString();
+        String page = (String) pageTextView.getText();
         if (page.equals("")) {
             page = "20";
         }
@@ -149,7 +167,6 @@ public class LocationActivity extends AppCompatActivity {
 //        int page= Integer.parseInt(temp);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
         gnaviRequestEntity.setPage(page);
-//        System.out.println("keyword=" + freeword);
         gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
         boolean flag = false;
         gnaviAPI.execute();
@@ -161,13 +178,12 @@ public class LocationActivity extends AppCompatActivity {
             } else if (GnaviAPI.isFinishFlag()) {
                 return false;
             }
+
         }
     }
 
     private void jump() {
-        Intent intent = new Intent(getApplication(), ShowListActivity.class);
-        intent.putExtra("gnaviRequestEntity", gnaviRequestEntity);
-        startActivity(intent);
+        startActivity(ShowListActivity.createIntent(gnaviRequestEntity,getApplication()));
     }
 
     // locationのコールバックを受け取る
@@ -176,9 +192,7 @@ public class LocationActivity extends AppCompatActivity {
             @Override
             public void onLocationResult(LocationResult locationResult) {
                 super.onLocationResult(locationResult);
-
                 location = locationResult.getLastLocation();
-
                 lastUpdateTime = DateFormat.getTimeInstance().format(new Date());
                 updateLocationUI();
             }
@@ -203,24 +217,20 @@ public class LocationActivity extends AppCompatActivity {
                     location.getBearing()
             };
 
-            StringBuilder strBuf =
-                    new StringBuilder("---------- UpdateLocation ---------- \n");
+            StringBuilder stringBuilder = new StringBuilder("---------- UpdateLocation ---------- \n");
 
             for (int i = 0; i < fusedName.length; i++) {
-                strBuf.append(fusedName[i]);
-                strBuf.append(" = ");
-                strBuf.append(String.valueOf(fusedData[i]));
-                strBuf.append("\n");
+                stringBuilder.append(fusedName[i]);
+                stringBuilder.append(" = ");
+                stringBuilder.append(String.valueOf(fusedData[i]));
+                stringBuilder.append("\n");
             }
             System.out.println(fusedData[0] + ":" + fusedData[1]);
             setGps(fusedData[0], fusedData[1]);
-            strBuf.append("Time");
-            strBuf.append(" = ");
-            strBuf.append(lastUpdateTime);
-            strBuf.append("\n");
-
-//            textLog += strBuf;
-//            textView.setText(textLog);
+            stringBuilder.append("Time");
+            stringBuilder.append(" = ");
+            stringBuilder.append(lastUpdateTime);
+            stringBuilder.append("\n");
         }
 
     }
@@ -366,14 +376,9 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void stopLocationUpdates() {
-//        textLog += "onStop()\n";
-//        textView.setText(textLog);
-
         if (!requestingLocationUpdates) {
             Log.d("debug", "stopLocationUpdates: " +
                     "updates never requested, no-op.");
-
-
             return;
         }
 
@@ -387,6 +392,21 @@ public class LocationActivity extends AppCompatActivity {
                         });
     }
 
+    //端末の戻るボタンを押下したとき
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            //homeに戻る
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            startActivity(intent);
+            return super.onKeyDown(keyCode, event);
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
@@ -394,9 +414,9 @@ public class LocationActivity extends AppCompatActivity {
         stopLocationUpdates();
     }
 
-    public void setGps(double a, double b) {
-        gps[0] = a;
-        gps[1] = b;
+    public void setGps(double lat, double lon) {
+        gps[0] = lat;
+        gps[1] = lon;
         this.gps = gps;
     }
 
