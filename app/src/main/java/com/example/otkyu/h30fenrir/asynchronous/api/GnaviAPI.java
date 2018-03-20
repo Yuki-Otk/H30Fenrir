@@ -22,6 +22,7 @@ import java.util.List;
 import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
+import com.example.otkyu.h30fenrir.model.Check;
 import com.fasterxml.jackson.databind.*;
 
 import org.json.JSONArray;
@@ -73,7 +74,8 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         pageNum = Integer.parseInt(offsetPage);
         //フリーワード
         String freeword = getGnaviRequestEntity().getFreeword();
-        boolean freewordFlag = isCheckNull(freeword);
+        Check check = new Check();
+        boolean freewordFlag = check.isCheckNull(freeword);
         // エンドポイント
         String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
         String prmFormat = "?format=" + format;
@@ -113,16 +115,9 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
             HttpURLConnection httpURLConnection = (HttpURLConnection) restSearch.openConnection();
             httpURLConnection.setRequestMethod("GET");
             httpURLConnection.connect();
-            //
-            Log.d("apiReturn", "start");
+            //jsonの解読
             JSONObject jsonObject = getJson(httpURLConnection);
             openJson(jsonObject);
-//            Log.d("apiReturn",result);
-//            //Jackson
-//            ObjectMapper mapper = new ObjectMapper();
-//            viewJsonNode(mapper.readTree(httpURLConnection.getInputStream()));
-
-
         } catch (Exception e) {
             //TODO: 例外を考慮していません
             System.out.println("error");
@@ -146,143 +141,59 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
     }
 
     private void openJson(JSONObject jsonObject) throws JSONException {//jsonを展開してみて件数等を確認する
-        try {//検索結果が複数件あるとき
-            JSONArray rests = jsonObject.getJSONArray("rest");
-            Log.d("apiUse", String.valueOf(rests.length()));
-            for (int i = 0; i < rests.length(); i++) {//ヒット数ループ
-                JSONObject rest = rests.getJSONObject(i);
-                String name = rest.getString("name");
-                Log.d("apiUse", "店名:" + name);
+        try {
+            totalNum = jsonObject.getInt("total_hit_count");//総検索数
+            pageNum = jsonObject.getInt("page_offset");//現在のページ
+            JSONObject rest;
+            resultFlag = true;//検索結果はある！
+            try {//検索結果が2以上の時
+                JSONArray rests = jsonObject.getJSONArray("rest");
+                for (int i = 0; i < rests.length(); i++) {//ヒット数ループ
+                    rest = rests.getJSONObject(i);
+                    gnaviResultEntityList.add(getGnaviResultEntity(rest));
+                }
+                dataNum = rests.length();//表示数
+            } catch (JSONException e) {//検索結果が1の時
+                rest = jsonObject.getJSONObject("rest");
+                gnaviResultEntityList.add(getGnaviResultEntity(rest));
+                dataNum = 1;//表示数
             }
-        } catch (JSONException e) {
-            Log.d("apiUse", "notArray");
-            try {//検索結果が1件しかないとき
-                JSONObject rest = jsonObject.getJSONObject("rest");
-                String category = rest.getString("category");
-                String name = rest.getString("name");
-                Log.d("apiUse", "店名:" + name);
-            } catch (Exception e1) {//検索結果がエラーの時
-                Log.d("apiUse", "ERROR");
-            }
+
+        } catch (JSONException e) {//検索結果がないとき
+            Log.d("ERROR", "検索結果なし");
         }
         finishFlag = true;
     }
 
-    private void setResultEntity() {//検索結果をresultEntityに保存する
-
-    }
-
-    private static void viewJsonNode(JsonNode nodeList) {
-        if (nodeList != null) {
-            //トータルヒット件数
-            String total = nodeList.path("total_hit_count").asText();
-            if (isCheckInteger(total)) {//数字にできるか判定
-                resultFlag = true;//検索結果はある！
-                totalNum = Integer.parseInt(total);
-            } else {
-                System.out.println("検索結果なし");
-                finishFlag = true;
-                return;//検索結果がなければ終了
-            }
-            String hitcount = "total:" + total;
-            int pageOffset = nodeList.path("page_offset").asInt();
-            int hitPerPage = nodeList.path("hit_per_page").asInt();
-            System.out.println(hitcount);
-            //restのみ取得
-            JsonNode restList = nodeList.path("rest");
-            Iterator<JsonNode> rest = restList.iterator();
-            int count = 0;
-            int max;
-            if (totalNum > pageOffset * hitPerPage) {
-                max = hitPerPage;
-            } else {
-                max = totalNum - (pageOffset - 1) * hitPerPage;
-            }
-            System.out.println("page=" + pageOffset);
-            System.out.println("hitPage=" + hitPerPage);
-            System.out.println("max=" + max);
-            System.out.println("rest=" + restList.get(0));
-            //店舗番号、店舗名、最寄の路線、最寄の駅、最寄駅から店までの時間、店舗の小業態を出力
-            if (max == 1) {//暫定実行停止中
-                resultFlag = false;
-                finishFlag = true;
-                return;
-            }
-            for (int i = 0; i < max; i++) {
-                GnaviResultEntity gnaviResultEntity = new GnaviResultEntity();
-                JsonNode r = rest.next();
-                String id = r.path("id").asText();
-                String name = r.path("name").asText();
-                String line = r.path("access").path("line").asText();
-                String station = r.path("access").path("station").asText();
-                String walk = r.path("access").path("walk").asText() + "分";
-                String address = r.path("address").asText();//住所
-                String nameKana = r.path("name_kana").asText();//ナマエ
-                String howGo = line + station + "から" + walk;//行き方
-                String tel = r.path("tel").asText();//電話番号
-                String opentime = r.path("opentime").asText();//営業時間
-                String homePage = r.path("url").asText();//homePage
-                String[] img = new String[2];
-                img[0] = r.path("image_url").path("shop_image1").asText();
-                img[1] = r.path("image_url").path("shop_image2").asText();
-                String categorys = "";
-                for (JsonNode n : r.path("code").path("category_name_s")) {
-                    categorys += n.asText();
-                }
-                System.out.println(id + "¥t" + name + "¥t" + line + "¥t" + station + "¥t" + walk + "¥t" + categorys + "count=" + count);
-                name = checkString(name);
-                gnaviResultEntity.setName(name);
-                address = checkString(address);
-                gnaviResultEntity.setAddress(address);
-                nameKana = checkString(nameKana);
-                gnaviResultEntity.setNameKana(nameKana);
-                opentime = checkString(opentime);
-                gnaviResultEntity.setOpentime(opentime);
-                tel = checkString(tel);
-                gnaviResultEntity.setTel(tel);
-                howGo = checkString(howGo);
-                gnaviResultEntity.setHowGo(howGo);
-                img[0] = checkString(img[0]);
-                img[1] = checkString(img[1]);
-                System.out.println("img url=" + img[0]);
-                gnaviResultEntity.setImg(img);
-                categorys = checkString(categorys);
-                gnaviResultEntity.setGenre(categorys);
-                homePage = checkString(homePage);
-                gnaviResultEntity.setHomePage(homePage);
-                gnaviResultEntityList.add(gnaviResultEntity);
-                count++;
-                System.out.println("img url=" + img[0]);
-            }
-            dataNum = count;
-            finishFlag = true;
-        }
-    }
-
-    private static String checkString(String str) {
-        if (str.equals("") || str.equals("から分")) {
-            return "登録されていません";
-        }
-        return str;
-    }
-
-    private static boolean isCheckInteger(String str) {//数字にできるか判定
-        try {
-            Integer hoge = Integer.valueOf(str);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    private boolean isCheckNull(String str) {
-        if (str == null) {
-            return false;
-        }
-        if (str.equals("")) {
-            return false;
-        }
-        return true;
+    private GnaviResultEntity getGnaviResultEntity(JSONObject rest) throws JSONException {//検索結果を展開してGnaviResultEntityに代入
+        //jsonの展開
+        GnaviResultEntity gnaviResultEntity = new GnaviResultEntity();
+        String id = rest.getString("id");
+        String name = rest.getString("name");
+        String address = rest.getString("address");//住所
+        String nameKana = rest.getString("name_kana");//ナマエ
+        String tel = rest.getString("tel");//電話番号
+        String opentime = rest.getString("opentime");//営業時間
+        String homePage = rest.getString("url");//ホームページ
+        String categorys = rest.getString("category");
+        String[] img = new String[2];
+        img[0] = rest.getJSONObject("image_url").getString("shop_image1");
+        img[1] = rest.getJSONObject("image_url").getString("shop_image2");
+        String line = rest.getJSONObject("access").getString("line");
+        String station = rest.getJSONObject("access").getString("station");
+        String walk = rest.getJSONObject("access").getString("walk") + "分";
+        String howGo = line + station + "から" + walk;//行き方
+        //展開結果を保存
+        gnaviResultEntity.setName(name);
+        gnaviResultEntity.setAddress(address);
+        gnaviResultEntity.setNameKana(nameKana);
+        gnaviResultEntity.setOpentime(opentime);
+        gnaviResultEntity.setTel(tel);
+        gnaviResultEntity.setHowGo(howGo);
+        gnaviResultEntity.setImg(img);
+        gnaviResultEntity.setGenre(categorys);
+        gnaviResultEntity.setHomePage(homePage);
+        return gnaviResultEntity;
     }
 
     @Override
