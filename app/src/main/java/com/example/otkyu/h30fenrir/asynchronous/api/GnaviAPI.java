@@ -1,11 +1,18 @@
 package com.example.otkyu.h30fenrir.asynchronous.api;
 /**
  * Created by YukiOtake on 2018/01/23 023.
+ * url:http://android.swift-studying.com/entry/20151024/1445697702
  */
 
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
@@ -16,6 +23,10 @@ import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.fasterxml.jackson.databind.*;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /*******************************************************************************
  * ぐるなびWebサービスのレストラン検索APIで緯度経度検索を実行しパースするプログラム
@@ -96,21 +107,69 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         getNodeList(uri.toString());
     }
 
-    private static void getNodeList(String url) {
+    private void getNodeList(String url) {
         try {
             URL restSearch = new URL(url);
-            HttpURLConnection http = (HttpURLConnection) restSearch.openConnection();
-            http.setRequestMethod("GET");
-            http.connect();
-            //Jackson
-            ObjectMapper mapper = new ObjectMapper();
-            viewJsonNode(mapper.readTree(http.getInputStream()));
+            HttpURLConnection httpURLConnection = (HttpURLConnection) restSearch.openConnection();
+            httpURLConnection.setRequestMethod("GET");
+            httpURLConnection.connect();
+            //
+            Log.d("apiReturn", "start");
+            JSONObject jsonObject = getJson(httpURLConnection);
+            openJson(jsonObject);
+//            Log.d("apiReturn",result);
+//            //Jackson
+//            ObjectMapper mapper = new ObjectMapper();
+//            viewJsonNode(mapper.readTree(httpURLConnection.getInputStream()));
+
 
         } catch (Exception e) {
             //TODO: 例外を考慮していません
             System.out.println("error");
             System.out.println(e);
         }
+    }
+
+    private JSONObject getJson(HttpURLConnection httpURLConnection) throws IOException, JSONException {//結果のjsonを取得
+        String result = null;
+        BufferedInputStream inputStream = new BufferedInputStream(httpURLConnection.getInputStream());
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        byte[] buffer = new byte[1024];
+        int length;
+        while ((length = inputStream.read(buffer)) != -1) {
+            if (length > 0) {
+                outputStream.write(buffer, 0, length);
+            }
+        }
+        JSONObject jsonObject = new JSONObject(new String(outputStream.toByteArray()));
+        return jsonObject;
+    }
+
+    private void openJson(JSONObject jsonObject) throws JSONException {//jsonを展開してみて件数等を確認する
+        try {//検索結果が複数件あるとき
+            JSONArray rests = jsonObject.getJSONArray("rest");
+            Log.d("apiUse", String.valueOf(rests.length()));
+            for (int i = 0; i < rests.length(); i++) {//ヒット数ループ
+                JSONObject rest = rests.getJSONObject(i);
+                String name = rest.getString("name");
+                Log.d("apiUse", "店名:" + name);
+            }
+        } catch (JSONException e) {
+            Log.d("apiUse", "notArray");
+            try {//検索結果が1件しかないとき
+                JSONObject rest = jsonObject.getJSONObject("rest");
+                String category = rest.getString("category");
+                String name = rest.getString("name");
+                Log.d("apiUse", "店名:" + name);
+            } catch (Exception e1) {//検索結果がエラーの時
+                Log.d("apiUse", "ERROR");
+            }
+        }
+        finishFlag = true;
+    }
+
+    private void setResultEntity() {//検索結果をresultEntityに保存する
+
     }
 
     private static void viewJsonNode(JsonNode nodeList) {
