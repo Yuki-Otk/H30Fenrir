@@ -115,6 +115,7 @@ public class GnaviRequestEntity implements Serializable {
         String hitPerPage = page;
         return "&hit_per_page=" + hitPerPage;
     }
+
     private String getOffsetPage() {//ページ数
         return "&offset_page=" + offsetPage;
     }

@@ -28,12 +28,18 @@
     <string name="share">share</string>
     <string name="pageDefault">20</string>
     <string name="searchAlpha">絞り込み:</string>
-    <string-array name="mainList">
+    <string-array name="mainArray">
         <item>料理・ジャンル</item>
         <item>和食</item>
         <item>イタリアン</item>
         <item>中華</item>
         <item>もっと絞り込み</item>
+    </string-array>
+    <string-array name="listArray">
+        <item>さらに絞り込み</item>
+        <item>開店中</item>
+        <item>昼営業</item>
+        <item>夜営業</item>
     </string-array>
 
 </resources>

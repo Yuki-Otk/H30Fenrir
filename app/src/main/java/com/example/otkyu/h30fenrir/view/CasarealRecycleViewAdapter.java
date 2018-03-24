@@ -53,7 +53,6 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         imgAsyncTaskHttpRequest.setListener(createListener(holder));
         imgAsyncTaskHttpRequest.execute(url);
 
-
         holder.linearLayout.setId(holder.getAdapterPosition());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -80,7 +79,6 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     public int getItemCount() {
         return list.size();
     }
-
 
     class CasarealViewHolder extends RecyclerView.ViewHolder {
 

@@ -8,11 +8,15 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.otkyu.h30fenrir.view.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
@@ -50,7 +54,10 @@ public class ShowListActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_list_show);
         gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra(REQUEST_KEY);
-
+        //Sprinner(プルダウン)
+        Spinner spinner = (Spinner) findViewById(R.id.time_spinner);
+        doSelectSprinner(spinner);
+        //下のボタン群
         backPageButton = (Button) findViewById(R.id.backPage_button);
         nextPageButton = (Button) findViewById(R.id.nextPage_button);
         Button returnButton = (Button) findViewById(R.id.backHome_button);
@@ -99,7 +106,20 @@ public class ShowListActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+    private void doSelectSprinner(Spinner spinner) {//sprinnerを変更したとき
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
+                String select = (String) adapterView.getSelectedItem();
+                Toast.makeText(ShowListActivity.this, select, Toast.LENGTH_SHORT).show();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {//選択されなかったとき
+
+            }
+        });
+    }
     private void reload(int newPage) {
         GnaviAPI gnaviAPI = new GnaviAPI();
         System.out.println("new page is " + newPage);

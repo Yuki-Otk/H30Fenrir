@@ -8,15 +8,11 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import java.io.BufferedInputStream;
-import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.HttpURLConnection;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
@@ -28,13 +24,6 @@ import com.fasterxml.jackson.databind.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-/*******************************************************************************
- * ぐるなびWebサービスのレストラン検索APIで緯度経度検索を実行しパースするプログラム
- * 注意：緯度、経度、範囲は固定で入れています。
- *　　　　アクセスキーはアカウント登録時に発行されたキーを指定してください。
- *      JsonをパースするためにライブラリにJacksonを追加しています。
- ******************************************************************************/
 
 public class GnaviAPI extends AsyncTask<String, String, String> {
     private GnaviRequestEntity gnaviRequestEntity;

@@ -104,7 +104,6 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
         this.listener = listener;
     }
 
-
     public interface Listener {
         void onSuccess(Bitmap bmp);
     }
