@@ -21,11 +21,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -72,8 +75,7 @@ public class LocationActivity extends AppCompatActivity {
     private GnaviAPI gnaviAPI;
     GnaviRequestEntity gnaviRequestEntity;
     TextView pageTextView;
-
-
+    CheckBox checkBox1, checkBox2, checkBox3, checkBox4, checkBox5, checkBox6, checkBox7, checkBox8, checkBox9;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,14 +87,24 @@ public class LocationActivity extends AppCompatActivity {
         createLocationCallback();
         createLocationRequest();
         buildLocationSettingsRequest();
-
+        //Sprinner(プルダウン)
+        Spinner spinner = (Spinner) findViewById(R.id.genre_spinner);
+        checkBox1 = (CheckBox) findViewById(R.id.checkBox1);
+        checkBox2 = (CheckBox) findViewById(R.id.checkBox2);
+        checkBox3 = (CheckBox) findViewById(R.id.checkBox3);
+        checkBox4 = (CheckBox) findViewById(R.id.checkBox4);
+        checkBox5 = (CheckBox) findViewById(R.id.checkBox5);
+        checkBox6 = (CheckBox) findViewById(R.id.checkBox6);
+        checkBox7 = (CheckBox) findViewById(R.id.checkBox7);
+        checkBox8 = (CheckBox) findViewById(R.id.checkBox8);
+        checkBox9 = (CheckBox) findViewById(R.id.checkBox9);
+        doSelectSprinner(spinner);
         //スニークバー
         SeekBar seekBar = (SeekBar) findViewById(R.id.page_seekBar);//pageスニーク
         pageTextView = (TextView) findViewById(R.id.page_textView);//page表示
         String num = String.valueOf(seekBar.getProgress());
         pageTextView.setText(num);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
                 if (position == 0) {
@@ -108,19 +120,16 @@ public class LocationActivity extends AppCompatActivity {
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
 
         // 検索
         Button searchButton = (Button) findViewById(R.id.search_button);
         searchButton.setOnClickListener(new View.OnClickListener() {
-
             @Override
             public void onClick(View v) {
                 gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
@@ -135,7 +144,135 @@ public class LocationActivity extends AppCompatActivity {
             }
         });
         startLocationUpdates();//強制開始
+    }
 
+    private void doSelectSprinner(Spinner spinner) {//seekBarをselectした際の挙動
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String select = (String) adapterView.getSelectedItem();
+                Toast.makeText(LocationActivity.this, select, Toast.LENGTH_SHORT).show();
+                Log.d("sprinner", select);
+                changeCheckBox(select);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void changeCheckBox(String str) {//seekBarに変更があればcheckboxを変換
+        unCheck();//変更があればすべてのチェックを外す
+        switch (str) {
+            case "料理・ジャンル":
+                doCheckBox(0);
+                break;
+            case "和食":
+                doCheckBox(9);
+                checkBox1.setText("焼き鳥");
+                checkBox2.setText("寿司");
+                checkBox3.setText("そば");
+                checkBox4.setText("とんかつ");
+                checkBox5.setText("焼肉");
+                checkBox6.setText("お好み焼き");
+                checkBox7.setText("うどん");
+                checkBox8.setText("たこ焼き");
+                checkBox9.setText("うなぎ");
+                break;
+            case "イタリアン":
+                doCheckBox(2);
+                checkBox1.setText("ピザ");
+                checkBox2.setText("パスタ");
+                break;
+            case "中華":
+                doCheckBox(3);
+                checkBox1.setText("ラーメン");
+                checkBox2.setText("麻婆豆腐");
+                checkBox3.setText("餃子");
+                break;
+            case "もっと絞り込み":
+
+                break;
+        }
+    }
+
+    private void doCheckBox(int num) {//checkboxの表示を変更
+        String str;
+        int huga=0;
+        for(int i=0;i<num;i++){
+            huga=huga*10;
+            huga++;
+        }
+        for(int i=0;i<9-num;i++){
+            huga=huga*10;
+        }
+        str= String.valueOf(huga);
+        if (huga == 0) {
+            str="000000000";
+        }
+        if (str.length() == 9) {
+            for (int i = 1; i <= 9; i++) {
+                String hoge = String.valueOf(str.charAt(i - 1));
+                if (i == 1 && hoge.equals("1")) {
+                    checkBox1.setVisibility(View.VISIBLE);
+                } else if (i == 1) {
+                    checkBox1.setVisibility(View.INVISIBLE);
+                }
+                if (i == 2 && hoge.equals("1")) {
+                    checkBox2.setVisibility(View.VISIBLE);
+                } else if (i == 2) {
+                    checkBox2.setVisibility(View.INVISIBLE);
+                }
+                if (i == 3 && hoge.equals("1")) {
+                    checkBox3.setVisibility(View.VISIBLE);
+                } else if (i == 3) {
+                    checkBox3.setVisibility(View.INVISIBLE);
+                }
+                if (i == 4 && hoge.equals("1")) {
+                    checkBox4.setVisibility(View.VISIBLE);
+                } else if (i == 4) {
+                    checkBox4.setVisibility(View.INVISIBLE);
+                }
+                if (i == 5 && hoge.equals("1")) {
+                    checkBox5.setVisibility(View.VISIBLE);
+                } else if (i == 5) {
+                    checkBox5.setVisibility(View.INVISIBLE);
+                }
+                if (i == 6 && hoge.equals("1")) {
+                    checkBox6.setVisibility(View.VISIBLE);
+                } else if (i == 6) {
+                    checkBox6.setVisibility(View.INVISIBLE);
+                }
+                if (i == 7 && hoge.equals("1")) {
+                    checkBox7.setVisibility(View.VISIBLE);
+                } else if (i == 7) {
+                    checkBox7.setVisibility(View.INVISIBLE);
+                }
+                if (i == 8 && hoge.equals("1")) {
+                    checkBox8.setVisibility(View.VISIBLE);
+                } else if (i == 8) {
+                    checkBox8.setVisibility(View.INVISIBLE);
+                }
+                if (i == 9 && hoge.equals("1")) {
+                    checkBox9.setVisibility(View.VISIBLE);
+                } else if (i == 9) {
+                    checkBox9.setVisibility(View.INVISIBLE);
+                }
+            }
+        }
+    }
+    private void unCheck(){//すべてのチェックを外す
+        checkBox1.setChecked(false);
+        checkBox2.setChecked(false);
+        checkBox3.setChecked(false);
+        checkBox4.setChecked(false);
+        checkBox5.setChecked(false);
+        checkBox6.setChecked(false);
+        checkBox7.setChecked(false);
+        checkBox8.setChecked(false);
+        checkBox9.setChecked(false);
     }
 
     private boolean gnaviRequest() {
@@ -146,8 +283,6 @@ public class LocationActivity extends AppCompatActivity {
         RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
         String checkStr = radioButton.getText().toString();
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
-        EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
-        String freeword = keywordEditText.getText().toString();
         String page = (String) pageTextView.getText();
         if (page.equals("")) {
             page = "20";
@@ -165,6 +300,9 @@ public class LocationActivity extends AppCompatActivity {
             return false;
         }
 //        int page= Integer.parseInt(temp);
+        EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
+        String freeword = keywordEditText.getText().toString();//keyWordをセット
+        freeword=addKeyWord(freeword);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
         gnaviRequestEntity.setPage(page);
         gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
@@ -181,9 +319,17 @@ public class LocationActivity extends AppCompatActivity {
 
         }
     }
+    private String addKeyWord(String str){
+        String add="";
+        if(checkBox1.isChecked()){
+            add=add+"%20"+checkBox1.getText();
+        }
+        Log.d("api",str+"%20"+add);
+        return str+"%20"+add;
+    }
 
     private void jump() {
-        startActivity(ShowListActivity.createIntent(gnaviRequestEntity,getApplication()));
+        startActivity(ShowListActivity.createIntent(gnaviRequestEntity, getApplication()));
     }
 
     // locationのコールバックを受け取る

@@ -26,4 +26,14 @@
     <string name="resultPageNum">検索結果表示数</string>
     <string name="web">web</string>
     <string name="share">share</string>
+    <string name="pageDefault">20</string>
+    <string name="searchAlpha">絞り込み:</string>
+    <string-array name="mainList">
+        <item>料理・ジャンル</item>
+        <item>和食</item>
+        <item>イタリアン</item>
+        <item>中華</item>
+        <item>もっと絞り込み</item>
+    </string-array>
+
 </resources>

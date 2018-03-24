@@ -99,6 +99,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         uri.append(prmHitPerPage);
         uri.append(prmOffsetPage);
         System.out.println("freeword flag=" + freewordFlag);
+        Log.d("freeWord",freeword);
         if (freewordFlag) {
             String prmFreeword = "&freeword=" + freeword;
             uri.append(prmFreeword);
