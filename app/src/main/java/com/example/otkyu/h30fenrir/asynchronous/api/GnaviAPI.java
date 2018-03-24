@@ -47,67 +47,18 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         gnaviResultEntityList = new ArrayList<>();
         finishFlag = false;
         resultFlag = false;
-        totalNum = 0;
-        pageNum = 0;
-        dataNum = 0;
-        requestNum = 0;
+        totalNum = 0;//総検索数
+        pageNum = 0;//現在のページ
+        dataNum = 0;//表示数
+        requestNum = 0;//表示項目数
     }
 
     private void useApi() {
-        // アクセスキー
-        AccessKey accessKey = new AccessKey();
-        String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
-        double[] gps = getGnaviRequestEntity().getGps();
-        // 緯度
-        String lat = String.valueOf(gps[0]);
-        // 経度
-        String lon = String.valueOf(gps[1]);
-        // 範囲
-        String range = getGnaviRequestEntity().getRange();
-        // 返却形式
-        String format = "json";
-        //出力数Integer.valueOf(hitPerPage);
-        String hitPerPage = gnaviRequestEntity.getPage();
-        requestNum = Integer.parseInt(hitPerPage);
-        //ページ数
-        String offsetPage = getGnaviRequestEntity().getOffsetPage();
-        pageNum = Integer.parseInt(offsetPage);
-        //フリーワード
-        String freeword = getGnaviRequestEntity().getFreeword();
-        Check check = new Check();
-        boolean freewordFlag = check.isCheckNull(freeword);
-        // エンドポイント
-        String gnaviRestUri = "https://api.gnavi.co.jp/RestSearchAPI/20150630/";
-        String prmFormat = "?format=" + format;
-        String prmKeyid = "&keyid=" + acckey;
-        String prmInputCoordinatesMode = "&input_coordinates_mode=2";//入力測地系タイプを変更
-        String prmLat = "&latitude=" + lat;
-        String prmLon = "&longitude=" + lon;
-        String prmRange = "&range=" + range;
-        String prmHitPerPage = "&hit_per_page=" + hitPerPage;
-        String prmOffsetPage = "&offset_page=" + offsetPage;
-
         // URI組み立て
-        StringBuffer uri = new StringBuffer();
-        uri.append(gnaviRestUri);
-        uri.append(prmFormat);
-        uri.append(prmKeyid);
-        uri.append(prmInputCoordinatesMode);
-        uri.append(prmLat);
-        uri.append(prmLon);
-        uri.append(prmRange);
-        uri.append(prmHitPerPage);
-        uri.append(prmOffsetPage);
-        System.out.println("freeword flag=" + freewordFlag);
-        Log.d("freeWord",freeword);
-        if (freewordFlag) {
-            String prmFreeword = "&freeword=" + freeword;
-            uri.append(prmFreeword);
-        }
-
-        System.out.println("url=" + uri);
+        String url = gnaviRequestEntity.getAPIUrl();
+        System.out.println("url=" + url);
         // API実行、結果を取得し出力
-        getNodeList(uri.toString());
+        getNodeList(url);
     }
 
     private void getNodeList(String url) {
@@ -145,6 +96,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         try {
             totalNum = jsonObject.getInt("total_hit_count");//総検索数
             pageNum = jsonObject.getInt("page_offset");//現在のページ
+            requestNum = jsonObject.getInt("hit_per_page");//表示項目数
             JSONObject rest;
             resultFlag = true;//検索結果はある！
             try {//検索結果が2以上の時
