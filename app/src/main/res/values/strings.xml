@@ -38,8 +38,8 @@
     <string-array name="listArray">
         <item>さらに絞り込み</item>
         <item>開店中</item>
-        <item>昼営業</item>
-        <item>夜営業</item>
+        <item>昼営業あり</item>
+        <item>夜営業あり</item>
     </string-array>
 
 </resources>

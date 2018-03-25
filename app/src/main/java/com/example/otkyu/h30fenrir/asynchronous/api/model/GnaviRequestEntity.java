@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class GnaviRequestEntity implements Serializable {
     private double[] gps;
-    private String range, freeword, offsetPage, page;
+    private String range, freeword, offsetPage, page,lunch;
 
     public GnaviRequestEntity() {
         gps = new double[2];
@@ -20,6 +20,7 @@ public class GnaviRequestEntity implements Serializable {
         freeword = null;
         offsetPage = "1";
         page = "20";
+        lunch="0";
     }
 
     public double[] getGps() {
@@ -77,6 +78,7 @@ public class GnaviRequestEntity implements Serializable {
         uri.append(getRange());
         uri.append(getHitPerPage());
         uri.append(getOffsetPage());
+        uri.append(getLunch());
         uri.append(getFreeword());
         return String.valueOf(uri);
     }
@@ -85,7 +87,6 @@ public class GnaviRequestEntity implements Serializable {
         String format = "json";
         return "?format=" + format;
     }
-
     private String getAccessKey() {// アクセスキー
         AccessKey accessKey = new AccessKey();
         String acckey = accessKey.getKey();//please show "./Secret/readme.txt"
@@ -118,6 +119,14 @@ public class GnaviRequestEntity implements Serializable {
 
     private String getOffsetPage() {//ページ数
         return "&offset_page=" + offsetPage;
+    }
+
+    public void setLunch(String lunch) {
+        this.lunch = lunch;
+    }
+
+    private String getLunch(){//昼営業あるか
+        return "&lunch="+lunch;
     }
 
     public String getFreeword() {//フリーワード検索

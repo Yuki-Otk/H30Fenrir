@@ -112,6 +112,7 @@ public class ShowListActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
                 String select = (String) adapterView.getSelectedItem();
                 Toast.makeText(ShowListActivity.this, select, Toast.LENGTH_SHORT).show();
+                doSelectCheck(select);
             }
 
             @Override
@@ -120,7 +121,22 @@ public class ShowListActivity extends AppCompatActivity {
             }
         });
     }
-    private void reload(int newPage) {
+    private void doSelectCheck(String select){//sprinnerで指定したものを分岐
+        switch (select){
+            case "さらに絞り込み":
+
+                break;
+            case "開店中":
+
+                break;
+            case "昼営業あり":
+                reload("1");//昼営業有の結果に変更
+                break;
+            case "夜営業あり":
+                break;
+        }
+    }
+    private void reload(int newPage) {//再描画(ページ指定)//overload
         GnaviAPI gnaviAPI = new GnaviAPI();
         System.out.println("new page is " + newPage);
         gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));
@@ -134,8 +150,23 @@ public class ShowListActivity extends AppCompatActivity {
         makeList();
         checkButton();
     }
+    private void reload(String lunch) {//再描画(lunch)//overload
+        GnaviAPI gnaviAPI = new GnaviAPI();
+        gnaviRequestEntity.setLunch(lunch);//lunch時間のみ
+        //TODO;営業時間でもAPIに登録されていないと蹴られてしまう
+        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
+        gnaviAPI.execute();
+        while (true) {//api結果取得するまでweit
+            if (GnaviAPI.isFinishFlag()) {
+                break;
+            }
+        }
+        makeList();
+        checkButton();
+    }
 
-    private void checkButton() {
+    private void checkButton() {//next/backButtonを有効無効にする
+        //TODO;件数が0だと戻るボタンがアクティブになる
         int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), requestNum = GnaviAPI.getRequestNum();
         //backPageButtonの有効化・無効化
         if (GnaviAPI.getPageNum() == 1) {
