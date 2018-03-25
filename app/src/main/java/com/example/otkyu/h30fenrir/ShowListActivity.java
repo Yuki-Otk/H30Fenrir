@@ -166,10 +166,9 @@ public class ShowListActivity extends AppCompatActivity {
     }
 
     private void checkButton() {//next/backButtonを有効無効にする
-        //TODO;件数が0だと戻るボタンがアクティブになる
         int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), requestNum = GnaviAPI.getRequestNum();
         //backPageButtonの有効化・無効化
-        if (GnaviAPI.getPageNum() == 1) {
+        if (GnaviAPI.getPageNum() <= 1) {
             backPageButton.setEnabled(false);
         } else {
             backPageButton.setEnabled(true);
