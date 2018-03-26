@@ -24,6 +24,8 @@ import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -38,11 +40,11 @@ public class ShowListActivity extends AppCompatActivity {
     private Button backPageButton, nextPageButton;
     private GnaviRequestEntity gnaviRequestEntity;
     private static final String REQUEST_KEY = "gnaviRequestEntity";
-    ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private CasarealRecycleViewAdapter adapter;
+    private final List<GnaviResultEntity> listAPICopy=GnaviAPI.getGnaviResultEntityList();//検索結果のコピー(変更不可)
+    private List<GnaviResultEntity> listAPI =new ArrayList<>();//検索結果
 
-
-    public static Intent createIntent(GnaviRequestEntity object, Application activity) {
+    public static Intent createIntent(GnaviRequestEntity object, Application activity) {//画面遷移の取得
         Intent intent = new Intent(activity, ShowListActivity.class);
         intent.putExtra(REQUEST_KEY, object);
         return intent;
@@ -53,7 +55,9 @@ public class ShowListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_list_show);
-        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra(REQUEST_KEY);
+        gnaviRequestEntity = (GnaviRequestEntity) getIntent().getSerializableExtra(REQUEST_KEY);//引き数取得
+        readListAPI();//検索結果
+
         //Sprinner(プルダウン)
         Spinner spinner = (Spinner) findViewById(R.id.time_spinner);
         doSelectSprinner(spinner);
@@ -70,7 +74,7 @@ public class ShowListActivity extends AppCompatActivity {
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.shop_linearLayout);
         List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
         System.out.println("list size=" + list.size());
-        makeList();
+        makeList();//list表示
         checkButton();
 
         //next and back
@@ -95,7 +99,12 @@ public class ShowListActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-
+    private void readListAPI(){//検索結果のListをディープコピーする
+        listAPI.clear();
+        for(int i=0;i<listAPICopy.size();i++){
+            listAPI.add(listAPICopy.get(i).clone());
+        }
+    }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -106,6 +115,8 @@ public class ShowListActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+
+
     private void doSelectSprinner(Spinner spinner) {//sprinnerを変更したとき
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -121,21 +132,12 @@ public class ShowListActivity extends AppCompatActivity {
             }
         });
     }
-    private void doSelectCheck(String select){//sprinnerで指定したものを分岐
-        switch (select){
-            case "さらに絞り込み":
 
-                break;
-            case "開店中":
+    private void doSelectCheck(String select) {//sprinnerで指定したものを分岐
+        reload(select);//指定のもので再描画
 
-                break;
-            case "昼営業あり":
-                reload("1");//昼営業有の結果に変更
-                break;
-            case "夜営業あり":
-                break;
-        }
     }
+
     private void reload(int newPage) {//再描画(ページ指定)//overload
         GnaviAPI gnaviAPI = new GnaviAPI();
         System.out.println("new page is " + newPage);
@@ -150,19 +152,42 @@ public class ShowListActivity extends AppCompatActivity {
         makeList();
         checkButton();
     }
+
     private void reload(String lunch) {//再描画(lunch)//overload
-        GnaviAPI gnaviAPI = new GnaviAPI();
-        gnaviRequestEntity.setLunch(lunch);//lunch時間のみ
+        readListAPI();//検索結果を初期に戻す
         //TODO;営業時間でもAPIに登録されていないと蹴られてしまう
-        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
-        gnaviAPI.execute();
-        while (true) {//api結果取得するまでweit
-            if (GnaviAPI.isFinishFlag()) {
+        switch (lunch) {
+            case "さらに絞り込み"://初期に戻す
                 break;
-            }
+            case "開店中"://開店中
+                doCheckOpenNow();
+                break;
+            case "昼営業あり"://昼営業
+                doCheckLunch();
+                break;
+            case "夜営業あり"://夜営業
+                doCheckDinner();
+                break;
         }
         makeList();
         checkButton();
+    }
+
+    private void doCheckOpenNow() {//開店中のみにする
+        for (int i = 0; i < listAPI.size(); i++) {
+            if (listAPI.get(i).getOpentime().equals("登録されていません")) {
+                listAPI.remove(i);
+                i--;
+            }
+        }
+    }
+
+    private void doCheckLunch() {//昼営業のみにする
+
+    }
+
+    private void doCheckDinner() {//夜営業のみにする
+
     }
 
     private void checkButton() {//next/backButtonを有効無効にする
@@ -184,25 +209,25 @@ public class ShowListActivity extends AppCompatActivity {
         }
     }
 
-    private void makeList() {
+    private void makeList() {//list表示の設定
         int total = GnaviAPI.getTotalNum(), page = GnaviAPI.getPageNum(), dataNum = GnaviAPI.getDataNum(), requestNum = GnaviAPI.getRequestNum();
-        double temp = Math.ceil((double) total / requestNum);
-        int pageMax = (int) temp;
+        int pageMax = (int) Math.ceil((double) total / requestNum);
         String resultStr = "合計" + total + "件\t" + page + "/" + pageMax + "ページ目(" + (requestNum * page - requestNum + 1) + "～" + (requestNum * (page - 1) + dataNum) + "件表示)";
         //layout
         TextView resultTextView = (TextView) findViewById(R.id.result_textView);
         resultTextView.setText(resultStr);
-        RecyclerView rv = (RecyclerView) findViewById(R.id.casareal_recyclerView);
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.casareal_recyclerView);
         adapter = new CasarealRecycleViewAdapter();
-        LinearLayoutManager llm = new LinearLayoutManager(this);
-        rv.setHasFixedSize(true);
-        rv.setLayoutManager(llm);
-        rv.setAdapter(adapter);
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.setAdapter(adapter);
+        adapter.setList(listAPI);
         adapter.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 int index = view.getId();
-                startActivity(ShowDetailsActivity.createIntent(index,getApplication()));
+                startActivity(ShowDetailsActivity.createIntent(listAPI.get(index), getApplication()));
             }
         });
     }

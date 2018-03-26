@@ -19,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
+import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
@@ -32,31 +33,32 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
-    private int index, count = 0;
+    private int count = 0;
     private String webUrl = null, data = null, imgUrl = null, telNum = null;
-    private static final String INTENT_KEY="INTENT_KEY";
+    private static final String LIST_KEY = "LIST_KEY";
+    private GnaviResultEntity gnaviResultEntity;
 
-    public static Intent createIntent(int index, Application activity) {
+    public static Intent createIntent(GnaviResultEntity object, Application activity) {//画面遷移の取得
         Intent intent = new Intent(activity, ShowDetailsActivity.class);
-        intent.putExtra(INTENT_KEY, index);
+        intent.putExtra(LIST_KEY, object);
         return intent;
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_details_show_scroll);//スクロールできるように変更
 
-        Intent intent = getIntent();
-        index = intent.getIntExtra(INTENT_KEY, 0);
+        gnaviResultEntity = (GnaviResultEntity) getIntent().getSerializableExtra(LIST_KEY);//引き数取得
         init();
-        setAll(index, count);
+        setAll(count);
 
         Button changeButton = (Button) findViewById(R.id.change_button);//画像を切り替える
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 count++;
-                setAll(index, count);
+                setAll(count);
             }
         });
         //backButton
@@ -77,24 +79,23 @@ public class ShowDetailsActivity extends AppCompatActivity {
         imageView = (ImageView) findViewById(R.id.imageView);
     }
 
-    private void setAll(int index, int count) {
-        List<GnaviResultEntity> list = GnaviAPI.getGnaviResultEntityList();
-        nameTextView.setText(list.get(index).getName());
-        nameKanaTextView.setText(list.get(index).getNameKana());
-        genreTextView.setText(list.get(index).getGenre());
-        telTextView.setText(list.get(index).getTel());
-        addressTextView.setText(list.get(index).getAddress());
-        opentimeTextView.setText(list.get(index).getOpentime());
-        howGoTextView.setText(list.get(index).getHowGo());
-        String[] temp = list.get(index).getImg();
+    private void setAll(int count) {
+        nameTextView.setText(gnaviResultEntity.getName());
+        nameKanaTextView.setText(gnaviResultEntity.getNameKana());
+        genreTextView.setText(gnaviResultEntity.getGenre());
+        telTextView.setText(gnaviResultEntity.getTel());
+        addressTextView.setText(gnaviResultEntity.getAddress());
+        opentimeTextView.setText(gnaviResultEntity.getOpentime());
+        howGoTextView.setText(gnaviResultEntity.getHowGo());
+        String[] temp = gnaviResultEntity.getImg();
         String url = temp[count % 2];
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener());
         imgAsyncTaskHttpRequest.execute(url);
         imgUrl = url;
-        webUrl = list.get(index).getHomePage();
-        telNum = list.get(index).getTel();
-        data = list.get(index).getName() + "(" + list.get(index).getNameKana() + ")\n" + list.get(index).getHowGo() + "\n" + webUrl;
+        webUrl = gnaviResultEntity.getHomePage();
+        telNum = gnaviResultEntity.getTel();
+        data = gnaviResultEntity.getName() + "(" + gnaviResultEntity.getNameKana() + ")\n" + gnaviResultEntity.getHowGo() + "\n" + webUrl;
 
     }
 

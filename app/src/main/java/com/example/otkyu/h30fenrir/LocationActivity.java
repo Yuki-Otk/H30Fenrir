@@ -275,10 +275,15 @@ public class LocationActivity extends AppCompatActivity {
 
     private String addKeyWord(String str) {
         String add = "";
+        boolean flag=false;
         for (int i = 0; i < checkBoxes.length; i++) {
             if (checkBoxes[i].isChecked()) {
                 add = add + "%20" + checkBoxes[i].getText();//%20はスペースと同意
+                flag=true;
             }
+        }
+        if (!flag){
+            return str;
         }
         return str + "%20" + add;
     }

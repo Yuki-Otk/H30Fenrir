@@ -129,7 +129,7 @@ public class GnaviRequestEntity implements Serializable {
         return "&lunch="+lunch;
     }
 
-    public String getFreeword() {//フリーワード検索
+    private String getFreeword() {//フリーワード検索
         Check check = new Check();
         boolean freewordFlag = check.isCheckNull(freeword);
         if (freewordFlag) {

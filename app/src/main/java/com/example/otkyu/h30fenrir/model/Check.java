@@ -5,7 +5,7 @@ package com.example.otkyu.h30fenrir.model;
  */
 
 public class Check {
-    public String checkString(String str) {
+    public String checkString(String str) {//APIに登録されているか判定
         try {
             int hoge = str.indexOf("{");
             int fuga = str.indexOf("}");

@@ -25,8 +25,14 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     private View.OnClickListener listener;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
 
-    public CasarealRecycleViewAdapter() {
-        this.list = GnaviAPI.getGnaviResultEntityList();
+    public CasarealRecycleViewAdapter() {//コンストラクタ
+        list=getList();
+    }
+    private List<GnaviResultEntity> getList(){
+        return list;
+    }
+    public void setList(List<GnaviResultEntity> list){
+        this.list=list;
     }
 
     @Override
@@ -37,7 +43,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     }
 
     @Override
-    public void onBindViewHolder(CasarealViewHolder holder, int position) {
+    public void onBindViewHolder(CasarealViewHolder holder, int position) {//listの表示設定
         String name = list.get(position).getName();
         String nameKana = list.get(position).getNameKana();
         String genre = list.get(position).getGenre();
@@ -47,7 +53,6 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         holder.titleView.setText(title);
         holder.detailView.setText(howGo);
         //img
-//        String url="https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
         String url = img[0];
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
         imgAsyncTaskHttpRequest.setListener(createListener(holder));
@@ -82,12 +87,12 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
 
     class CasarealViewHolder extends RecyclerView.ViewHolder {
 
-        public TextView titleView;
-        public TextView detailView;
-        public LinearLayout linearLayout;
-        public ImageView imageView;
+        private TextView titleView;
+        private TextView detailView;
+        private LinearLayout linearLayout;
+        private ImageView imageView;
 
-        public CasarealViewHolder(View itemView) {
+        private CasarealViewHolder(View itemView) {
             super(itemView);
             titleView = (TextView) itemView.findViewById(R.id.title);
             detailView = (TextView) itemView.findViewById(R.id.detail);
