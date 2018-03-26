@@ -61,8 +61,8 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
             openJson(jsonObject);
         } catch (Exception e) {
             //TODO: 例外を考慮していません
-            System.out.println("error");
-            System.out.println(e);
+            Log.d("error", String.valueOf(e));
+            finishFlag = true;
         }
     }
 

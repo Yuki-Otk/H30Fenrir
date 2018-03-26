@@ -175,9 +175,12 @@ public class ShowListActivity extends AppCompatActivity {
 
     private void doCheckOpenNow() {//開店中のみにする
         for (int i = 0; i < listAPI.size(); i++) {
-            if (listAPI.get(i).getOpentime().equals("登録されていません")) {
-                listAPI.remove(i);
-                i--;
+            if (!listAPI.get(i).isOpenTimeFlag()) {//営業時間が登録されていないものはlistから削除
+                listAPI.remove(i);//listの中身削除
+                i--;//削除したためindexも減らす
+            }
+            else{//営業時間が登録されている
+
             }
         }
     }

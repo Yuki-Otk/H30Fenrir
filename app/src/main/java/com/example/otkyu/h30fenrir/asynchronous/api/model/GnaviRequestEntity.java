@@ -15,12 +15,12 @@ public class GnaviRequestEntity implements Serializable {
     private String range, freeword, offsetPage, page,lunch;
 
     public GnaviRequestEntity() {
-        gps = new double[2];
-        range = null;
-        freeword = null;
-        offsetPage = "1";
-        page = "20";
-        lunch="0";
+        gps = new double[2];//座標データ(0=lat,1=lon)
+        range = null;//検索範囲
+        freeword = null;//検索キーワード
+        offsetPage = "1";//ページ数
+        page = "20";//1ページに何項目表示するか
+        lunch="0";//ランチ営業をしているか(1=している)
     }
 
     public double[] getGps() {

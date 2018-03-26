@@ -13,20 +13,23 @@ import java.io.Serializable;
 
 public class GnaviResultEntity implements Serializable, Cloneable {//参照できるように,ディープコピーするために
     private String name, nameKana, address, tel, opentime, howGo, genre, homePage;
-    private String[] img;
+    private String[] img, storeOpen, storeClose;
     private boolean openTimeFlag;
 
     public GnaviResultEntity() {
-        name = null;
-        nameKana = null;
-        address = null;
-        tel = null;
-        opentime = null;
-        howGo = null;
-        genre = null;
-        homePage = null;
-        img = new String[2];
-        openTimeFlag = false;
+        name = null;//店名
+        nameKana = null;//テンメイ
+        address = null;//住所
+        tel = null;//電話番号
+        opentime = null;//営業時間
+        howGo = null;//行き方
+        genre = null;//ジャンル
+        homePage = null;//ぐるなびのサイトURL
+        img = new String[2];//詳細画像2枚
+        storeOpen = new String[2];//open時間(中休憩or土日)
+        storeClose = new String[2];//close時間(中休憩or土日)
+        openTimeFlag = false;//開店時間があるか(true=ある)
+
     }
 
     public String getName() {
@@ -83,20 +86,16 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setOpentime(String opentime) {
         Check check = new Check();
-        opentime = check.checkString(opentime);
+        opentime = check.checkString(opentime);//中身があるか確認
         if (!opentime.equals("登録されていません")) {
-            setOpenTimeFlag(true);
+            setOpenTimeFlag(true);//ある場合はフラグを立てる
+        } else {
+            return;//登録されていなければ強制終了
         }
-        String[] temp = opentime.split("<BR>", -1);
-        String str = "";
-        if (temp.length == 1) {
-            this.opentime = opentime;
-            return;
-        }
-        for (int i = 0; i < temp.length; i++) {
-            str = str + "\n" + temp[i];
-        }
-        this.opentime = str;
+        opentime = opentime.replace("<BR>", "\n");//<BR>を\nに置き換え
+        opentime = opentime.replace("、", "\n");//、を\nに置き換え
+        this.opentime = opentime;
+        doOpenTime();//開店時間と閉店時間の計算
     }
 
     public boolean isOpenTimeFlag() {
@@ -156,6 +155,35 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         homePage = check.checkString(homePage);
         this.homePage = homePage;
     }
+
+    private void doOpenTime() {//開店時間の計算
+        String[] hoge = opentime.split("～", 0);//～で開店時間の範囲を取得
+        String[] fuga=null;
+        boolean two = false;//開店情報が2つあるか
+        if (hoge.length >= 3) {//中休みor土日情報有り
+            two = true;//開店情報が2つある
+            fuga = hoge[hoge.length - 2].split("\n", 0);
+            int num = fuga[0].indexOf("(");//"("があるか判定
+            if (num != -1) {
+                fuga[0] = fuga[0].substring(0, num);
+            }
+        }
+        int num = hoge[hoge.length - 1].indexOf("(");//"("があるか判定
+        if (num != -1) {//"("がある
+            hoge[hoge.length - 1] = hoge[hoge.length - 1].substring(0, num);//"("以下を切り取り
+        }
+        if (two) {//中休みor土日情報あり(開店情報が2つある)
+            storeOpen[0]=hoge[0];
+            storeClose[0]=fuga[0];
+            storeOpen[1]=fuga[fuga.length-1];
+            storeClose[1]=hoge[hoge.length-1];
+
+        } else {//中休みor土日情報無し
+            storeOpen[0] = hoge[0];//開店時間
+            storeClose[0] = hoge[1];//閉店時間
+        }
+    }
+
 
     @Override
     public GnaviResultEntity clone() {//ディープコピー
