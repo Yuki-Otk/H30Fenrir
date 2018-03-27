@@ -25,7 +25,9 @@ import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,8 +43,9 @@ public class ShowListActivity extends AppCompatActivity {
     private GnaviRequestEntity gnaviRequestEntity;
     private static final String REQUEST_KEY = "gnaviRequestEntity";
     private CasarealRecycleViewAdapter adapter;
-    private final List<GnaviResultEntity> listAPICopy=GnaviAPI.getGnaviResultEntityList();//検索結果のコピー(変更不可)
-    private List<GnaviResultEntity> listAPI =new ArrayList<>();//検索結果
+    private final List<GnaviResultEntity> listAPICopy = GnaviAPI.getGnaviResultEntityList();//検索結果のコピー(変更不可)
+    private List<GnaviResultEntity> listAPI = new ArrayList<>();//検索結果
+    private boolean sprinnerFlag = false;
 
     public static Intent createIntent(GnaviRequestEntity object, Application activity) {//画面遷移の取得
         Intent intent = new Intent(activity, ShowListActivity.class);
@@ -99,12 +102,14 @@ public class ShowListActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
     }
-    private void readListAPI(){//検索結果のListをディープコピーする
+
+    private void readListAPI() {//検索結果のListをディープコピーする
         listAPI.clear();
-        for(int i=0;i<listAPICopy.size();i++){
+        for (int i = 0; i < listAPICopy.size(); i++) {
             listAPI.add(listAPICopy.get(i).clone());
         }
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
@@ -122,7 +127,6 @@ public class ShowListActivity extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
                 String select = (String) adapterView.getSelectedItem();
-                Toast.makeText(ShowListActivity.this, select, Toast.LENGTH_SHORT).show();
                 doSelectCheck(select);
             }
 
@@ -156,41 +160,64 @@ public class ShowListActivity extends AppCompatActivity {
     private void reload(String lunch) {//再描画(lunch)//overload
         readListAPI();//検索結果を初期に戻す
         //TODO;営業時間でもAPIに登録されていないと蹴られてしまう
+        boolean flag = false;
         switch (lunch) {
             case "さらに絞り込み"://初期に戻す
+                if (sprinnerFlag) {
+                    Toast.makeText(ShowListActivity.this, "検索結果を元に戻します", Toast.LENGTH_SHORT).show();
+                }
+                sprinnerFlag = true;
+                flag = true;
                 break;
             case "開店中"://開店中
-                doCheckOpenNow();
+                doCheckOpen("");//TODO:現在時刻をセット
                 break;
             case "昼営業あり"://昼営業
-                doCheckLunch();
+                doCheckOpen("12:00");
                 break;
             case "夜営業あり"://夜営業
-                doCheckDinner();
+                doCheckOpen("18:00");
                 break;
+        }
+        if (!flag) {
+            Toast.makeText(ShowListActivity.this, "このページのみの絞り込みです", Toast.LENGTH_SHORT).show();
+            flag = false;
         }
         makeList();
         checkButton();
     }
 
-    private void doCheckOpenNow() {//開店中のみにする
+    private void doCheckOpen(String time) {//指定時刻が閉店中ならば削除
         for (int i = 0; i < listAPI.size(); i++) {
-            if (!listAPI.get(i).isOpenTimeFlag()) {//営業時間が登録されていないものはlistから削除
-                listAPI.remove(i);//listの中身削除
-                i--;//削除したためindexも減らす
+            if (listAPI.get(i).isOpenTimeFlag()) {//営業時間が登録されている
+                if (isCheckOpenTime(time,i)) {//指定時刻が開店している
+                    continue;//ここで切り上げる !=break
+                }
             }
-            else{//営業時間が登録されている
-
-            }
+            listAPI.remove(i);//listの中身削除
+            i--;//削除したためindexも減らす
         }
     }
 
-    private void doCheckLunch() {//昼営業のみにする
-
-    }
-
-    private void doCheckDinner() {//夜営業のみにする
-
+    private boolean isCheckOpenTime(String time,int index) {//引き数の時間は営業時間か
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");//format
+        String[] storeOpen=listAPI.get(index).getStoreOpen();
+        String[] storeClose=listAPI.get(index).getStoreClose();
+        try {
+            Date date = simpleDateFormat.parse(time);//指定時間
+            for (int i = 0; i < 2; i++) {
+                Date open = simpleDateFormat.parse( storeOpen[i]);//開店時間
+                Date close = simpleDateFormat.parse(storeClose[i]);//閉店時間
+                int diffOpen = date.compareTo(open);//open時間との比較
+                int diffClose = date.compareTo(close);//close時間との比較
+                if (diffOpen >= 0 && diffClose < 0) {//開店時間以降で閉店時間以前か
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Log.d("error", String.valueOf(e));
+        }
+        return false;
     }
 
     private void checkButton() {//next/backButtonを有効無効にする

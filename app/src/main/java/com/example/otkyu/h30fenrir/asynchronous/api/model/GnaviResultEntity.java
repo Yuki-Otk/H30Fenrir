@@ -1,8 +1,12 @@
 package com.example.otkyu.h30fenrir.asynchronous.api.model;
 
+import android.util.Log;
+
 import com.example.otkyu.h30fenrir.model.Check;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by YukiOtake on 2018/01/25 025.
@@ -16,7 +20,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     private String[] img, storeOpen, storeClose;
     private boolean openTimeFlag;
 
-    public GnaviResultEntity() {
+    public GnaviResultEntity() {//コンストラクタ
         name = null;//店名
         nameKana = null;//テンメイ
         address = null;//住所
@@ -29,7 +33,6 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         storeOpen = new String[2];//open時間(中休憩or土日)
         storeClose = new String[2];//close時間(中休憩or土日)
         openTimeFlag = false;//開店時間があるか(true=ある)
-
     }
 
     public String getName() {
@@ -95,7 +98,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         opentime = opentime.replace("<BR>", "\n");//<BR>を\nに置き換え
         opentime = opentime.replace("、", "\n");//、を\nに置き換え
         this.opentime = opentime;
-        doOpenTime();//開店時間と閉店時間の計算
+        setStoreTime();//開店時間と閉店時間のセット
     }
 
     public boolean isOpenTimeFlag() {
@@ -156,9 +159,9 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         this.homePage = homePage;
     }
 
-    private void doOpenTime() {//開店時間の計算
+    private void setStoreTime() {//開店・閉店時間のセッター
         String[] hoge = opentime.split("～", 0);//～で開店時間の範囲を取得
-        String[] fuga=null;
+        String[] fuga = null;
         boolean two = false;//開店情報が2つあるか
         if (hoge.length >= 3) {//中休みor土日情報有り
             two = true;//開店情報が2つある
@@ -173,17 +176,23 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             hoge[hoge.length - 1] = hoge[hoge.length - 1].substring(0, num);//"("以下を切り取り
         }
         if (two) {//中休みor土日情報あり(開店情報が2つある)
-            storeOpen[0]=hoge[0];
-            storeClose[0]=fuga[0];
-            storeOpen[1]=fuga[fuga.length-1];
-            storeClose[1]=hoge[hoge.length-1];
-
+            storeOpen[0] = hoge[0];
+            storeClose[0] = fuga[0];
+            storeOpen[1] = fuga[fuga.length - 1];
+            storeClose[1] = hoge[hoge.length - 1];
         } else {//中休みor土日情報無し
             storeOpen[0] = hoge[0];//開店時間
             storeClose[0] = hoge[1];//閉店時間
         }
     }
 
+    public String[] getStoreOpen() {
+        return storeOpen;
+    }
+
+    public String[] getStoreClose() {
+        return storeClose;
+    }
 
     @Override
     public GnaviResultEntity clone() {//ディープコピー
@@ -199,6 +208,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             gnaviResultEntity.genre = this.genre;
             gnaviResultEntity.homePage = this.homePage;
             gnaviResultEntity.img = this.img;
+            gnaviResultEntity.storeOpen=this.storeOpen;
+            gnaviResultEntity.storeClose=this.storeClose;
             gnaviResultEntity.openTimeFlag = this.openTimeFlag;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
