@@ -27,6 +27,7 @@ import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -46,6 +47,7 @@ public class ShowListActivity extends AppCompatActivity {
     private final List<GnaviResultEntity> listAPICopy = GnaviAPI.getGnaviResultEntityList();//検索結果のコピー(変更不可)
     private List<GnaviResultEntity> listAPI = new ArrayList<>();//検索結果
     private boolean sprinnerFlag = false;
+    private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");//時間扱い時のフォーマット(時:分)
 
     public static Intent createIntent(GnaviRequestEntity object, Application activity) {//画面遷移の取得
         Intent intent = new Intent(activity, ShowListActivity.class);
@@ -142,7 +144,7 @@ public class ShowListActivity extends AppCompatActivity {
 
     }
 
-    private void reload(int newPage) {//再描画(ページ指定)//overload
+    private void reload(int newPage) {//再描画(ページ指定)//overload//APIを呼び直す
         GnaviAPI gnaviAPI = new GnaviAPI();
         System.out.println("new page is " + newPage);
         gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));
@@ -157,7 +159,7 @@ public class ShowListActivity extends AppCompatActivity {
         checkButton();
     }
 
-    private void reload(String lunch) {//再描画(lunch)//overload
+    private void reload(String lunch) {//再描画(lunch)//overload//APIを呼び直す
         readListAPI();//検索結果を初期に戻す
         //TODO;営業時間でもAPIに登録されていないと蹴られてしまう
         boolean flag = false;
@@ -170,27 +172,33 @@ public class ShowListActivity extends AppCompatActivity {
                 flag = true;
                 break;
             case "開店中"://開店中
-                doCheckOpen("");//TODO:現在時刻をセット
+                doCheckOpen(getNowHourMinutes());//現在時刻で判定
                 break;
             case "昼営業あり"://昼営業
-                doCheckOpen("12:00");
+                doCheckOpen("12:00");//12時に開店しているか
                 break;
             case "夜営業あり"://夜営業
-                doCheckOpen("18:00");
+                doCheckOpen("18:00");//18時に開店しているか
                 break;
         }
         if (!flag) {
-            Toast.makeText(ShowListActivity.this, "このページのみの絞り込みです", Toast.LENGTH_SHORT).show();
-            flag = false;
+            Toast.makeText(ShowListActivity.this, "このページのみの絞り込みです", Toast.LENGTH_LONG).show();
         }
         makeList();
         checkButton();
     }
 
+    private String getNowHourMinutes() {//現在の時刻をformatに従って取得
+        Calendar calendar = Calendar.getInstance();
+        ;//現在時刻を取得
+        Log.d("time", simpleDateFormat.format(calendar.getTime()));
+        return simpleDateFormat.format(calendar.getTime());
+    }
+
     private void doCheckOpen(String time) {//指定時刻が閉店中ならば削除
         for (int i = 0; i < listAPI.size(); i++) {
-            if (listAPI.get(i).isOpenTimeFlag()) {//営業時間が登録されている
-                if (isCheckOpenTime(time,i)) {//指定時刻が開店している
+            if (listAPI.get(i).isOpenTimeFlag()) {//営業時間が登録されているか
+                if (isCheckOpenTime(time, i)) {//指定時刻が開店しているか
                     continue;//ここで切り上げる !=break
                 }
             }
@@ -199,25 +207,24 @@ public class ShowListActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isCheckOpenTime(String time,int index) {//引き数の時間は営業時間か
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");//format
-        String[] storeOpen=listAPI.get(index).getStoreOpen();
-        String[] storeClose=listAPI.get(index).getStoreClose();
+    private boolean isCheckOpenTime(String time, int index) {//引き数の時間は営業時間か
+        String[] storeOpen = listAPI.get(index).getStoreOpen();//listから開店時間を取得
+        String[] storeClose = listAPI.get(index).getStoreClose();//listから閉店時間を取得
         try {
             Date date = simpleDateFormat.parse(time);//指定時間
             for (int i = 0; i < 2; i++) {
-                Date open = simpleDateFormat.parse( storeOpen[i]);//開店時間
+                Date open = simpleDateFormat.parse(storeOpen[i]);//開店時間
                 Date close = simpleDateFormat.parse(storeClose[i]);//閉店時間
                 int diffOpen = date.compareTo(open);//open時間との比較
                 int diffClose = date.compareTo(close);//close時間との比較
                 if (diffOpen >= 0 && diffClose < 0) {//開店時間以降で閉店時間以前か
-                    return true;
+                    return true;//営業時間なう
                 }
             }
         } catch (Exception e) {
             Log.d("error", String.valueOf(e));
         }
-        return false;
+        return false;//営業時間ではない
     }
 
     private void checkButton() {//next/backButtonを有効無効にする
