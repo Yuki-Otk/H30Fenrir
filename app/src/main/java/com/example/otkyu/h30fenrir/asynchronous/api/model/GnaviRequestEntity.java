@@ -39,13 +39,13 @@ public class GnaviRequestEntity implements Serializable {
             case "500m":
                 range = "2";
                 break;
-            case "1km":
+            case "1000m":
                 range = "3";
                 break;
-            case "2km":
+            case "2000m":
                 range = "4";
                 break;
-            case "5km":
+            case "5000m":
                 range = "5";
                 break;
             default:

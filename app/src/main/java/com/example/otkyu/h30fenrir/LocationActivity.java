@@ -282,7 +282,7 @@ public class LocationActivity extends AppCompatActivity {
         gnaviRequestEntity = new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
         String checkStr = doChoiceRadioButton();//RadioButtonで選択されているindexを取得する
-        gnaviRequestEntity.setRange(checkStr);//範囲をセット
+        gnaviRequestEntity.setRange(doChangeRange(checkStr));//範囲をセット
         String page = (String) pageTextView.getText();
         if (page.equals("")) {
             page = "20";
