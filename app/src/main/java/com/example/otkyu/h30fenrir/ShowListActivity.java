@@ -178,7 +178,8 @@ public class ShowListActivity extends AppCompatActivity {
                 doCheckOpen("12:00");//12時に開店しているか
                 break;
             case "夜営業あり"://夜営業
-                doCheckOpen("18:00");//18時に開店しているか
+//                doCheckOpen("18:00");//18時に開店しているか
+                doCheckWriteOpenTime();
                 break;
         }
         if (!flag) {
@@ -187,11 +188,22 @@ public class ShowListActivity extends AppCompatActivity {
         makeList();
         checkButton();
     }
-
+    private void doCheckWriteOpenTime(){
+        for(int i=0;i<listAPI.size();i++){
+            if (!listAPI.get(i).isOpenTimeFlag()){
+                listAPI.remove(i);
+                i--;
+            }
+            else {
+                Log.d("hoge", String.valueOf(i));
+                String hoge=listAPI.get(i).getOpentime();
+                Log.d("hoge",hoge);
+                Log.d("hoge",listAPI.get(i).getName());
+            }
+        }
+    }
     private String getNowHourMinutes() {//現在の時刻をformatに従って取得
-        Calendar calendar = Calendar.getInstance();
-        ;//現在時刻を取得
-        Log.d("time", simpleDateFormat.format(calendar.getTime()));
+        Calendar calendar = Calendar.getInstance();//現在時刻を取得
         return simpleDateFormat.format(calendar.getTime());
     }
 

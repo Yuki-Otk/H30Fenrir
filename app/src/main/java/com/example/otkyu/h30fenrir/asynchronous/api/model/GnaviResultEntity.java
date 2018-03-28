@@ -3,6 +3,7 @@ package com.example.otkyu.h30fenrir.asynchronous.api.model;
 import android.util.Log;
 
 import com.example.otkyu.h30fenrir.model.Check;
+import com.example.otkyu.h30fenrir.model.StringChange;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -163,27 +164,30 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         String[] hoge = opentime.split("～", 0);//～で開店時間の範囲を取得
         String[] fuga = null;
         boolean two = false;//開店情報が2つあるか
-        if (hoge.length >= 3) {//中休みor土日情報有り
+        if (hoge.length >= 3) {//中休み情報有り
             two = true;//開店情報が2つある
             fuga = hoge[hoge.length - 2].split("\n", 0);
-            int num = fuga[0].indexOf("(");//"("があるか判定
-            if (num != -1) {
-                fuga[0] = fuga[0].substring(0, num);
-            }
-        }
-        int num = hoge[hoge.length - 1].indexOf("(");//"("があるか判定
-        if (num != -1) {//"("がある
-            hoge[hoge.length - 1] = hoge[hoge.length - 1].substring(0, num);//"("以下を切り取り
         }
         if (two) {//中休みor土日情報あり(開店情報が2つある)
-            storeOpen[0] = hoge[0];
-            storeClose[0] = fuga[0];
-            storeOpen[1] = fuga[fuga.length - 1];
-            storeClose[1] = hoge[hoge.length - 1];
-        } else {//中休みor土日情報無し
-            storeOpen[0] = hoge[0];//開店時間
-            storeClose[0] = hoge[1];//閉店時間
+            storeOpen[0] = doSubStringSetting(hoge[0], true);//開店時間
+            storeClose[0] = doSubStringSetting(fuga[0], false);//閉店時間
+            storeOpen[1] = doSubStringSetting(fuga[fuga.length - 1], true);//開店時間
+            storeClose[1] = doSubStringSetting(hoge[hoge.length - 1], false);//閉店時間
+        } else {//中休み情報無し
+            storeOpen[0] = doSubStringSetting(hoge[0], true);
+            storeClose[0] = doSubStringSetting(hoge[1], false);//閉店時間
         }
+    }
+
+    private String doSubStringSetting(String str, boolean fast) {//時間の形式に合わせてごみを取り除く(抜き取り対象文字列,開店時間=true:閉店時間=false)
+        StringChange stringChange = new StringChange();//クラス呼び出し
+        if (fast) {//開店時間が対象ならば
+            str = stringChange.doSubStringFast(str.indexOf(")"), str);//対象文字列から")"以上切りすて(後ろ側が残る)
+        } else {//閉店時間が対象ならば
+            str = stringChange.doSubStringLast(str.indexOf("("), str);//対象文字列から"("以下切りすて(前側が残る)
+        }
+        str = stringChange.doSubStringFast(str.indexOf(" "), str);//対象文字列からスペース以上を切りすて(後ろ側が残る)
+        return str;//成形された時間を返す
     }
 
     public String[] getStoreOpen() {
@@ -208,8 +212,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             gnaviResultEntity.genre = this.genre;
             gnaviResultEntity.homePage = this.homePage;
             gnaviResultEntity.img = this.img;
-            gnaviResultEntity.storeOpen=this.storeOpen;
-            gnaviResultEntity.storeClose=this.storeClose;
+            gnaviResultEntity.storeOpen = this.storeOpen;
+            gnaviResultEntity.storeClose = this.storeClose;
             gnaviResultEntity.openTimeFlag = this.openTimeFlag;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
