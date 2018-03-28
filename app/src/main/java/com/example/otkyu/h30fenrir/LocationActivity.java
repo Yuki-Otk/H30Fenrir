@@ -72,12 +72,12 @@ public class LocationActivity extends AppCompatActivity {
     private Boolean requestingLocationUpdates;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
-    //    private TextView textView;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
-    GnaviRequestEntity gnaviRequestEntity;
-    TextView pageTextView;
-    CheckBox[] checkBoxes = new CheckBox[9];
+    private GnaviRequestEntity gnaviRequestEntity;
+    private TextView pageTextView;
+    private final int CHECKBOX_NUM = 9;//checkBoxの使用する数を固定値にしておく
+    CheckBox[] checkBoxes = new CheckBox[CHECKBOX_NUM];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -153,10 +153,10 @@ public class LocationActivity extends AppCompatActivity {
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
-                String select = (String) adapterView.getSelectedItem();
+                String select = (String) adapterView.getSelectedItem();//選択された文字列
                 Toast.makeText(LocationActivity.this, select, Toast.LENGTH_SHORT).show();
                 Log.d("sprinner", select);
-                changeCheckBox(select);
+                changeCheckBox(select);//seekBarに変更があればcheckboxを変換
             }
 
             @Override
@@ -168,58 +168,53 @@ public class LocationActivity extends AppCompatActivity {
 
     private void changeCheckBox(String str) {//seekBarに変更があればcheckboxを変換
         unCheck();//変更があればすべてのチェックを外す
-        String[][] strings = {
+        String[][] strings = {//dataSet
                 {},
                 {"焼き鳥", "寿司", "そば", "とんかつ", "焼肉", "お好み焼き", "うどん", "たこ焼き", "うなぎ"},//和食
                 {"ピザ", "パスタ"},//イタリアン
                 {"ラーメン", "麻婆豆腐", "餃子"},//中華
-                {"寿司","焼肉","カレー","和食","バー","鍋","イタリアン","中華","カフェ"}//もっと
+                {"寿司", "焼肉", "カレー", "和食", "バー", "鍋", "イタリアン", "中華", "カフェ"}//もっと
         };
-        int num = 0;
+        int index = 0;//配列のindex
         switch (str) {
             case "料理・ジャンル":
-                num = 0;
+                index = 0;
                 break;
             case "和食":
-                num = 1;
+                index = 1;
                 break;
             case "イタリアン":
-                num = 2;
+                index = 2;
                 break;
             case "中華":
-                num = 3;
+                index = 3;
                 break;
             case "もっと絞り込み":
-                num = 4;
+                index = 4;
                 break;
         }
-        doCheckBox(strings[num].length);
-        for (int i = 0; i < strings[num].length; i++) {
-            checkBoxes[i].setText(strings[num][i]);
+        doCheckBox(strings[index].length);//Checkboxの表示を行う(大カテゴリの要素の中身の数)
+        for (int i = 0; i < strings[index].length; i++) {
+            checkBoxes[i].setText(strings[index][i]);//checkBoxに文字をセット
         }
     }
 
-    private void doCheckBox(int num) {//checkboxの表示を変更
-        int huga = 0;
-        for (int i = 0; i < num; i++) {//桁増やし(1)
-            huga = huga * 10;
-            huga++;
+    private void doCheckBox(int num) {//Checkboxの表示を行う(大カテゴリの要素の中身の数)
+        //CHECKBOX_NUM桁の2進数で各桁ごとに0はoff,1はonという仕様にする
+        //TODO;桁数が増えたら4桁ごとに16進数に直せばstringの領域を超えても問題ない(そもそもstringの領域は超えない,キャストするわけでないので特に問題なし)
+        String str = "";//on,offを入れる
+        for (int i = 0; i < num; i++) {//onの桁増やし
+            str = "1" + str;//桁増やし
         }
-        for (int i = 0; i < 9 - num; i++) {
-            huga = huga * 10;
+        for (int i = 0; i < CHECKBOX_NUM - num; i++) {//offの桁増やし
+            str = str + "0";//
         }
-        String str = String.valueOf(huga);
-        if (huga == 0) {
-            str = "000000000";
-        }
-        if (str.length() == 9) {
-            for (int i = 0; i < 9; i++) {
-                int index = Integer.parseInt(String.valueOf(str.charAt(i)));
-                if (index == 1) {
-                    checkBoxes[i].setVisibility(View.VISIBLE);
-                } else {
-                    checkBoxes[i].setVisibility(View.INVISIBLE);
-                }
+        for (int i = 0; i < CHECKBOX_NUM; i++) {//1桁ずつon,offを確認する
+            int index = Integer.parseInt(String.valueOf(str.charAt(i)));//i桁を取得する
+            if (index == 1) {//1ならon
+                checkBoxes[i].setVisibility(View.VISIBLE);
+            } else {//0ならoff
+                checkBoxes[i].setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -275,14 +270,14 @@ public class LocationActivity extends AppCompatActivity {
 
     private String addKeyWord(String str) {
         String add = "";
-        boolean flag=false;
+        boolean flag = false;
         for (int i = 0; i < checkBoxes.length; i++) {
             if (checkBoxes[i].isChecked()) {
                 add = add + "%20" + checkBoxes[i].getText();//%20はスペースと同意
-                flag=true;
+                flag = true;
             }
         }
-        if (!flag){
+        if (!flag) {
             return str;
         }
         return str + "%20" + add;
