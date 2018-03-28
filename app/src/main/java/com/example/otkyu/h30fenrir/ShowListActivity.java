@@ -42,10 +42,11 @@ public class ShowListActivity extends AppCompatActivity {
     private GnaviRequestEntity gnaviRequestEntity;
     private static final String REQUEST_KEY = "gnaviRequestEntity";
     private CasarealRecycleViewAdapter adapter;
-    private final List<GnaviResultEntity> listAPICopy = GnaviAPI.getGnaviResultEntityList();//検索結果のコピー(変更不可)
+    private List<GnaviResultEntity> listAPICopy = GnaviAPI.getGnaviResultEntityList();//検索結果のコピー
     private List<GnaviResultEntity> listAPI = new ArrayList<>();//検索結果
     private boolean sprinnerFlag = false;
     private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm");//時間扱い時のフォーマット(時:分)
+    private Spinner spinner;
 
     public static Intent createIntent(GnaviRequestEntity object, Application activity) {//画面遷移の取得
         Intent intent = new Intent(activity, ShowListActivity.class);
@@ -62,7 +63,7 @@ public class ShowListActivity extends AppCompatActivity {
         readListAPI();//検索結果
 
         //Sprinner(プルダウン)
-        Spinner spinner = (Spinner) findViewById(R.id.time_spinner);
+        spinner = (Spinner) findViewById(R.id.time_spinner);
         onSelectSprinner(spinner);
         //下のボタン群
         backPageButton = (Button) findViewById(R.id.backPage_button);
@@ -95,7 +96,6 @@ public class ShowListActivity extends AppCompatActivity {
                 reload(newPage);
             }
         });
-        //backButton
         //backButton
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -153,6 +153,9 @@ public class ShowListActivity extends AppCompatActivity {
                 break;
             }
         }
+        listAPICopy=GnaviAPI.getGnaviResultEntityList();
+        readListAPI();
+        spinner.setSelection(0);
         makeList();
         checkButton();
     }
@@ -176,8 +179,8 @@ public class ShowListActivity extends AppCompatActivity {
                 doCheckOpen("12:00");//12時に開店しているか
                 break;
             case "夜営業あり"://夜営業
-//                doCheckOpen("18:00");//18時に開店しているか
-                doCheckWriteOpenTime();
+                doCheckOpen("18:00");//18時に開店しているか
+//                doCheckWriteOpenTime();
                 break;
         }
         if (!flag) {
@@ -186,7 +189,8 @@ public class ShowListActivity extends AppCompatActivity {
         makeList();
         checkButton();
     }
-    private void doCheckWriteOpenTime(){
+
+    private void doCheckWriteOpenTime(){//営業時間について確認する用
         for(int i=0;i<listAPI.size();i++){
             if (!listAPI.get(i).isOpenTimeFlag()){
                 listAPI.remove(i);
