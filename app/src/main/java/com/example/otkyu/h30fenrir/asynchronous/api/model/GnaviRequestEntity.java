@@ -1,7 +1,7 @@
 package com.example.otkyu.h30fenrir.asynchronous.api.model;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
-import com.example.otkyu.h30fenrir.model.Check;
+import com.example.otkyu.h30fenrir.model.CheckModel;
 
 import java.io.Serializable;
 
@@ -130,8 +130,8 @@ public class GnaviRequestEntity implements Serializable {
     }
 
     private String getFreeword() {//フリーワード検索
-        Check check = new Check();
-        boolean freewordFlag = check.isCheckNull(freeword);
+        CheckModel checkModel = new CheckModel();
+        boolean freewordFlag = checkModel.isCheckNull(freeword);
         if (freewordFlag) {
             return "&freeword=" + freeword;
         }

@@ -52,9 +52,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 
 import java.text.DateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 public class LocationActivity extends AppCompatActivity {
 
@@ -75,9 +73,14 @@ public class LocationActivity extends AppCompatActivity {
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
     private GnaviRequestEntity gnaviRequestEntity;
-    private TextView pageTextView;
+    private TextView pageTextView, rangeTextView;
     private final int CHECKBOX_NUM = 9;//checkBoxの使用する数を固定値にしておく
-    CheckBox[] checkBoxes = new CheckBox[CHECKBOX_NUM];
+    private CheckBox[] checkBoxes = new CheckBox[CHECKBOX_NUM];
+    private Spinner spinner;
+    private SeekBar seekBar;
+    private RadioGroup radioGroup;
+    private Button searchButton;
+    private String rangeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,27 +89,51 @@ public class LocationActivity extends AppCompatActivity {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         settingsClient = LocationServices.getSettingsClient(this);
-        priority = 0;
-        createLocationCallback();
-        createLocationRequest();
-        buildLocationSettingsRequest();
-        //Sprinner(プルダウン)
-        Spinner spinner = (Spinner) findViewById(R.id.genre_spinner);
-        checkBoxes[0] = (CheckBox) findViewById(R.id.checkBox1);
-        checkBoxes[1] = (CheckBox) findViewById(R.id.checkBox2);
-        checkBoxes[2] = (CheckBox) findViewById(R.id.checkBox3);
-        checkBoxes[3] = (CheckBox) findViewById(R.id.checkBox4);
-        checkBoxes[4] = (CheckBox) findViewById(R.id.checkBox5);
-        checkBoxes[5] = (CheckBox) findViewById(R.id.checkBox6);
-        checkBoxes[6] = (CheckBox) findViewById(R.id.checkBox7);
-        checkBoxes[7] = (CheckBox) findViewById(R.id.checkBox8);
-        checkBoxes[8] = (CheckBox) findViewById(R.id.checkBox9);
-        doSelectSprinner(spinner);
-        //スニークバー
-        SeekBar seekBar = (SeekBar) findViewById(R.id.page_seekBar);//pageスニーク
-        pageTextView = (TextView) findViewById(R.id.page_textView);//page表示
-        String num = String.valueOf(seekBar.getProgress());
-        pageTextView.setText(num);
+        init();//viewを読み込み
+        doGpsGet();//gpsを取得する
+        onRadioClick();//radioボタンが変更されたらイベント
+        radioGroup.check(R.id.five_m_radioButton);//初期値をチェックする
+        onSelectSprinner();//spinnerが変更されたらイベント
+        onChengeSeekBar();//SeekBarを変更したらイベント
+        onClickButton();//検索ボタンが押されたら
+        startLocationUpdates();//GPS読み込み強制開始
+    }
+
+    private void init() {
+        spinner = findViewById(R.id.genre_spinner);
+        checkBoxes[0] = findViewById(R.id.checkBox1);
+        checkBoxes[1] = findViewById(R.id.checkBox2);
+        checkBoxes[2] = findViewById(R.id.checkBox3);
+        checkBoxes[3] = findViewById(R.id.checkBox4);
+        checkBoxes[4] = findViewById(R.id.checkBox5);
+        checkBoxes[5] = findViewById(R.id.checkBox6);
+        checkBoxes[6] = findViewById(R.id.checkBox7);
+        checkBoxes[7] = findViewById(R.id.checkBox8);
+        checkBoxes[8] = findViewById(R.id.checkBox9);
+        seekBar = findViewById(R.id.page_seekBar);//pageスニーク
+        pageTextView = findViewById(R.id.page_textView);//page表示
+        radioGroup = findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
+        rangeTextView = findViewById(R.id.range_textView);//徒歩何分か表示
+        rangeString = getString(R.string.rangeJa);//strings.xmlのrangeJaを取得
+        searchButton=  findViewById(R.id.search_button);// 検索
+    }
+    private void onClickButton(){//ボタンが押されたら
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
+                boolean flag = gnaviRequest();
+                if (flag) {
+                    jump();
+                } else {
+                    String str = "検索結果はありませんでした。";
+                    Toast.makeText(LocationActivity.this, str, Toast.LENGTH_LONG).show();
+                    System.out.println(str);
+                }
+            }
+        });
+    }
+    private void onChengeSeekBar(){//SeekBarを変更したら
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
@@ -129,27 +156,47 @@ public class LocationActivity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
             }
         });
-
-        // 検索
-        Button searchButton = (Button) findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new View.OnClickListener() {
+    }
+    private void onRadioClick() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
-            public void onClick(View v) {
-                gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
-                boolean flag = gnaviRequest();
-                if (flag) {
-                    jump();
-                } else {
-                    String str = "検索結果はありませんでした。";
-                    Toast.makeText(LocationActivity.this, str, Toast.LENGTH_LONG).show();
-                    System.out.println(str);
-                }
+            public void onCheckedChanged(RadioGroup radioGroup, int checkdId) {
+                setRangeText();
             }
         });
-        startLocationUpdates();//強制開始
     }
 
-    private void doSelectSprinner(Spinner spinner) {//sprinnerを変更したとき
+    private void setRangeText() {
+        String range = doChoiceRadioButton();
+        rangeTextView.setText(rangeString + range + "圏内(" + doChangeRange(range) + ")");
+    }
+
+    private String doChangeRange(String str) {//範囲の分をmに変換する
+        if (str.equals(getString(R.string.M300))) {
+            return getString(R.string.m300);
+        }
+        if (str.equals(getString(R.string.M500))) {
+            return getString(R.string.m500);
+        }
+        if (str.equals(getString(R.string.M1000))) {
+            return getString(R.string.m1000);
+
+        }
+        if (str.equals(getString(R.string.M2000))) {
+            return getString(R.string.m2000);
+
+        }
+        return getString(R.string.m5000);
+    }
+
+    private void doGpsGet() {//GPSを取得する
+        priority = 0;
+        createLocationCallback();
+        createLocationRequest();
+        buildLocationSettingsRequest();
+    }
+
+    private void onSelectSprinner() {//sprinnerを変更したとき
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
@@ -225,13 +272,16 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
+    private String doChoiceRadioButton() {//RadioButtonで選択されているindexを取得する
+        int id = radioGroup.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
+        RadioButton radioButton = findViewById(id);// チェックされているラジオボタンオブジェクトを取得
+        return radioButton.getText().toString();
+    }
+
     private boolean gnaviRequest() {
         gnaviRequestEntity = new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
-        int id = radioGroup.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
-        RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
-        String checkStr = radioButton.getText().toString();
+        String checkStr = doChoiceRadioButton();//RadioButtonで選択されているindexを取得する
         gnaviRequestEntity.setRange(checkStr);//範囲をセット
         String page = (String) pageTextView.getText();
         if (page.equals("")) {
@@ -287,8 +337,7 @@ public class LocationActivity extends AppCompatActivity {
         startActivity(ShowListActivity.createIntent(gnaviRequestEntity, getApplication()));
     }
 
-    // locationのコールバックを受け取る
-    private void createLocationCallback() {
+    private void createLocationCallback() {// locationのコールバックを受け取る
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -380,8 +429,7 @@ public class LocationActivity extends AppCompatActivity {
 
     }
 
-    // 端末で測位できる状態か確認する。wifi, GPSなどがOffになっているとエラー情報のダイアログが出る
-    private void buildLocationSettingsRequest() {
+    private void buildLocationSettingsRequest() {// 端末で測位できる状態か確認する。wifi, GPSなどがOffになっているとエラー情報のダイアログが出る
         LocationSettingsRequest.Builder builder =
                 new LocationSettingsRequest.Builder();
 
@@ -393,7 +441,7 @@ public class LocationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode,
                                     int resultCode, Intent data) {
         switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
+            // CheckModel for the integer request code originally supplied to startResolutionForResult().
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:

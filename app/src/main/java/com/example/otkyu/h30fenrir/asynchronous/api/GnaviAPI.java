@@ -15,11 +15,8 @@ import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.otkyu.h30fenrir.asynchronous.api.secret.AccessKey;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
-import com.example.otkyu.h30fenrir.model.Check;
-import com.fasterxml.jackson.databind.*;
 
 import org.json.JSONArray;
 import org.json.JSONException;

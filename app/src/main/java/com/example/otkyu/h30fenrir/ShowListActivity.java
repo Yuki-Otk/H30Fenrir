@@ -1,6 +1,5 @@
 package com.example.otkyu.h30fenrir;
 
-import android.app.Activity;
 import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
@@ -22,9 +21,7 @@ import com.example.otkyu.h30fenrir.view.CasarealRecycleViewAdapter;
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
-import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
-import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -66,7 +63,7 @@ public class ShowListActivity extends AppCompatActivity {
 
         //Sprinner(プルダウン)
         Spinner spinner = (Spinner) findViewById(R.id.time_spinner);
-        doSelectSprinner(spinner);
+        onSelectSprinner(spinner);
         //下のボタン群
         backPageButton = (Button) findViewById(R.id.backPage_button);
         nextPageButton = (Button) findViewById(R.id.nextPage_button);
@@ -125,7 +122,7 @@ public class ShowListActivity extends AppCompatActivity {
     }
 
 
-    private void doSelectSprinner(Spinner spinner) {//sprinnerを変更したとき
+    private void onSelectSprinner(Spinner spinner) {//sprinnerを変更したとき
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき

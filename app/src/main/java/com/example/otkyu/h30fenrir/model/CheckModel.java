@@ -4,7 +4,7 @@ package com.example.otkyu.h30fenrir.model;
  * Created by YukiOtake on 2018/02/14 014.
  */
 
-public class Check {
+public class CheckModel {
     public String checkString(String str) {//APIに登録されているか判定
         try {
             int hoge = str.indexOf("{");

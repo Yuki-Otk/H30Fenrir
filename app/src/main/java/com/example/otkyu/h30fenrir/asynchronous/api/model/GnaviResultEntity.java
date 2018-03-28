@@ -1,18 +1,14 @@
 package com.example.otkyu.h30fenrir.asynchronous.api.model;
 
-import android.util.Log;
-
-import com.example.otkyu.h30fenrir.model.Check;
-import com.example.otkyu.h30fenrir.model.StringChange;
+import com.example.otkyu.h30fenrir.model.CheckModel;
+import com.example.otkyu.h30fenrir.model.ChangeModel;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 /**
  * Created by YukiOtake on 2018/01/25 025.
  * ぐるなびAPIを利用した時の返り値を格納
- * Check.java をメソッドごとに読んでいるのはそうしないとアクティビティ間での受け渡しができなかったから:http://jazzguitar7.blog118.fc2.com/blog-entry-10.html
+ * CheckModel.java をメソッドごとに読んでいるのはそうしないとアクティビティ間での受け渡しができなかったから:http://jazzguitar7.blog118.fc2.com/blog-entry-10.html
  * ディープコピーの参考:https://qiita.com/SUZUKI_Masaya/items/8da8c0038797f143f5d3
  */
 
@@ -41,8 +37,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setName(String name) {
-        Check check = new Check();
-        name = check.checkString(name);
+        CheckModel checkModel = new CheckModel();
+        name = checkModel.checkString(name);
         this.name = name;
     }
 
@@ -51,8 +47,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setNameKana(String nameKana) {
-        Check check = new Check();
-        nameKana = check.checkString(nameKana);
+        CheckModel checkModel = new CheckModel();
+        nameKana = checkModel.checkString(nameKana);
         this.nameKana = nameKana;
     }
 
@@ -61,8 +57,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setAddress(String address) {
-        Check check = new Check();
-        address = check.checkString(address);
+        CheckModel checkModel = new CheckModel();
+        address = checkModel.checkString(address);
         String[] temp = address.split(" ");
         for (int i = 0; i < temp.length; i++) {
             if (i == 0) {
@@ -79,8 +75,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setTel(String tel) {
-        Check check = new Check();
-        tel = check.checkString(tel);
+        CheckModel checkModel = new CheckModel();
+        tel = checkModel.checkString(tel);
         this.tel = tel;
     }
 
@@ -89,8 +85,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setOpentime(String opentime) {
-        Check check = new Check();
-        opentime = check.checkString(opentime);//中身があるか確認
+        CheckModel checkModel = new CheckModel();
+        opentime = checkModel.checkString(opentime);//中身があるか確認
         if (!opentime.equals("登録されていません")) {
             setOpenTimeFlag(true);//ある場合はフラグを立てる
         } else {
@@ -115,8 +111,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setHowGo(String howGo) {
-        Check check = new Check();
-        howGo = check.checkString(howGo);
+        CheckModel checkModel = new CheckModel();
+        howGo = checkModel.checkString(howGo);
         this.howGo = howGo;
     }
 
@@ -125,9 +121,9 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setImg(String[] img) {
-        Check check = new Check();
-        img[0] = check.checkString(img[0]);
-        img[1] = check.checkString(img[1]);
+        CheckModel checkModel = new CheckModel();
+        img[0] = checkModel.checkString(img[0]);
+        img[1] = checkModel.checkString(img[1]);
         String url1 = "https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
         String url2 = "https://raw.githubusercontent.com/Yuki-Otk/H30Fenrir/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png";
         String error = "登録されていません";
@@ -145,8 +141,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setGenre(String genre) {
-        Check check = new Check();
-        genre = check.checkString(genre);
+        CheckModel checkModel = new CheckModel();
+        genre = checkModel.checkString(genre);
         this.genre = genre;
     }
 
@@ -155,8 +151,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     public void setHomePage(String homePage) {
-        Check check = new Check();
-        homePage = check.checkString(homePage);
+        CheckModel checkModel = new CheckModel();
+        homePage = checkModel.checkString(homePage);
         this.homePage = homePage;
     }
 
@@ -180,14 +176,14 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     private String doSubStringSetting(String str, boolean fast) {//時間の形式に合わせてごみを取り除く(抜き取り対象文字列,開店時間=true:閉店時間=false)
-        StringChange stringChange = new StringChange();//クラス呼び出し
+        ChangeModel changeModel = new ChangeModel();//クラス呼び出し
         if (fast) {//開店時間が対象ならば
-            str = stringChange.doSubStringFast(str.indexOf(")"), str);//対象文字列から")"以上切りすて(後ろ側が残る)
+            str = changeModel.doSubStringFast(str.indexOf(")"), str);//対象文字列から")"以上切りすて(後ろ側が残る)
         } else {//閉店時間が対象ならば
-            str = stringChange.doSubStringLast(str.indexOf("("), str);//対象文字列から"("以下切りすて(前側が残る)
+            str = changeModel.doSubStringLast(str.indexOf("("), str);//対象文字列から"("以下切りすて(前側が残る)
         }
-        str = stringChange.doSubStringFast(str.indexOf(" "), str);//対象文字列からスペース以上を切りすて(後ろ側が残る)
-        str = stringChange.doSubStringFast(str.indexOf("："), str);//対象文字列から：(全角)以上を切りすて(後ろ側が残る)
+        str = changeModel.doSubStringFast(str.indexOf(" "), str);//対象文字列からスペース以上を切りすて(後ろ側が残る)
+        str = changeModel.doSubStringFast(str.indexOf("："), str);//対象文字列から：(全角)以上を切りすて(後ろ側が残る)
         return str;//成形された時間を返す
     }
 
