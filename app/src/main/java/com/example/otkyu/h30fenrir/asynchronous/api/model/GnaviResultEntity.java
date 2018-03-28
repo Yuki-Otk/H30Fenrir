@@ -187,6 +187,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             str = stringChange.doSubStringLast(str.indexOf("("), str);//対象文字列から"("以下切りすて(前側が残る)
         }
         str = stringChange.doSubStringFast(str.indexOf(" "), str);//対象文字列からスペース以上を切りすて(後ろ側が残る)
+        str = stringChange.doSubStringFast(str.indexOf("："), str);//対象文字列から：(全角)以上を切りすて(後ろ側が残る)
         return str;//成形された時間を返す
     }
 

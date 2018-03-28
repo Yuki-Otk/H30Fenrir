@@ -25,6 +25,7 @@ import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 
 import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -196,8 +197,8 @@ public class ShowListActivity extends AppCompatActivity {
             }
             else {
                 Log.d("hoge", String.valueOf(i));
-                String hoge=listAPI.get(i).getOpentime();
-                Log.d("hoge",hoge);
+                String[] hoge=listAPI.get(i).getStoreOpen();
+                String[] fuga=listAPI.get(i).getStoreClose();
                 Log.d("hoge",listAPI.get(i).getName());
             }
         }
@@ -210,8 +211,12 @@ public class ShowListActivity extends AppCompatActivity {
     private void doCheckOpen(String time) {//指定時刻が閉店中ならば削除
         for (int i = 0; i < listAPI.size(); i++) {
             if (listAPI.get(i).isOpenTimeFlag()) {//営業時間が登録されているか
-                if (isCheckOpenTime(time, i)) {//指定時刻が開店しているか
-                    continue;//ここで切り上げる !=break
+                try {
+                    if (isCheckOpenTime(time, i)) {//指定時刻が開店しているか
+                        continue;//ここで切り上げる !=break
+                    }
+                }catch (Exception e){
+                    Log.d("error", String.valueOf(e));
                 }
             }
             listAPI.remove(i);//listの中身削除
@@ -219,23 +224,24 @@ public class ShowListActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isCheckOpenTime(String time, int index) {//引き数の時間は営業時間か
+    private boolean isCheckOpenTime(String time, int index) throws ParseException {//引き数の時間は営業時間か
         String[] storeOpen = listAPI.get(index).getStoreOpen();//listから開店時間を取得
         String[] storeClose = listAPI.get(index).getStoreClose();//listから閉店時間を取得
-        try {
             Date date = simpleDateFormat.parse(time);//指定時間
             for (int i = 0; i < 2; i++) {
-                Date open = simpleDateFormat.parse(storeOpen[i]);//開店時間
-                Date close = simpleDateFormat.parse(storeClose[i]);//閉店時間
-                int diffOpen = date.compareTo(open);//open時間との比較
-                int diffClose = date.compareTo(close);//close時間との比較
-                if (diffOpen >= 0 && diffClose < 0) {//開店時間以降で閉店時間以前か
-                    return true;//営業時間なう
+                try {//片方だけでもあっていれば検索に適応するようにforの中に例外
+                    Date open = simpleDateFormat.parse(storeOpen[i]);//開店時間
+                    Date close = simpleDateFormat.parse(storeClose[i]);//閉店時間
+                    int diffOpen = date.compareTo(open);//open時間との比較
+                    int diffClose = date.compareTo(close);//close時間との比較
+                    if (diffOpen >= 0 && diffClose < 0) {//開店時間以降で閉店時間以前か
+                        return true;//営業時間なう
+                    }
+                }
+                catch (Exception e){
+                    Log.d("error", String.valueOf(e));
                 }
             }
-        } catch (Exception e) {
-            Log.d("error", String.valueOf(e));
-        }
         return false;//営業時間ではない
     }
 

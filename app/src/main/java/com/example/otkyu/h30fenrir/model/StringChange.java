@@ -7,7 +7,7 @@ package com.example.otkyu.h30fenrir.model;
 public class StringChange {
     public String doSubStringFast(int num, String str) {//文字列の後ろ側を抜き取り(基準点,対象文字列)
         if (num != -1) {//基準点の文字列が検索できていなかった
-            str  = str.substring(num, str.length());//文字列後ろ側を抜き取り
+            str  = str.substring(num+1, str.length());//文字列後ろ側を抜き取り
         }
         return str.trim();//文字列前後の空白等の制御文字を捨てる
     }
