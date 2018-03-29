@@ -30,13 +30,14 @@ import java.util.List;
  */
 
 public class ShowDetailsActivity extends AppCompatActivity {
-    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView,holidayTextView;
+    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView, holidayTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
-    private ImageView imageView;
-    private int count = 0;
+    private final int IMAGEVIEW_NUM = 2;//checkBoxの使用する数を固定値にしておく
+    private ImageView[] imageViews = new ImageView[IMAGEVIEW_NUM];
     private String webUrl = null, data = null, imgUrl = null, telNum = null;
     private static final String LIST_KEY = "LIST_KEY";
     private GnaviResultEntity gnaviResultEntity;
+    private String[] img;
 
     public static Intent createIntent(GnaviResultEntity object, Application activity) {//画面遷移の取得
         Intent intent = new Intent(activity, ShowDetailsActivity.class);
@@ -51,16 +52,8 @@ public class ShowDetailsActivity extends AppCompatActivity {
 
         gnaviResultEntity = (GnaviResultEntity) getIntent().getSerializableExtra(LIST_KEY);//引き数取得
         init();
-        setAll(count);
+        setAll();
 
-        Button changeButton = (Button) findViewById(R.id.change_button);//画像を切り替える
-        changeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                count++;
-                setAll(count);
-            }
-        });
         //backButton
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
@@ -69,18 +62,19 @@ public class ShowDetailsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        nameTextView =  findViewById(R.id.name_textView);
-        nameKanaTextView =  findViewById(R.id.nameKana_textView);
-        genreTextView =  findViewById(R.id.genre_textView);
-        telTextView =  findViewById(R.id.tel_textView);
-        addressTextView =  findViewById(R.id.address_textView);
-        opentimeTextView =  findViewById(R.id.opentime_textView);
-        howGoTextView =  findViewById(R.id.howGo_textView);
-        imageView =  findViewById(R.id.imageView);
-        holidayTextView=findViewById(R.id.holiday_textView);
+        nameTextView = findViewById(R.id.name_textView);
+        nameKanaTextView = findViewById(R.id.nameKana_textView);
+        genreTextView = findViewById(R.id.genre_textView);
+        telTextView = findViewById(R.id.tel_textView);
+        addressTextView = findViewById(R.id.address_textView);
+        opentimeTextView = findViewById(R.id.opentime_textView);
+        howGoTextView = findViewById(R.id.howGo_textView);
+        imageViews[0] = (ImageView) findViewById(R.id.imageView1);
+        imageViews[1] = findViewById(R.id.imageView2);
+        holidayTextView = findViewById(R.id.holiday_textView);
     }
 
-    private void setAll(int count) {
+    private void setAll() {
         nameTextView.setText(gnaviResultEntity.getName());
         nameKanaTextView.setText(gnaviResultEntity.getNameKana());
         genreTextView.setText(gnaviResultEntity.getGenre());
@@ -89,12 +83,13 @@ public class ShowDetailsActivity extends AppCompatActivity {
         opentimeTextView.setText(gnaviResultEntity.getOpentime());
         howGoTextView.setText(gnaviResultEntity.getHowGo());
         holidayTextView.setText(gnaviResultEntity.getHoliday());
-        String[] temp = gnaviResultEntity.getImg();
-        String url = temp[count % 2];
-        imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
-        imgAsyncTaskHttpRequest.setListener(createListener());
-        imgAsyncTaskHttpRequest.execute(url);
-        imgUrl = url;
+        img = gnaviResultEntity.getImg();
+        if (img[0] != null) {//画像情報が登録されていないなら読み込まない
+            imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
+            imgAsyncTaskHttpRequest.setListener(createListener());
+            imgAsyncTaskHttpRequest.execute(img[0], String.valueOf(0));
+        }
+        imgUrl = img[0] + img[1];
         webUrl = gnaviResultEntity.getHomePage();
         telNum = gnaviResultEntity.getTel();
         data = gnaviResultEntity.getName() + "(" + gnaviResultEntity.getNameKana() + ")\n" + gnaviResultEntity.getHowGo() + "\n" + webUrl;
@@ -150,17 +145,19 @@ public class ShowDetailsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    @Override
-    protected void onDestroy() {
-        imgAsyncTaskHttpRequest.setListener(null);
-        super.onDestroy();
-    }
 
     private ImgAsyncTaskHttpRequest.Listener createListener() {
         return new ImgAsyncTaskHttpRequest.Listener() {
             @Override
-            public void onSuccess(Bitmap bmp) {
-                imageView.setImageBitmap(bmp);
+            public void onSuccess(Bitmap bmp, int index) {
+                imageViews[index].setImageBitmap(bmp);
+                if (index < imageViews.length-1) {
+                    if (img[index+1]!=null) {
+                        imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
+                        imgAsyncTaskHttpRequest.setListener(createListener());
+                        imgAsyncTaskHttpRequest.execute(img[index + 1], String.valueOf(index + 1));
+                    }
+                }
             }
         };
     }

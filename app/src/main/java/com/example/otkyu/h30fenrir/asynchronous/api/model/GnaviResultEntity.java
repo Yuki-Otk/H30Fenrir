@@ -123,16 +123,12 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setImg(String[] img) {
         CheckModel checkModel = new CheckModel();
-        img[0] = checkModel.checkString(img[0]);
-        img[1] = checkModel.checkString(img[1]);
-        String url1 = "https://developer.android.com/_static/0d76052693/images/android/touchicon-180.png?hl=ja";
-        String url2 = "https://raw.githubusercontent.com/Yuki-Otk/H30Fenrir/master/app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.png";
         String error = "登録されていません";
-        if (img[0].equals(error)) {
-            img[0] = url1;
-        }
-        if (img[1].equals(error)) {
-            img[1] = url2;
+        for(int i=0;i<img.length;i++){
+            img[i]=checkModel.checkString(img[i]);
+            if (img[i].equals(error)){//もし画像が登録されていなければnullを代入
+                img[i]=null;
+            }
         }
         this.img = img;
     }
@@ -203,6 +199,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     public void setHoliday(String holiday) {
         CheckModel checkModel = new CheckModel();
         holiday = checkModel.checkString(holiday);
+        holiday = holiday.replace("<BR>", "\n");//<BR>を\nに置き換え
+        holiday = holiday.replace("、", "\n");//、を\nに置き換え
         this.holiday = holiday;
     }
 

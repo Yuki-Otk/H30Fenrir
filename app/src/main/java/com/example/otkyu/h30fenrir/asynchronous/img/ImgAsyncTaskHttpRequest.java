@@ -17,22 +17,27 @@ import java.net.URL;
 
 public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     private Listener listener;
+    private int index;
 
     @Override
-    protected Bitmap doInBackground(String... strings) {
+    protected Bitmap doInBackground(String... strings) {//引き数は2つ(画像URL,index)
+        try {
+            index=Integer.parseInt(strings[1]);
+        }catch (Exception e){//引き数渡し忘れた時用
+            index=0;
+        }
         return downloadImage(strings[0]);
     }
 
-    // 途中経過をメインスレッドに返す
+
     @Override
-    protected void onProgressUpdate(Void... progress) {
+    protected void onProgressUpdate(Void... progress) {// 途中経過をメインスレッドに返す
     }
 
-    // 非同期処理が終了後、結果をメインスレッドに返す
     @Override
-    protected void onPostExecute(Bitmap bmp) {
+    protected void onPostExecute(Bitmap bmp) {// 非同期処理が終了後、結果をメインスレッドに返す
         if (listener != null) {
-            listener.onSuccess(bmp);
+            listener.onSuccess(bmp,index);
         }
     }
 
@@ -46,28 +51,19 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
 
         try {
             URL url = new URL(address);
-
-            // HttpURLConnection インスタンス生成
-            urlConnection = (HttpURLConnection) url.openConnection();
-
+            urlConnection = (HttpURLConnection) url.openConnection();// HttpURLConnection インスタンス生成
             // タイムアウト設定
             urlConnection.setReadTimeout(10000);
             urlConnection.setConnectTimeout(20000);
-
             // リクエストメソッド
             urlConnection.setRequestMethod("GET");
-
             // リダイレクトを自動で許可しない設定
             urlConnection.setInstanceFollowRedirects(false);
-
             // ヘッダーの設定(複数設定可能)
             urlConnection.setRequestProperty("Accept-Language", "jp");
-
             // 接続
             urlConnection.connect();
-
             int resp = urlConnection.getResponseCode();
-
             switch (resp) {
                 case HttpURLConnection.HTTP_OK:
                     InputStream is = null;
@@ -96,7 +92,6 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
                 urlConnection.disconnect();
             }
         }
-
         return bmp;
     }
 
@@ -104,7 +99,8 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
         this.listener = listener;
     }
 
+
     public interface Listener {
-        void onSuccess(Bitmap bmp);
+        void onSuccess(Bitmap bmp,int index);
     }
 }

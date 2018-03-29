@@ -26,13 +26,15 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
 
     public CasarealRecycleViewAdapter() {//コンストラクタ
-        list=getList();
+        list = getList();
     }
-    private List<GnaviResultEntity> getList(){
+
+    private List<GnaviResultEntity> getList() {
         return list;
     }
-    public void setList(List<GnaviResultEntity> list){
-        this.list=list;
+
+    public void setList(List<GnaviResultEntity> list) {
+        this.list = list;
     }
 
     @Override
@@ -54,10 +56,11 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         holder.detailView.setText(howGo);
         //img
         String url = img[0];
-        imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
-        imgAsyncTaskHttpRequest.setListener(createListener(holder));
-        imgAsyncTaskHttpRequest.execute(url);
-
+        if (url != null) {//画像情報が登録されていないなら読み込まない
+            imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
+            imgAsyncTaskHttpRequest.setListener(createListener(holder));
+            imgAsyncTaskHttpRequest.execute(url);
+        }
         holder.linearLayout.setId(holder.getAdapterPosition());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,8 +73,8 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     private ImgAsyncTaskHttpRequest.Listener createListener(final CasarealViewHolder holder) {
         return new ImgAsyncTaskHttpRequest.Listener() {
             @Override
-            public void onSuccess(Bitmap bmp) {
-                holder.imageView.setImageBitmap(bmp);
+            public void onSuccess(Bitmap bmp, int index) {
+                holder.imageView.setImageBitmap(bmp);//画像のset
             }
         };
     }
@@ -86,7 +89,6 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     }
 
     class CasarealViewHolder extends RecyclerView.ViewHolder {
-
         private TextView titleView;
         private TextView detailView;
         private LinearLayout linearLayout;
