@@ -34,6 +34,7 @@
     <string name="share">share</string>
     <string name="pageDefault">20</string>
     <string name="searchAlpha">絞り込み:</string>
+    <string name="holiday">休日</string>
     <string-array name="mainArray">
         <item>料理・ジャンル</item>
         <item>和食</item>

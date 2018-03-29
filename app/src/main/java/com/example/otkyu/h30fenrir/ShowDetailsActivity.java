@@ -30,7 +30,7 @@ import java.util.List;
  */
 
 public class ShowDetailsActivity extends AppCompatActivity {
-    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView;
+    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView,holidayTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private ImageView imageView;
     private int count = 0;
@@ -69,14 +69,15 @@ public class ShowDetailsActivity extends AppCompatActivity {
     }
 
     private void init() {
-        nameTextView = (TextView) findViewById(R.id.name_textView);
-        nameKanaTextView = (TextView) findViewById(R.id.nameKana_textView);
-        genreTextView = (TextView) findViewById(R.id.genre_textView);
-        telTextView = (TextView) findViewById(R.id.tel_textView);
-        addressTextView = (TextView) findViewById(R.id.address_textView);
-        opentimeTextView = (TextView) findViewById(R.id.opentime_textView);
-        howGoTextView = (TextView) findViewById(R.id.howGo_textView);
-        imageView = (ImageView) findViewById(R.id.imageView);
+        nameTextView =  findViewById(R.id.name_textView);
+        nameKanaTextView =  findViewById(R.id.nameKana_textView);
+        genreTextView =  findViewById(R.id.genre_textView);
+        telTextView =  findViewById(R.id.tel_textView);
+        addressTextView =  findViewById(R.id.address_textView);
+        opentimeTextView =  findViewById(R.id.opentime_textView);
+        howGoTextView =  findViewById(R.id.howGo_textView);
+        imageView =  findViewById(R.id.imageView);
+        holidayTextView=findViewById(R.id.holiday_textView);
     }
 
     private void setAll(int count) {
@@ -87,6 +88,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
         addressTextView.setText(gnaviResultEntity.getAddress());
         opentimeTextView.setText(gnaviResultEntity.getOpentime());
         howGoTextView.setText(gnaviResultEntity.getHowGo());
+        holidayTextView.setText(gnaviResultEntity.getHoliday());
         String[] temp = gnaviResultEntity.getImg();
         String url = temp[count % 2];
         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();

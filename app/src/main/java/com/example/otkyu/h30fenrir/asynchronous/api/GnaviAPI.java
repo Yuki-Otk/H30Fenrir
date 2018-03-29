@@ -108,20 +108,21 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         //jsonの展開
         GnaviResultEntity gnaviResultEntity = new GnaviResultEntity();
         String id = rest.getString("id");
-        String name = rest.getString("name");
+        String name = rest.getString("name");//店名
         String address = rest.getString("address");//住所
-        String nameKana = rest.getString("name_kana");//ナマエ
+        String nameKana = rest.getString("name_kana");//テンメイ
         String tel = rest.getString("tel");//電話番号
         String opentime = rest.getString("opentime");//営業時間
         String homePage = rest.getString("url");//ホームページ
         String categorys = rest.getString("category");
         String[] img = new String[2];
-        img[0] = rest.getJSONObject("image_url").getString("shop_image1");
-        img[1] = rest.getJSONObject("image_url").getString("shop_image2");
+        img[0] = rest.getJSONObject("image_url").getString("shop_image1");//画像1
+        img[1] = rest.getJSONObject("image_url").getString("shop_image2");//画像2
         String line = rest.getJSONObject("access").getString("line");
         String station = rest.getJSONObject("access").getString("station");
         String walk = rest.getJSONObject("access").getString("walk") + "分";
         String howGo = line + station + "から" + walk;//行き方
+        String holiday=rest.getString("holiday");//休日
         //展開結果を保存
         gnaviResultEntity.setName(name);
         gnaviResultEntity.setAddress(address);
@@ -132,6 +133,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         gnaviResultEntity.setImg(img);
         gnaviResultEntity.setGenre(categorys);
         gnaviResultEntity.setHomePage(homePage);
+        gnaviResultEntity.setHoliday(holiday);
         return gnaviResultEntity;
     }
 

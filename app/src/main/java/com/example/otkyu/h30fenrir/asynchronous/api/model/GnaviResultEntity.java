@@ -13,7 +13,7 @@ import java.io.Serializable;
  */
 
 public class GnaviResultEntity implements Serializable, Cloneable {//参照できるように,ディープコピーするために
-    private String name, nameKana, address, tel, opentime, howGo, genre, homePage;
+    private String name, nameKana, address, tel, opentime, howGo, genre, homePage,holiday;
     private String[] img, storeOpen, storeClose;
     private boolean openTimeFlag;
 
@@ -90,6 +90,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         if (!opentime.equals("登録されていません")) {
             setOpenTimeFlag(true);//ある場合はフラグを立てる
         } else {
+            this.opentime=opentime;
             return;//登録されていなければ強制終了
         }
         opentime = opentime.replace("<BR>", "\n");//<BR>を\nに置き換え
@@ -195,6 +196,16 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         return storeClose;
     }
 
+    public String getHoliday() {
+        return holiday;
+    }
+
+    public void setHoliday(String holiday) {
+        CheckModel checkModel = new CheckModel();
+        holiday = checkModel.checkString(holiday);
+        this.holiday = holiday;
+    }
+
     @Override
     public GnaviResultEntity clone() {//ディープコピー
         GnaviResultEntity gnaviResultEntity = null;
@@ -211,6 +222,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             gnaviResultEntity.img = this.img;
             gnaviResultEntity.storeOpen = this.storeOpen;
             gnaviResultEntity.storeClose = this.storeClose;
+            gnaviResultEntity.holiday=this.holiday;
             gnaviResultEntity.openTimeFlag = this.openTimeFlag;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
