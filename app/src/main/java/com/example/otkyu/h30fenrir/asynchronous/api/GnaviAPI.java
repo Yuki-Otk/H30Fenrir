@@ -25,8 +25,7 @@ import org.json.JSONObject;
 public class GnaviAPI extends AsyncTask<String, String, String> {
     private GnaviRequestEntity gnaviRequestEntity;
     private static List<GnaviResultEntity> gnaviResultEntityList;
-    private static boolean finishFlag;
-    private static boolean resultFlag;
+    private static boolean finishFlag,modeFlag,resultFlag;
     private static int totalNum, pageNum, dataNum, requestNum;
 
     public GnaviAPI() {
@@ -37,6 +36,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         pageNum = 0;//現在のページ
         dataNum = 0;//表示数
         requestNum = 0;//表示項目数
+        modeFlag=false;//検索モード(制限モードならtrue)
     }
 
     private void useApi() {
@@ -97,7 +97,6 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
                 gnaviResultEntityList.add(getGnaviResultEntity(rest));
                 dataNum = 1;//表示数
             }
-
         } catch (JSONException e) {//検索結果がないとき
             Log.d("ERROR", "検索結果なし");
         }
@@ -158,16 +157,12 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         return gnaviResultEntityList;
     }
 
-    public static boolean isFinishFlag() {
+    public boolean isFinishFlag() {
         return finishFlag;
     }
 
-    public static boolean isResultFlag() {
+    public boolean isResultFlag() {
         return resultFlag;
-    }
-
-    public GnaviRequestEntity getGnaviRequestEntity() {
-        return gnaviRequestEntity;
     }
 
     public void setGnaviRequestEntity(GnaviRequestEntity gnaviRequestEntity) {
@@ -188,5 +183,13 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
 
     public static int getRequestNum() {
         return requestNum;
+    }
+
+    public static boolean isModeFlag() {
+        return modeFlag;
+    }
+
+    public void setModeFlag(boolean modeFlag) {
+        GnaviAPI.modeFlag = modeFlag;
     }
 }

@@ -69,7 +69,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
         addressTextView = findViewById(R.id.address_textView);
         opentimeTextView = findViewById(R.id.opentime_textView);
         howGoTextView = findViewById(R.id.howGo_textView);
-        imageViews[0] = (ImageView) findViewById(R.id.imageView1);
+        imageViews[0] =  findViewById(R.id.imageView1);
         imageViews[1] = findViewById(R.id.imageView2);
         holidayTextView = findViewById(R.id.holiday_textView);
     }
@@ -84,10 +84,12 @@ public class ShowDetailsActivity extends AppCompatActivity {
         howGoTextView.setText(gnaviResultEntity.getHowGo());
         holidayTextView.setText(gnaviResultEntity.getHoliday());
         img = gnaviResultEntity.getImg();
-        if (img[0] != null) {//画像情報が登録されていないなら読み込まない
-            imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
-            imgAsyncTaskHttpRequest.setListener(createListener());
-            imgAsyncTaskHttpRequest.execute(img[0], String.valueOf(0));
+        if (img[0] != null) {//画像情報が登録されているなら
+            if (!GnaviAPI.isModeFlag()) {//制限モードでないなら読み込む
+                imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
+                imgAsyncTaskHttpRequest.setListener(createListener());
+                imgAsyncTaskHttpRequest.execute(img[0], String.valueOf(0));
+            }
         }
         imgUrl = img[0] + img[1];
         webUrl = gnaviResultEntity.getHomePage();
@@ -97,13 +99,13 @@ public class ShowDetailsActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(Menu menu) {//アクションバーにメニューを表示させる
         getMenuInflater().inflate(R.menu.details_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {//アクションバーのメニューを選択した時のイベント
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.tel_menu:

@@ -15,7 +15,7 @@ import java.io.Serializable;
 public class GnaviResultEntity implements Serializable, Cloneable {//参照できるように,ディープコピーするために
     private String name, nameKana, address, tel, opentime, howGo, genre, homePage,holiday;
     private String[] img, storeOpen, storeClose;
-    private boolean openTimeFlag;
+    private boolean openTimeFlag,modeFlag;
 
     public GnaviResultEntity() {//コンストラクタ
         name = null;//店名
@@ -30,6 +30,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         storeOpen = new String[2];//open時間(中休憩or土日)
         storeClose = new String[2];//close時間(中休憩or土日)
         openTimeFlag = false;//開店時間があるか(true=ある)
+        modeFlag=false;//節約モードならtrue
     }
 
     public String getName() {
@@ -204,6 +205,14 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         this.holiday = holiday;
     }
 
+    public boolean isModeFlag() {
+        return modeFlag;
+    }
+
+    public void setModeFlag(boolean modeFlag) {
+        this.modeFlag = modeFlag;
+    }
+
     @Override
     public GnaviResultEntity clone() {//ディープコピー
         GnaviResultEntity gnaviResultEntity = null;
@@ -222,6 +231,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             gnaviResultEntity.storeClose = this.storeClose;
             gnaviResultEntity.holiday=this.holiday;
             gnaviResultEntity.openTimeFlag = this.openTimeFlag;
+            gnaviResultEntity.modeFlag=this.modeFlag;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }

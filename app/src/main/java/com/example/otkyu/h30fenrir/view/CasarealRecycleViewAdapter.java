@@ -23,25 +23,20 @@ import java.util.List;
 public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRecycleViewAdapter.CasarealViewHolder> {
     private List<GnaviResultEntity> list;
     private View.OnClickListener listener;
+    private boolean modeFlag;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
 
     public CasarealRecycleViewAdapter() {//コンストラクタ
         list = getList();
+        modeFlag=false;
     }
 
-    private List<GnaviResultEntity> getList() {
-        return list;
-    }
-
-    public void setList(List<GnaviResultEntity> list) {
-        this.list = list;
-    }
 
     @Override
     public CasarealViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View inflate = LayoutInflater.from(parent.getContext()).inflate(R.layout.format_row, parent, false);
-        CasarealViewHolder vh = new CasarealViewHolder(inflate);
-        return vh;
+        CasarealViewHolder casarealViewHolder = new CasarealViewHolder(inflate);
+        return casarealViewHolder;
     }
 
     @Override
@@ -57,9 +52,11 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         //img
         String url = img[0];
         if (url != null) {//画像情報が登録されていないなら読み込まない
-            imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
-            imgAsyncTaskHttpRequest.setListener(createListener(holder));
-            imgAsyncTaskHttpRequest.execute(url);
+            if (!modeFlag) {//制限モードでなければ
+                imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
+                imgAsyncTaskHttpRequest.setListener(createListener(holder));
+                imgAsyncTaskHttpRequest.execute(url);
+            }
         }
         holder.linearLayout.setId(holder.getAdapterPosition());
         holder.linearLayout.setOnClickListener(new View.OnClickListener() {
@@ -96,12 +93,21 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
 
         private CasarealViewHolder(View itemView) {
             super(itemView);
-            titleView = (TextView) itemView.findViewById(R.id.title);
-            detailView = (TextView) itemView.findViewById(R.id.detail);
-            linearLayout = (LinearLayout) itemView.findViewById(R.id.shop_linearLayout);
-            imageView = (ImageView) itemView.findViewById(R.id.imageView);
+            titleView =  itemView.findViewById(R.id.title);
+            detailView =  itemView.findViewById(R.id.detail);
+            linearLayout =  itemView.findViewById(R.id.shop_linearLayout);
+            imageView =  itemView.findViewById(R.id.imageView);
         }
     }
+
+    private List<GnaviResultEntity> getList() {
+        return list;
+    }
+
+    public void setList(List<GnaviResultEntity> list) {
+        this.list = list;
+    }
+    public void setModeFlag(boolean modeFlag) {
+        this.modeFlag = modeFlag;
+    }
 }
-
-

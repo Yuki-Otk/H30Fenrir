@@ -12,7 +12,7 @@ import java.io.Serializable;
 
 public class GnaviRequestEntity implements Serializable {
     private double[] gps;
-    private String range, freeword, offsetPage, page,lunch;
+    private String range, freeword, offsetPage, page;
 
     public GnaviRequestEntity() {
         gps = new double[2];//座標データ(0=lat,1=lon)
@@ -20,7 +20,6 @@ public class GnaviRequestEntity implements Serializable {
         freeword = null;//検索キーワード
         offsetPage = "1";//ページ数
         page = "20";//1ページに何項目表示するか
-        lunch="0";//ランチ営業をしているか(1=している)
     }
 
     public double[] getGps() {
@@ -76,9 +75,8 @@ public class GnaviRequestEntity implements Serializable {
         uri.append(getLat());
         uri.append(getLon());
         uri.append(getRange());
-        uri.append(getHitPerPage());
+        uri.append(getPage());
         uri.append(getOffsetPage());
-        uri.append(getLunch());
         uri.append(getFreeword());
         return String.valueOf(uri);
     }
@@ -112,21 +110,12 @@ public class GnaviRequestEntity implements Serializable {
         return "&range=" + range;
     }
 
-    private String getHitPerPage() {//出力数
-        String hitPerPage = page;
-        return "&hit_per_page=" + hitPerPage;
+    private String getPage() {//出力数
+        return "&hit_per_page=" + page;
     }
 
     private String getOffsetPage() {//ページ数
         return "&offset_page=" + offsetPage;
-    }
-
-    public void setLunch(String lunch) {
-        this.lunch = lunch;
-    }
-
-    private String getLunch(){//昼営業あるか
-        return "&lunch="+lunch;
     }
 
     private String getFreeword() {//フリーワード検索

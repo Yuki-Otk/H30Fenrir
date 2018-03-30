@@ -7,6 +7,8 @@ package com.example.otkyu.h30fenrir;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -20,6 +22,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -67,7 +71,7 @@ public class LocationActivity extends AppCompatActivity {
     private Location location;
 
     private String lastUpdateTime;
-    private Boolean requestingLocationUpdates;
+    private Boolean requestingLocationUpdates,modeFlag;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
     private double[] gps = new double[2];
@@ -81,6 +85,7 @@ public class LocationActivity extends AppCompatActivity {
     private RadioGroup radioGroup;
     private Button searchButton;
     private String rangeString;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,9 +120,55 @@ public class LocationActivity extends AppCompatActivity {
         radioGroup = findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
         rangeTextView = findViewById(R.id.range_textView);//徒歩何分か表示
         rangeString = getString(R.string.rangeJa);//strings.xmlのrangeJaを取得
-        searchButton=  findViewById(R.id.search_button);// 検索
+        searchButton = findViewById(R.id.search_button);// 検索
+        modeFlag=false;//制限モードかのフラグ(true=制限モード)
     }
-    private void onClickButton(){//ボタンが押されたら
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {//アクションバーにメニューを表示させる
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        menuItem=menu.findItem(R.id.imgSwich_menu);//アクションバーのアイコン
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//アクションバーのメニューを選択した時のイベント
+        switch (item.getItemId()) {
+            case R.id.imgSwich_menu:
+                doShowAlertDialog();//AlertDialogを表示
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void doShowAlertDialog() {//AlertDialogを表示
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("通信量の削減モードにしますか?");
+        builder.setMessage("通信量の削減モードでは画像の読み込みを停止します。これにより最低限の通信のみとなります。\n停止しますか?");
+        builder.setPositiveButton("制限モード",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(LocationActivity.this, "制限モード", Toast.LENGTH_SHORT).show();
+                        menuItem.setIcon(R.mipmap.ic_image_off);
+                        modeFlag=true;
+
+                    }
+                });
+        builder.setNegativeButton("通常モード",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(LocationActivity.this, "通常モード", Toast.LENGTH_SHORT).show();
+                        menuItem.setIcon(R.mipmap.ic_image_on);
+                        modeFlag=false;
+                    }
+                });
+        builder.show();
+    }
+
+    private void onClickButton() {//ボタンが押されたら
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -133,7 +184,8 @@ public class LocationActivity extends AppCompatActivity {
             }
         });
     }
-    private void onChengeSeekBar(){//SeekBarを変更したら
+
+    private void onChengeSeekBar() {//SeekBarを変更したら
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
@@ -157,6 +209,7 @@ public class LocationActivity extends AppCompatActivity {
             }
         });
     }
+
     private void onRadioClick() {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -246,6 +299,7 @@ public class LocationActivity extends AppCompatActivity {
         }
     }
 
+
     private void doCheckBox(int num) {//Checkboxの表示を行う(大カテゴリの要素の中身の数)
         //CHECKBOX_NUM桁の2進数で各桁ごとに0はoff,1はonという仕様にする
         //TODO;桁数が増えたら4桁ごとに16進数に直せばstringの領域を超えても問題ない(そもそもstringの領域は超えない,キャストするわけでないので特に問題なし)
@@ -283,42 +337,27 @@ public class LocationActivity extends AppCompatActivity {
         gnaviRequestEntity.setGps(gps);//gps情報をセット
         String checkStr = doChoiceRadioButton();//RadioButtonで選択されているindexを取得する
         gnaviRequestEntity.setRange(doChangeRange(checkStr));//範囲をセット
-        String page = (String) pageTextView.getText();
-        if (page.equals("")) {
-            page = "20";
-        }
-        System.out.println("page=" + page);
-        try {
-            int hoge = Integer.parseInt(page);
-        } catch (Exception e) {
-            System.out.println("error=" + e);
-            Toast.makeText(LocationActivity.this, "ページ数に誤りがあります", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (Integer.parseInt(page) > 100) {
-            Toast.makeText(LocationActivity.this, "100件以上一度に表示することはできません", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
+        String page = (String) pageTextView.getText();//表示するページ数を取得
+        gnaviRequestEntity.setPage(page);//表示するページ数をセット
+        EditText keywordEditText =  findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();//keyWordをセット
         freeword = addKeyWord(freeword);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
-        gnaviRequestEntity.setPage(page);
-        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
-        boolean flag = false;
-        gnaviAPI.execute();
+        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);//検索パラメータを渡す
+        gnaviAPI.setModeFlag(modeFlag);//検索モードを代入
+        gnaviAPI.execute();//非同期実行
         while (true) {//api結果取得するまでweit
-            if (GnaviAPI.isResultFlag()) {
-                if (GnaviAPI.isFinishFlag()) {
+            if (gnaviAPI.isResultFlag()) {
+                if (gnaviAPI.isFinishFlag()) {
                     return true;
                 }
-            } else if (GnaviAPI.isFinishFlag()) {
+            } else if (gnaviAPI.isFinishFlag()) {
                 return false;
             }
         }
     }
 
-    private String addKeyWord(String str) {
+    private String addKeyWord(String str) {//キーワードを追加する
         String add = "";
         boolean flag = false;
         for (int i = 0; i < checkBoxes.length; i++) {
