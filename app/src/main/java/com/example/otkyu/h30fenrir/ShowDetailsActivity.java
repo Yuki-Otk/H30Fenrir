@@ -3,6 +3,8 @@ package com.example.otkyu.h30fenrir;
 //import android.app.ActionBar;
 
 import android.app.Application;
+import android.content.res.Resources;
+import android.graphics.Matrix;
 import android.support.v7.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
@@ -11,19 +13,15 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ShareCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.DisplayMetrics;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
-import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviRequestEntity;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
-
-import java.util.List;
 
 /**
  * Created by YukiOtake on 2018/01/28 028.
@@ -151,8 +149,8 @@ public class ShowDetailsActivity extends AppCompatActivity {
     private ImgAsyncTaskHttpRequest.Listener createListener() {
         return new ImgAsyncTaskHttpRequest.Listener() {
             @Override
-            public void onSuccess(Bitmap bmp, int index) {
-                imageViews[index].setImageBitmap(bmp);
+            public void onSuccess(Bitmap bitmap, int index) {
+                imageViews[index].setImageBitmap(doExpansion(bitmap));//詳細画面ではオリジナルの画像を拡大して表示する
                 if (index < imageViews.length-1) {
                     if (img[index+1]!=null) {
                         imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
@@ -160,6 +158,16 @@ public class ShowDetailsActivity extends AppCompatActivity {
                         imgAsyncTaskHttpRequest.execute(img[index + 1], String.valueOf(index + 1));
                     }
                 }
+            }
+            private Bitmap doExpansion(Bitmap bitmap){//画像を拡大する
+                DisplayMetrics displayMetrics = new DisplayMetrics();
+                getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+                int width = displayMetrics.widthPixels;//端末の画面の幅
+                float magnification=((float) width/bitmap.getWidth())/4*3;//画面幅75%程度の拡大率にする
+                Matrix matrix = new Matrix();
+                matrix.setScale(magnification, magnification);//拡大率をセット
+                bitmap=Bitmap.createBitmap(bitmap,0,0,bitmap.getWidth(),bitmap.getHeight(),matrix,true);//拡大した画像を書き出し
+                return bitmap;
             }
         };
     }
