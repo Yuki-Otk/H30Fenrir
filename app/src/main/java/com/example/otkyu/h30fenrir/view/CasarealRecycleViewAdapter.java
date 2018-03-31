@@ -54,9 +54,12 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         holder.titleView.setText(title);
         holder.detailView.setText(howGo);
         //img
+        if (!modeFlag){//削減モードでなければ画像を表示
+            holder.imageView.setImageResource(R.mipmap.ic_launcher);
+        }
         String url = img[0];
         if (url != null) {//画像情報が登録されていないなら読み込まない
-            if (!modeFlag) {//制限モードでなければ
+            if (!modeFlag) {//制限モードでなければ画像をダウンロード
                 imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
                 imgAsyncTaskHttpRequest.setListener(createListener(holder));
                 imgAsyncTaskHttpRequest.execute(url);
