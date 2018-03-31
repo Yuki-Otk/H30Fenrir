@@ -1,5 +1,7 @@
 package com.example.otkyu.h30fenrir.asynchronous.api.model;
 
+import android.util.Log;
+
 import com.example.otkyu.h30fenrir.model.CheckModel;
 import com.example.otkyu.h30fenrir.model.ChangeModel;
 
@@ -27,8 +29,8 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         genre = null;//ジャンル
         homePage = null;//ぐるなびのサイトURL
         img = new String[2];//詳細画像2枚
-        storeOpen = new String[2];//open時間(中休憩or土日)
-        storeClose = new String[2];//close時間(中休憩or土日)
+        storeOpen = new String[5];//open時間(中休憩or土日)
+        storeClose = new String[5];//close時間(中休憩or土日)
         openTimeFlag = false;//開店時間があるか(true=ある)
         modeFlag=false;//節約モードならtrue
     }
@@ -155,34 +157,23 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     }
 
     private void setStoreTime() {//開店・閉店時間のセッター
-        String[] hoge = opentime.split("～", 0);//～で開店時間の範囲を取得
-        String[] fuga = null;
-        boolean two = false;//開店情報が2つあるか
-        if (hoge.length >= 3) {//中休み情報有り
-            two = true;//開店情報が2つある
-            fuga = hoge[hoge.length - 2].split("\n", 0);
+        ChangeModel changeModel=new ChangeModel();
+        String[] piyo=opentime.split("\n");//\nでsplit
+        piyo=changeModel.doSubStringsFast("：",piyo);
+        for(int i=0;i<piyo.length;i++){
+            String[] hoge=piyo[i].split("～", 0);//～で開店時間の範囲を取得
+            if (hoge.length>=2) {
+                storeOpen[i] = hoge[hoge.length - 2];
+                storeClose[i] = hoge[hoge.length - 1];
+            }
         }
-        if (two) {//中休みor土日情報あり(開店情報が2つある)
-            storeOpen[0] = doSubStringSetting(hoge[0], true);//開店時間
-            storeClose[0] = doSubStringSetting(fuga[0], false);//閉店時間
-            storeOpen[1] = doSubStringSetting(fuga[fuga.length - 1], true);//開店時間
-            storeClose[1] = doSubStringSetting(hoge[hoge.length - 1], false);//閉店時間
-        } else {//中休み情報無し
-            storeOpen[0] = doSubStringSetting(hoge[0], true);
-            storeClose[0] = doSubStringSetting(hoge[1], false);//閉店時間
+        storeClose=changeModel.doSubStringsLast("(",storeClose);
+        String[] data={" ","：","(",")"};
+        for(int i=0;i<data.length;i++){
+            storeOpen=changeModel.doSubStringsFast(data[i],storeOpen);
+            storeClose=changeModel.doSubStringsFast(data[i],storeClose);
         }
-    }
-
-    private String doSubStringSetting(String str, boolean fast) {//時間の形式に合わせてごみを取り除く(抜き取り対象文字列,開店時間=true:閉店時間=false)
-        ChangeModel changeModel = new ChangeModel();//クラス呼び出し
-        if (fast) {//開店時間が対象ならば
-            str = changeModel.doSubStringFast(str.indexOf(")"), str);//対象文字列から")"以上切りすて(後ろ側が残る)
-        } else {//閉店時間が対象ならば
-            str = changeModel.doSubStringLast(str.indexOf("("), str);//対象文字列から"("以下切りすて(前側が残る)
-        }
-        str = changeModel.doSubStringFast(str.indexOf(" "), str);//対象文字列からスペース以上を切りすて(後ろ側が残る)
-        str = changeModel.doSubStringFast(str.indexOf("："), str);//対象文字列から：(全角)以上を切りすて(後ろ側が残る)
-        return str;//成形された時間を返す
+        Log.d("hoge",storeOpen[0]);
     }
 
     public String[] getStoreOpen() {
