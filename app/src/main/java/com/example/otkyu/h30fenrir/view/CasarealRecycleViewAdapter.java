@@ -1,6 +1,8 @@
 package com.example.otkyu.h30fenrir.view;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -26,6 +28,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     private View.OnClickListener listener;
     private boolean modeFlag;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
+    private Resources resources;
 
     public CasarealRecycleViewAdapter() {//コンストラクタ
         list = getList();
@@ -75,11 +78,18 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
                 holder.imageView.setImageBitmap(doResize(bitmap));//画像をリサイズしてセット
             }
             private Bitmap doResize(Bitmap bitmap){//周りの画像に合わせてアスペクト比も無視してリサイズ
-                Bitmap original=  ((BitmapDrawable)holder.imageView.getDrawable()).getBitmap();//現在登録されている画像を読み込む
+                Bitmap original = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);//現在登録されている画像を読み込む
                 bitmap=Bitmap.createScaledBitmap(bitmap,original.getWidth(),original.getHeight(),false);//新しい画像を現在のアスペクト比に変換
                 return bitmap;
             }
         };
+    }
+    private Resources getResources(){
+        return resources;
+    }
+
+    public void setResources(Resources resources) {
+        this.resources = resources;
     }
 
     public void setOnItemClickListener(View.OnClickListener listener) {

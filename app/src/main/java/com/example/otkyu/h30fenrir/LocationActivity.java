@@ -71,7 +71,7 @@ public class LocationActivity extends AppCompatActivity {
     private Location location;
 
     private String lastUpdateTime;
-    private Boolean requestingLocationUpdates,modeFlag;
+    private Boolean requestingLocationUpdates, modeFlag;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
     private double[] gps = new double[2];
@@ -94,7 +94,7 @@ public class LocationActivity extends AppCompatActivity {
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         settingsClient = LocationServices.getSettingsClient(this);
-        init();//viewを読み込み
+        init();//viewを読み込み&初期化
         doGpsGet();//gpsを取得する
         onRadioClick();//radioボタンが変更されたらイベント
         radioGroup.check(R.id.five_m_radioButton);//初期値をチェックする
@@ -105,7 +105,6 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     private void init() {
-        spinner = findViewById(R.id.genre_spinner);
         checkBoxes[0] = findViewById(R.id.checkBox1);
         checkBoxes[1] = findViewById(R.id.checkBox2);
         checkBoxes[2] = findViewById(R.id.checkBox3);
@@ -121,13 +120,14 @@ public class LocationActivity extends AppCompatActivity {
         rangeTextView = findViewById(R.id.range_textView);//徒歩何分か表示
         rangeString = getString(R.string.rangeJa);//strings.xmlのrangeJaを取得
         searchButton = findViewById(R.id.search_button);// 検索
-        modeFlag=false;//制限モードかのフラグ(true=制限モード)
+        spinner = findViewById(R.id.genre_spinner);
+        modeFlag = false;//制限モードかのフラグ(true=制限モード)
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {//アクションバーにメニューを表示させる
         getMenuInflater().inflate(R.menu.main_menu, menu);
-        menuItem=menu.findItem(R.id.imgSwich_menu);//アクションバーのアイコン
+        menuItem = menu.findItem(R.id.imgSwich_menu);//アクションバーのアイコン
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -152,7 +152,7 @@ public class LocationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(LocationActivity.this, "制限モード", Toast.LENGTH_SHORT).show();
                         menuItem.setIcon(R.mipmap.ic_image_off);
-                        modeFlag=true;
+                        modeFlag = true;
 
                     }
                 });
@@ -162,7 +162,7 @@ public class LocationActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(LocationActivity.this, "通常モード", Toast.LENGTH_SHORT).show();
                         menuItem.setIcon(R.mipmap.ic_image_on);
-                        modeFlag=false;
+                        modeFlag = false;
                     }
                 });
         builder.show();
@@ -339,7 +339,7 @@ public class LocationActivity extends AppCompatActivity {
         gnaviRequestEntity.setRange(doChangeRange(checkStr));//範囲をセット
         String page = (String) pageTextView.getText();//表示するページ数を取得
         gnaviRequestEntity.setPage(page);//表示するページ数をセット
-        EditText keywordEditText =  findViewById(R.id.keyword_editText);
+        EditText keywordEditText = findViewById(R.id.keyword_editText);
         String freeword = keywordEditText.getText().toString();//keyWordをセット
         freeword = addKeyWord(freeword);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット

@@ -217,6 +217,7 @@ public class ShowListActivity extends AppCompatActivity {
     }
     private String getNowHourMinutes() {//現在の時刻をformatに従って取得
         Calendar calendar = Calendar.getInstance();//現在時刻を取得
+        Log.d("time",simpleDateFormat.format(calendar.getTime()));
         return simpleDateFormat.format(calendar.getTime());
     }
 
@@ -289,6 +290,7 @@ public class ShowListActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
         adapter.setList(listAPI);
         adapter.setModeFlag(modeFlag);
+        adapter.setResources(getResources());
         adapter.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

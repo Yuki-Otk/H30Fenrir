@@ -1,22 +1,21 @@
-# H30Fenrir
-簡易仕様書
+# H30Fenrir_簡易仕様書
+## 仕様
+- 作者     :YukiOtake
+- アプリ名 ：H30Fenrir
+- URL：開発者アカウントを持っていないため公開できない
+- git：https://github.com/Yuki-Otk/H30Fenrir
+- 対象OS  ：Android
+- 対象Ver  ：Android 4.4以上
+- 開発環境 ：Android Studio 3.0.1
+- 開発言語 ：Java (java version "9.0.1")
+---
+## 機能一覧
+| 機能名 | 機能概要|
+|:------:|:--------:|
+|レストランを検索|ぐるなびAPIと端末のGPSを使用し現在地周辺レストランを検索する|
+|レストランの詳細確認|検索結果から詳細を詳細を読み込み表示する|
+|絞り込み検索|フリーワードを入力することにより検索結果を絞り込むことができる|
 
-作者     :YukiOtake
-
-アプリ名 ：H30Fenrir
-
-
-URL      ：https://itunes.apple.com/jp/app/xxxxxxxx //開発者アカウントを持っていないため公開できない
-
-git      ：https://github.com/Yuki-Otk/H30Fenrir
-
-対象OS  ：Android
-
-対象Ver  ：Android 4.4以上
-
-開発環境 ：Android Studio 3.0.1
-
-開発言語 ：Java (java version "9.0.1")
 
 
 ＜機能一覧＞
