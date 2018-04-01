@@ -37,7 +37,7 @@ import java.util.List;
 
 public class ShowListActivity extends AppCompatActivity {
 
-    private Button backPageButton, nextPageButton, returnButton;
+    private Button backPageButton, nextPageButton;
     private GnaviRequestEntity gnaviRequestEntity;
     private static final String REQUEST_KEY = "gnaviRequestEntity";
     private CasarealRecycleViewAdapter adapter;
@@ -66,7 +66,6 @@ public class ShowListActivity extends AppCompatActivity {
         init();//viewの読み込み
         readListAPI();//検索結果
         onSelectSprinner();//spinnerのイベント
-        onReturnButton();//ReturnButtonのイベント
         makeList();//list表示
         doCheckButton();//next/backButtonを有効無効にする
         onNextPageButton();//nextPageButtonのイベント
@@ -84,7 +83,6 @@ public class ShowListActivity extends AppCompatActivity {
         //下のボタン群
         backPageButton = findViewById(R.id.backPage_button);
         nextPageButton = findViewById(R.id.nextPage_button);
-        returnButton = findViewById(R.id.backHome_button);
         resultTextView = findViewById(R.id.result_textView);//検索結果の数とかを表示
         recyclerView = findViewById(R.id.casareal_recyclerView);//list
         modeFlag = GnaviAPI.isModeFlag();//制限モードかのフラグ(true=制限モード)
@@ -113,15 +111,6 @@ public class ShowListActivity extends AppCompatActivity {
             public void onClick(View v) {
                 int newPage = GnaviAPI.getPageNum() - 1;
                 reload(newPage);
-            }
-        });
-    }
-
-    private void onReturnButton() {//ReturnButtonのイベント
-        returnButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
     }
