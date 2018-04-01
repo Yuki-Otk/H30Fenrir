@@ -1,11 +1,13 @@
 package com.example.otkyu.h30fenrir.model;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by YukiOtake on 2018/03/28 028.
  */
 
 public class ChangeModel {
-    public String[] doSubStringsFast(String find,String[] strings) {//文字列の後ろ側を抜き取り(基準,対象文字配列)
+    public String[] doSubStringsFast(String find,@NonNull String[] strings) {//文字列の後ろ側を抜き取り(基準,対象文字配列)
         for(int i=0;i<strings.length;i++) {
             try {
                 int num = strings[i].indexOf(find);
@@ -20,7 +22,7 @@ public class ChangeModel {
         }
         return strings;
     }
-    public String[] doSubStringsLast(String find, String[] strings) {//文字列の前側を抜き取り(基準,対象文字配列)
+    public String[] doSubStringsLast(String find,@NonNull String[] strings) {//文字列の前側を抜き取り(基準,対象文字配列)
         for(int i=0;i<strings.length;i++) {
             try {
             int num=strings[i].indexOf(find);

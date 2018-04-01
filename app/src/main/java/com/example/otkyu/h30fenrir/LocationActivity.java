@@ -269,36 +269,24 @@ public class LocationActivity extends AppCompatActivity {
     private void changeCheckBox(String str) {//seekBarに変更があればcheckboxを変換
         unCheck();//変更があればすべてのチェックを外す
         String[][] strings = {//dataSet
-                {},
+                {"居酒屋", "カフェ", "ラーメン", "和食", "鍋", "イタリアン", "中華", "フレンチ", "韓国料理"},//ノンジャンル
                 {"焼き鳥", "寿司", "そば", "とんかつ", "焼肉", "お好み焼き", "うどん", "たこ焼き", "うなぎ"},//和食
-                {"ピザ", "パスタ"},//イタリアン
-                {"ラーメン", "麻婆豆腐", "餃子"},//中華
-                {"寿司", "焼肉", "カレー", "和食", "バー", "鍋", "イタリアン", "中華", "カフェ"}//もっと
+                {"ピザ", "パスタ", "ステーキ", "ハンバーガー", "カレー"},//洋食
+                {"ラーメン", "麻婆豆腐", "餃子"}//中華
         };
         int index = 0;//配列のindex
-        switch (str) {
-            case "料理・ジャンル":
-                index = 0;
+        String[] genre = getResources().getStringArray(R.array.mainArray);
+        for (int i = 0; i < genre.length; i++) {
+            if (genre[i].equals(str)) {
+                index = i;
                 break;
-            case "和食":
-                index = 1;
-                break;
-            case "イタリアン":
-                index = 2;
-                break;
-            case "中華":
-                index = 3;
-                break;
-            case "もっと絞り込み":
-                index = 4;
-                break;
+            }
         }
         doCheckBox(strings[index].length);//Checkboxの表示を行う(大カテゴリの要素の中身の数)
         for (int i = 0; i < strings[index].length; i++) {
             checkBoxes[i].setText(strings[index][i]);//checkBoxに文字をセット
         }
     }
-
 
     private void doCheckBox(int num) {//Checkboxの表示を行う(大カテゴリの要素の中身の数)
         //CHECKBOX_NUM桁の2進数で各桁ごとに0はoff,1はonという仕様にする

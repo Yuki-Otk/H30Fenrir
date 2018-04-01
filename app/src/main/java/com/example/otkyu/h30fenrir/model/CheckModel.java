@@ -5,7 +5,7 @@ package com.example.otkyu.h30fenrir.model;
  */
 
 public class CheckModel {
-    public String checkString(String str) {//APIに登録されているか判定
+    public String doCheckString(String str) {//APIに登録されているか判定
         try {
             int hoge = str.indexOf("{");
             int fuga = str.indexOf("}");
@@ -38,6 +38,15 @@ public class CheckModel {
             return false;
         }
         return true;
+    }
+    public boolean isCheckNullArray(String[] strings){
+        boolean flag=false;
+        for(int i=0;i<strings.length;i++){
+            if (strings[i]!=null){
+                flag=true;
+            }
+        }
+        return flag;
     }
 
 }

@@ -39,9 +39,8 @@
     <string-array name="mainArray">
         <item>料理・ジャンル</item>
         <item>和食</item>
-        <item>イタリアン</item>
-        <item>中華</item>
-        <item>もっと絞り込み</item>
+        <item>洋食</item>
+        <item>アジア料理</item>
     </string-array>
     <string-array name="listArray">
         <item>さらに絞り込み</item>

@@ -29,8 +29,6 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         genre = null;//ジャンル
         homePage = null;//ぐるなびのサイトURL
         img = new String[2];//詳細画像2枚
-        storeOpen = new String[5];//open時間(中休憩or土日)
-        storeClose = new String[5];//close時間(中休憩or土日)
         openTimeFlag = false;//開店時間があるか(true=ある)
         modeFlag=false;//節約モードならtrue
     }
@@ -41,7 +39,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setName(String name) {
         CheckModel checkModel = new CheckModel();
-        name = checkModel.checkString(name);
+        name = checkModel.doCheckString(name);
         this.name = name;
     }
 
@@ -51,7 +49,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setNameKana(String nameKana) {
         CheckModel checkModel = new CheckModel();
-        nameKana = checkModel.checkString(nameKana);
+        nameKana = checkModel.doCheckString(nameKana);
         this.nameKana = nameKana;
     }
 
@@ -61,7 +59,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setAddress(String address) {
         CheckModel checkModel = new CheckModel();
-        address = checkModel.checkString(address);
+        address = checkModel.doCheckString(address);
         String[] temp = address.split(" ");
         for (int i = 0; i < temp.length; i++) {
             if (i == 0) {
@@ -79,7 +77,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setTel(String tel) {
         CheckModel checkModel = new CheckModel();
-        tel = checkModel.checkString(tel);
+        tel = checkModel.doCheckString(tel);
         this.tel = tel;
     }
 
@@ -89,7 +87,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setOpentime(String opentime) {
         CheckModel checkModel = new CheckModel();
-        opentime = checkModel.checkString(opentime);//中身があるか確認
+        opentime = checkModel.doCheckString(opentime);//中身があるか確認
         if (!opentime.equals("登録されていません")) {
             setOpenTimeFlag(true);//ある場合はフラグを立てる
         } else {
@@ -116,7 +114,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setHowGo(String howGo) {
         CheckModel checkModel = new CheckModel();
-        howGo = checkModel.checkString(howGo);
+        howGo = checkModel.doCheckString(howGo);
         this.howGo = howGo;
     }
 
@@ -128,7 +126,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         CheckModel checkModel = new CheckModel();
         String error = "登録されていません";
         for(int i=0;i<img.length;i++){
-            img[i]=checkModel.checkString(img[i]);
+            img[i]=checkModel.doCheckString(img[i]);
             if (img[i].equals(error)){//もし画像が登録されていなければnullを代入
                 img[i]=null;
             }
@@ -142,7 +140,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setGenre(String genre) {
         CheckModel checkModel = new CheckModel();
-        genre = checkModel.checkString(genre);
+        genre = checkModel.doCheckString(genre);
         this.genre = genre;
     }
 
@@ -152,7 +150,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setHomePage(String homePage) {
         CheckModel checkModel = new CheckModel();
-        homePage = checkModel.checkString(homePage);
+        homePage = checkModel.doCheckString(homePage);
         this.homePage = homePage;
     }
 
@@ -160,12 +158,18 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         ChangeModel changeModel=new ChangeModel();
         String[] piyo=opentime.split("\n");//\nでsplit
         piyo=changeModel.doSubStringsFast("：",piyo);
+        storeOpen = new String[piyo.length];//open時間(中休憩or土日)
+        storeClose = new String[piyo.length];//close時間(中休憩or土日)
         for(int i=0;i<piyo.length;i++){
             String[] hoge=piyo[i].split("～", 0);//～で開店時間の範囲を取得
             if (hoge.length>=2) {
                 storeOpen[i] = hoge[hoge.length - 2];
                 storeClose[i] = hoge[hoge.length - 1];
             }
+        }
+        CheckModel checkModel=new CheckModel();
+        if(!checkModel.isCheckNullArray(storeClose) && !checkModel.isCheckNullArray(storeOpen)){//storeOpen/Closeどちらも中身がnullならば
+            return;
         }
         storeClose=changeModel.doSubStringsLast("(",storeClose);
         String[] data={" ","：","(",")"};
@@ -190,7 +194,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
 
     public void setHoliday(String holiday) {
         CheckModel checkModel = new CheckModel();
-        holiday = checkModel.checkString(holiday);
+        holiday = checkModel.doCheckString(holiday);
         holiday = holiday.replace("<BR>", "\n");//<BR>を\nに置き換え
         holiday = holiday.replace("、", "\n");//、を\nに置き換え
         this.holiday = holiday;
