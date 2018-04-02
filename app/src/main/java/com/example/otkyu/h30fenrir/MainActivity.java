@@ -10,7 +10,12 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,7 +26,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         Log.d("MainActivity", "onCreate()");
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             checkPermission();
         } else {
@@ -78,9 +82,13 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 // それでも拒否された時の対応
-                Toast toast = Toast.makeText(this,
-                        "これ以上なにもできません", Toast.LENGTH_SHORT);
+                Toast toast = Toast.makeText(this,"これ以上なにもできません", Toast.LENGTH_SHORT);
                 toast.show();
+                TextView textView=findViewById(R.id.help_textView);
+                textView.setText("アプリのタスクを切ってから再度アプリを開き\n位置情報の使用を許可してください");
+                 ImageView imageView=findViewById(R.id.gif_imageView);
+                GlideDrawableImageViewTarget target=new GlideDrawableImageViewTarget(imageView);
+                Glide.with(this).load(R.raw.droid_cry).into(target);
             }
         }
     }

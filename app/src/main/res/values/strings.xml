@@ -13,12 +13,12 @@
     <string name="M1000">13分</string>
     <string name="M500">6分</string>
     <string name="M2000">25分</string>
-    <string name="M5000">63分</string>
+    <string name="M3000">38分</string>
     <string name="m300">300m</string>
     <string name="m1000">1000m</string>
     <string name="m500">500m</string>
     <string name="m2000">2000m</string>
-    <string name="m5000">5000m</string>
+    <string name="m3000">3000m</string>
     <string name="name">店名(カナ)</string>
     <string name="backHome">検索画面に戻る</string>
     <string name="nextPage">次のページ</string>

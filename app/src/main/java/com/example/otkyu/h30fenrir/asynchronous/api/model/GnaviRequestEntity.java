@@ -44,7 +44,7 @@ public class GnaviRequestEntity implements Serializable {
             case "2000m":
                 range = "4";
                 break;
-            case "5000m":
+            case "3000m":
                 range = "5";
                 break;
             default:
