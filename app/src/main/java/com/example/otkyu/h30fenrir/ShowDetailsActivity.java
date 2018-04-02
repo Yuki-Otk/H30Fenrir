@@ -90,7 +90,6 @@ public class ShowDetailsActivity extends AppCompatActivity {
         webUrl = gnaviResultEntity.getHomePage();
         telNum = gnaviResultEntity.getTel();
         data = gnaviResultEntity.getName() + "(" + gnaviResultEntity.getNameKana() + ")\n" + gnaviResultEntity.getHowGo() + "\n" + webUrl;
-
     }
 
     @Override

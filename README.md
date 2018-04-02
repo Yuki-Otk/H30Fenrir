@@ -1,4 +1,4 @@
-# H30Fenrir_簡易仕様書
+# RightNow_簡易仕様書
 ## 仕様
 - 作者     :YukiOtake
 - アプリ名 ：RightNow(旧:H30Fenrir)
