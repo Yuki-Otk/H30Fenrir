@@ -122,6 +122,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         String walk = rest.getJSONObject("access").getString("walk") + "分";
         String howGo = line + station + "から" + walk;//行き方
         String holiday=rest.getString("holiday");//休日
+        String pr=rest.getJSONObject("pr").getString("pr_short");//紹介文
         //展開結果を保存
         gnaviResultEntity.setName(name);
         gnaviResultEntity.setAddress(address);
@@ -133,6 +134,7 @@ public class GnaviAPI extends AsyncTask<String, String, String> {
         gnaviResultEntity.setGenre(categorys);
         gnaviResultEntity.setHomePage(homePage);
         gnaviResultEntity.setHoliday(holiday);
+        gnaviResultEntity.setPr(pr);
         return gnaviResultEntity;
     }
 

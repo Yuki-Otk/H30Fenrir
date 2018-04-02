@@ -239,7 +239,7 @@ public class LocationActivity extends AppCompatActivity {
             return getString(R.string.m2000);
 
         }
-        return getString(R.string.m5000);
+        return getString(R.string.m3000);
     }
 
     private void doGpsGet() {//GPSを取得する

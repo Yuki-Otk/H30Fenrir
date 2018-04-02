@@ -37,6 +37,7 @@
     <string name="holiday">休日</string>
     <string name="imgSwich">imgSwich</string>
     <string name="wi_fi">Wi-Fiと位置情報の許可をしてください!!</string>
+    <string name="pr">紹介文</string>
     <string-array name="mainArray">
         <item>料理・ジャンル</item>
         <item>和食</item>

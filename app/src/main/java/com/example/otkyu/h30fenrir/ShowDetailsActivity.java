@@ -28,7 +28,7 @@ import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
  */
 
 public class ShowDetailsActivity extends AppCompatActivity {
-    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView, holidayTextView;
+    private TextView nameTextView, genreTextView, telTextView, addressTextView, opentimeTextView, howGoTextView, nameKanaTextView, holidayTextView,prTextView;
     private ImgAsyncTaskHttpRequest imgAsyncTaskHttpRequest;
     private final int IMAGEVIEW_NUM = 2;//checkBoxの使用する数を固定値にしておく
     private ImageView[] imageViews = new ImageView[IMAGEVIEW_NUM];
@@ -70,6 +70,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
         imageViews[0] =  findViewById(R.id.imageView1);
         imageViews[1] = findViewById(R.id.imageView2);
         holidayTextView = findViewById(R.id.holiday_textView);
+        prTextView=findViewById(R.id.pr_textView);
     }
 
     private void setAll() {
@@ -81,6 +82,7 @@ public class ShowDetailsActivity extends AppCompatActivity {
         opentimeTextView.setText(gnaviResultEntity.getOpentime());
         howGoTextView.setText(gnaviResultEntity.getHowGo());
         holidayTextView.setText(gnaviResultEntity.getHoliday());
+        prTextView.setText(gnaviResultEntity.getPr());
         img = gnaviResultEntity.getImg();
         if (img[0] != null) {//画像情報が登録されているなら
             if (!GnaviAPI.isModeFlag()) {//制限モードでないなら読み込む

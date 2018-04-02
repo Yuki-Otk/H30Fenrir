@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 
 public class GnaviResultEntity implements Serializable, Cloneable {//参照できるように,ディープコピーするために
-    private String name, nameKana, address, tel, opentime, howGo, genre, homePage,holiday;
+    private String name, nameKana, address, tel, opentime, howGo, genre, homePage,holiday,pr;
     private String[] img, storeOpen, storeClose;
     private boolean openTimeFlag,modeFlag;
 
@@ -31,6 +31,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         img = new String[2];//詳細画像2枚
         openTimeFlag = false;//開店時間があるか(true=ある)
         modeFlag=false;//節約モードならtrue
+        pr=null;//紹介文
     }
 
     public String getName() {
@@ -199,6 +200,13 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
         holiday = holiday.replace("、", "\n");//、を\nに置き換え
         this.holiday = holiday;
     }
+    public void setPr(String pr) {
+        CheckModel checkModel=new CheckModel();
+        pr=checkModel.doCheckString(pr);
+        pr = pr.replace("<BR>", "\n");//<BR>を\nに置き換え
+        pr = pr.replace("、", "\n");//、を\nに置き換え
+        this.pr = pr;
+    }
 
     public boolean isModeFlag() {
         return modeFlag;
@@ -207,6 +215,12 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
     public void setModeFlag(boolean modeFlag) {
         this.modeFlag = modeFlag;
     }
+
+    public String getPr() {
+        return pr;
+    }
+
+
 
     @Override
     public GnaviResultEntity clone() {//ディープコピー
@@ -227,6 +241,7 @@ public class GnaviResultEntity implements Serializable, Cloneable {//参照で�
             gnaviResultEntity.holiday=this.holiday;
             gnaviResultEntity.openTimeFlag = this.openTimeFlag;
             gnaviResultEntity.modeFlag=this.modeFlag;
+            gnaviResultEntity.pr=this.pr;
         } catch (CloneNotSupportedException e) {
             e.printStackTrace();
         }
