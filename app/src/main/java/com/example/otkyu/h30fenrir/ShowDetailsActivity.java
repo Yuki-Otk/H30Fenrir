@@ -124,9 +124,8 @@ public class ShowDetailsActivity extends AppCompatActivity {
         ShareCompat.IntentBuilder builder = ShareCompat.IntentBuilder.from(activity);
         builder.setChooserTitle(chooserTitle);
         builder.setSubject(subject);
-        builder.setText(text);
-        builder.setText(uri);
-        builder.setType("image/jpeg");
+        builder.setText(text+"\n"+uri);
+        builder.setType("text/plain");
         builder.startChooser();
     }
 
