@@ -3,7 +3,6 @@ package com.example.otkyu.h30fenrir.view;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,7 +12,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.otkyu.h30fenrir.R;
-import com.example.otkyu.h30fenrir.asynchronous.api.GnaviAPI;
 import com.example.otkyu.h30fenrir.asynchronous.img.ImgAsyncTaskHttpRequest;
 import com.example.otkyu.h30fenrir.asynchronous.api.model.GnaviResultEntity;
 
@@ -32,7 +30,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
 
     public CasarealRecycleViewAdapter() {//コンストラクタ
         list = getList();
-        modeFlag=false;
+        modeFlag = false;
     }
 
 
@@ -45,6 +43,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
 
     @Override
     public void onBindViewHolder(CasarealViewHolder holder, int position) {//listの表示設定
+        //データセット
         String name = list.get(position).getName();
         String nameKana = list.get(position).getNameKana();
         String genre = list.get(position).getGenre();
@@ -54,7 +53,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         holder.titleView.setText(title);
         holder.detailView.setText(howGo);
         //img
-        if (!modeFlag){//削減モードでなければ画像を表示
+        if (!modeFlag) {//削減モードでなければ画像を表示
             holder.imageView.setImageResource(R.mipmap.ic_launcher);
         }
         String url = img[0];
@@ -62,11 +61,11 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
             if (!modeFlag) {//制限モードでなければ画像をダウンロード
                 imgAsyncTaskHttpRequest = new ImgAsyncTaskHttpRequest();
                 imgAsyncTaskHttpRequest.setListener(createListener(holder));
-                imgAsyncTaskHttpRequest.execute(url);
+                imgAsyncTaskHttpRequest.execute(url);//urlを引き数にして実行
             }
         }
         holder.linearLayout.setId(holder.getAdapterPosition());
-        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {//クリックされたらviewを返す
             @Override
             public void onClick(View view) {
                 listener.onClick(view);
@@ -74,20 +73,22 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         });
     }
 
-    private ImgAsyncTaskHttpRequest.Listener createListener(final CasarealViewHolder holder) {
+    private ImgAsyncTaskHttpRequest.Listener createListener(final CasarealViewHolder holder) {//画像を読み込む
         return new ImgAsyncTaskHttpRequest.Listener() {
             @Override
             public void onSuccess(Bitmap bitmap, int index) {
                 holder.imageView.setImageBitmap(doResize(bitmap));//画像をリサイズしてセット
             }
-            private Bitmap doResize(Bitmap bitmap){//周りの画像に合わせてアスペクト比も無視してリサイズ
+
+            private Bitmap doResize(Bitmap bitmap) {//周りの画像に合わせてアスペクト比も無視してリサイズ
                 Bitmap original = BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher);//現在登録されている画像を読み込む
-                bitmap=Bitmap.createScaledBitmap(bitmap,original.getWidth(),original.getHeight(),false);//新しい画像を現在のアスペクト比に変換
+                bitmap = Bitmap.createScaledBitmap(bitmap, original.getWidth(), original.getHeight(), false);//新しい画像を現在のアスペクト比に変換
                 return bitmap;
             }
         };
     }
-    private Resources getResources(){
+
+    private Resources getResources() {
         return resources;
     }
 
@@ -104,18 +105,18 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
         return list.size();
     }
 
-    class CasarealViewHolder extends RecyclerView.ViewHolder {
+    class CasarealViewHolder extends RecyclerView.ViewHolder {//インナークラス
         private TextView titleView;
         private TextView detailView;
         private LinearLayout linearLayout;
         private ImageView imageView;
 
-        private CasarealViewHolder(View itemView) {
+        private CasarealViewHolder(View itemView) {//viewの初期化
             super(itemView);
-            titleView =  itemView.findViewById(R.id.title);
-            detailView =  itemView.findViewById(R.id.detail);
-            linearLayout =  itemView.findViewById(R.id.shop_linearLayout);
-            imageView =  itemView.findViewById(R.id.imageView);
+            titleView = itemView.findViewById(R.id.title);
+            detailView = itemView.findViewById(R.id.detail);
+            linearLayout = itemView.findViewById(R.id.shop_linearLayout);
+            imageView = itemView.findViewById(R.id.imageView);
         }
     }
 
@@ -126,6 +127,7 @@ public class CasarealRecycleViewAdapter extends RecyclerView.Adapter<CasarealRec
     public void setList(List<GnaviResultEntity> list) {
         this.list = list;
     }
+
     public void setModeFlag(boolean modeFlag) {
         this.modeFlag = modeFlag;
     }

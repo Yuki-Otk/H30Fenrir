@@ -39,7 +39,7 @@ public class ShowListActivity extends AppCompatActivity {
 
     private Button backPageButton, nextPageButton;
     private GnaviRequestEntity gnaviRequestEntity;
-    private static final String REQUEST_KEY = "gnaviRequestEntity";
+    private static final String REQUEST_KEY = "gnaviRequestEntity";//intentのkey
     private CasarealRecycleViewAdapter adapter;
     private List<GnaviResultEntity> listAPICopy = GnaviAPI.getGnaviResultEntityList();//検索結果のコピー
     private List<GnaviResultEntity> listAPI = new ArrayList<>();//検索結果
@@ -80,9 +80,8 @@ public class ShowListActivity extends AppCompatActivity {
 
     private void init() {
         spinner = findViewById(R.id.time_spinner);//Sprinner(プルダウン)
-        //下のボタン群
-        backPageButton = findViewById(R.id.backPage_button);
-        nextPageButton = findViewById(R.id.nextPage_button);
+        backPageButton = findViewById(R.id.backPage_button);//前のページボタン
+        nextPageButton = findViewById(R.id.nextPage_button);//次のページに進むボタン
         resultTextView = findViewById(R.id.result_textView);//検索結果の数とかを表示
         recyclerView = findViewById(R.id.casareal_recyclerView);//list
         modeFlag = GnaviAPI.isModeFlag();//制限モードかのフラグ(true=制限モード)
@@ -99,8 +98,8 @@ public class ShowListActivity extends AppCompatActivity {
         nextPageButton.setOnClickListener(new View.OnClickListener() {//次のページを表示
             @Override
             public void onClick(View v) {
-                int newPage = GnaviAPI.getPageNum() + 1;
-                reload(newPage);
+                int newPage = GnaviAPI.getPageNum() + 1;//ページ数インクリメント
+                reload(newPage);//ページ数を変更して再検索
             }
         });
     }
@@ -109,14 +108,14 @@ public class ShowListActivity extends AppCompatActivity {
         backPageButton.setOnClickListener(new View.OnClickListener() {//前のページを表示
             @Override
             public void onClick(View v) {
-                int newPage = GnaviAPI.getPageNum() - 1;
-                reload(newPage);
+                int newPage = GnaviAPI.getPageNum() - 1;//ページ数デクリメント
+                reload(newPage);//ページ数を変更して再検索
             }
         });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item) {//左上の戻るボタン
         switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
@@ -126,12 +125,11 @@ public class ShowListActivity extends AppCompatActivity {
         }
     }
 
-
     private void onSelectSprinner() {//sprinnerを変更したとき
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
-                String select = (String) adapterView.getSelectedItem();
+                String select = (String) adapterView.getSelectedItem();//選択された文字列取得
                 reload(select);//指定のもので再描画
             }
 
@@ -144,34 +142,32 @@ public class ShowListActivity extends AppCompatActivity {
 
     private void reload(int newPage) {//再描画(ページ指定)//overload//APIを呼び直す
         GnaviAPI gnaviAPI = new GnaviAPI();
-        System.out.println("new page is " + newPage);
-        gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));
-        gnaviAPI.setModeFlag(modeFlag);
-        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
-        gnaviAPI.execute();
+        gnaviRequestEntity.setOffsetPage(String.valueOf(newPage));//ページ数を再設定
+        gnaviAPI.setModeFlag(modeFlag);//制限モードかどうかをセット
+        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);//検索パラメータをセット
+        gnaviAPI.execute();//非同期処理実行
         while (true) {//api結果取得するまでweit
-            if (gnaviAPI.isFinishFlag()) {
+            if (gnaviAPI.isFinishFlag()) {//正常に終了できたか
                 break;
             }
         }
-        listAPICopy = GnaviAPI.getGnaviResultEntityList();
-        readListAPI();
-        spinner.setSelection(0);
-        makeList();
-        doCheckButton();
+        listAPICopy = GnaviAPI.getGnaviResultEntityList();//検索結果を代入
+        readListAPI();//listをディープコピー
+        spinner.setSelection(0);//プルダウンを初期化
+        makeList();//listを作り直す
+        doCheckButton();//ページ数によってボタンをアクティブにする
     }
 
     private void reload(String lunch) {//再描画(lunch)//overload//APIを呼び直す
         readListAPI();//検索結果を初期に戻す
-        //TODO;営業時間でもAPIに登録されていないと蹴られてしまう
         boolean flag = false;
         switch (lunch) {
             case "さらに絞り込み"://初期に戻す
-                if (sprinnerFlag) {
+                if (sprinnerFlag) {//一度でも選択したら
                     Toast.makeText(ShowListActivity.this, "検索結果を元に戻します", Toast.LENGTH_SHORT).show();
                 }
-                sprinnerFlag = true;
-                flag = true;
+                sprinnerFlag = true;//一度でも選択した
+                flag = true;//更に絞り込みを選択している
                 break;
             case "開店中"://開店中
                 doCheckOpen(getHourMinutes());//現在時刻で判定
@@ -181,39 +177,23 @@ public class ShowListActivity extends AppCompatActivity {
                 break;
             case "夜営業あり"://夜営業
                 doCheckOpen("18:00");//18時に開店しているか
-//                doCheckWriteOpenTime();
                 break;
         }
-        if (!flag) {
+        if (!flag) {//更に絞り込み以外を選択
             Toast.makeText(ShowListActivity.this, "このページのみの絞り込みです", Toast.LENGTH_LONG).show();
         }
         makeList();
         doCheckButton();
     }
 
-    private void doCheckWriteOpenTime() {//営業時間について確認する用
-        for (int i = 0; i < listAPI.size(); i++) {
-            if (!listAPI.get(i).isOpenTimeFlag()) {
-                listAPI.remove(i);
-                i--;
-            } else {
-                Log.d("hoge", String.valueOf(i));
-                String[] hoge = listAPI.get(i).getStoreOpen();
-                String[] fuga = listAPI.get(i).getStoreClose();
-                Log.d("hoge", listAPI.get(i).getName());
-            }
-        }
-    }
-
     private String getHourMinutes() {//現在の時刻(時:分)をformatに従って取得
         Calendar calendar = Calendar.getInstance();//現在時刻を取得
-        Log.d("time", hourMinutesFormat.format(calendar.getTime()));
-        return hourMinutesFormat.format(calendar.getTime());
+        return hourMinutesFormat.format(calendar.getTime());//formatを指定して返却
     }
 
     private String getYearMonthDay() {//現在の時刻(日)をformatに従って取得
         Calendar calendar = Calendar.getInstance();//現在時刻を取得
-        return yearMonthDayFormat.format(calendar.getTime());
+        return yearMonthDayFormat.format(calendar.getTime());//formatを指定して返却
     }
 
     private void doCheckOpen(String time) {//指定時刻が閉店中ならば削除
@@ -248,7 +228,7 @@ public class ShowListActivity extends AppCompatActivity {
                 if (nextDay) {
                     close = doAddDay(close);//日付を1日増やす
                     if (isCheckAmPm(date)) {
-                        date = doAddDay(date);
+                        date = doAddDay(date);//日付を1日増やす
                     }
                 }
                 int diffOpen = date.compareTo(open);//open時間との比較
@@ -264,25 +244,25 @@ public class ShowListActivity extends AppCompatActivity {
     }
 
     private boolean isCheckNextDay(String str) {//次の日が指定されていないか
-        if (str.indexOf("翌") == 0) {
+        if (str.indexOf("翌") == 0) {//翌日の情報が指定されていれば
             return true;
         }
         return false;
     }
 
-    private boolean isCheckAmPm(Date date) {
+    private boolean isCheckAmPm(Date date) {//引き数が午前ならばtrue
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        if (calendar.get(Calendar.AM_PM) == 0) {
+        if (calendar.get(Calendar.AM_PM) == 0) {//true=午前
             return true;
         }
         return false;
     }
 
-    private Date doAddDay(Date date) {
+    private Date doAddDay(Date date) {//日付を1日増やす
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(date);
-        calendar.add(Calendar.DATE, 1);
+        calendar.add(Calendar.DATE, 1);//1日増やす
         return calendar.getTime();
     }
 
@@ -318,14 +298,14 @@ public class ShowListActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setAdapter(adapter);
-        adapter.setList(listAPI);
-        adapter.setModeFlag(modeFlag);
-        adapter.setResources(getResources());
+        adapter.setList(listAPI);//Adapterに検索結果をセット
+        adapter.setModeFlag(modeFlag);//制限モードかどうかもセット
+        adapter.setResources(getResources());//リソースをセットする
         adapter.setOnItemClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int index = view.getId();
-                startActivity(ShowDetailsActivity.createIntent(listAPI.get(index), getApplication()));
+                int index = view.getId();//選択されたときのindexを取得
+                startActivity(ShowDetailsActivity.createIntent(listAPI.get(index), getApplication()));//詳細画面を呼び出し。
             }
         });
     }

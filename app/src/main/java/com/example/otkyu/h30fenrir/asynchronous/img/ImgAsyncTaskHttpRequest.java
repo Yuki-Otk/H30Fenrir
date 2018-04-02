@@ -22,11 +22,11 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected Bitmap doInBackground(String... strings) {//引き数は2つ(画像URL,index)
         try {
-            index=Integer.parseInt(strings[1]);
-        }catch (Exception e){//引き数渡し忘れた時用
-            index=0;
+            index = Integer.parseInt(strings[1]);//第2引き数を数字に変換
+        } catch (Exception e) {//引き数渡し忘れた時用
+            index = 0;//0で初期化
         }
-        return downloadImage(strings[0]);
+        return downloadImage(strings[0]);//第1引き数を返す
     }
 
 
@@ -37,42 +37,34 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
     @Override
     protected void onPostExecute(Bitmap bmp) {// 非同期処理が終了後、結果をメインスレッドに返す
         if (listener != null) {
-            listener.onSuccess(bmp,index);
+            listener.onSuccess(bmp, index);
         }
     }
 
 
-    private Bitmap downloadImage(String address) {
+    private Bitmap downloadImage(String address) {//画像をダウンロード
         Bitmap bmp = null;
-
-        final StringBuilder result = new StringBuilder();
-
         HttpURLConnection urlConnection = null;
-
         try {
             URL url = new URL(address);
             urlConnection = (HttpURLConnection) url.openConnection();// HttpURLConnection インスタンス生成
             // タイムアウト設定
             urlConnection.setReadTimeout(10000);
             urlConnection.setConnectTimeout(20000);
-            // リクエストメソッド
-            urlConnection.setRequestMethod("GET");
-            // リダイレクトを自動で許可しない設定
-            urlConnection.setInstanceFollowRedirects(false);
-            // ヘッダーの設定(複数設定可能)
-            urlConnection.setRequestProperty("Accept-Language", "jp");
-            // 接続
-            urlConnection.connect();
-            int resp = urlConnection.getResponseCode();
+            urlConnection.setRequestMethod("GET");// リクエストメソッド
+            urlConnection.setInstanceFollowRedirects(false);// リダイレクトを自動で許可しない設定
+            urlConnection.setRequestProperty("Accept-Language", "jp");// ヘッダーの設定(複数設定可能)
+            urlConnection.connect();// 接続
+            int resp = urlConnection.getResponseCode();//結果
             switch (resp) {
-                case HttpURLConnection.HTTP_OK:
+                case HttpURLConnection.HTTP_OK://取得できたら
                     InputStream is = null;
                     try {
                         is = urlConnection.getInputStream();
                         bmp = BitmapFactory.decodeStream(is);
                         is.close();
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.d("error", String.valueOf(e));
                     } finally {
                         if (is != null) {
                             is.close();
@@ -85,8 +77,7 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
                     break;
             }
         } catch (Exception e) {
-            Log.d("debug", "downloadImage error");
-            e.printStackTrace();
+            Log.d("error", String.valueOf(e));
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -94,13 +85,10 @@ public class ImgAsyncTaskHttpRequest extends AsyncTask<String, Void, Bitmap> {
         }
         return bmp;
     }
-
     public void setListener(Listener listener) {
         this.listener = listener;
     }
-
-
-    public interface Listener {
-        void onSuccess(Bitmap bmp,int index);
+    public interface Listener {//読み終わったら
+        void onSuccess(Bitmap bmp, int index);
     }
 }

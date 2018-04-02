@@ -9,8 +9,8 @@ public class CheckModel {
         try {
             int hoge = str.indexOf("{");
             int fuga = str.indexOf("}");
-            if (hoge == 0 && fuga == 1) {
-                str="";
+            if (hoge == 0 && fuga == 1) {//何も登録されていない
+                str = "";
             }
         } catch (Exception e) {
             return str;
@@ -21,32 +21,20 @@ public class CheckModel {
         return str;
     }
 
-    public boolean isCheckInteger(String str) {//数字にできるか判定
-        try {
-            Integer hoge = Integer.valueOf(str);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public boolean isCheckNull(String str) {
-        if (str == null) {
-            return false;
-        }
-        if (str.equals("")) {
+    public boolean isCheckNull(String str) {//nullか判定
+        if (str == null) {//nullならtrue
             return false;
         }
         return true;
     }
-    public boolean isCheckNullArray(String[] strings){
-        boolean flag=false;
-        for(int i=0;i<strings.length;i++){
-            if (strings[i]!=null){
-                flag=true;
+
+    public boolean isCheckNullArray(String[] strings) {//配列の中身がnullしかないかどうか
+        boolean flag = false;
+        for (int i = 0; i < strings.length; i++) {
+            if (strings[i] != null) {//1つでもnullでなければtrue
+                flag = true;
             }
         }
         return flag;
     }
-
 }

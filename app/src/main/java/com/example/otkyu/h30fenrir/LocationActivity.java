@@ -6,6 +6,7 @@ package com.example.otkyu.h30fenrir;
  */
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -104,7 +105,7 @@ public class LocationActivity extends AppCompatActivity {
         startLocationUpdates();//GPS読み込み強制開始
     }
 
-    private void init() {
+    private void init() {//view、変数の初期化
         checkBoxes[0] = findViewById(R.id.checkBox1);
         checkBoxes[1] = findViewById(R.id.checkBox2);
         checkBoxes[2] = findViewById(R.id.checkBox3);
@@ -144,15 +145,15 @@ public class LocationActivity extends AppCompatActivity {
 
     private void doShowAlertDialog() {//AlertDialogを表示
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("通信量の削減モードにしますか?");
-        builder.setMessage("通信量の削減モードでは画像の読み込みを停止します。これにより最低限の通信のみとなります。\n停止しますか?");
+        builder.setTitle("通信量の削減モードにしますか?");//タイトル
+        builder.setMessage("通信量の削減モードでは画像の読み込みを停止します。これにより最低限の通信のみとなります。\n停止しますか?");//内容
         builder.setPositiveButton("制限モード",
                 new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(LocationActivity.this, "制限モード", Toast.LENGTH_SHORT).show();
-                        menuItem.setIcon(R.mipmap.ic_image_off);
-                        modeFlag = true;
+                        menuItem.setIcon(R.mipmap.ic_image_off);//アイコンを変更
+                        modeFlag = true;//モードのフラグを立てる
 
                     }
                 });
@@ -161,8 +162,8 @@ public class LocationActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Toast.makeText(LocationActivity.this, "通常モード", Toast.LENGTH_SHORT).show();
-                        menuItem.setIcon(R.mipmap.ic_image_on);
-                        modeFlag = false;
+                        menuItem.setIcon(R.mipmap.ic_image_on);//アイコンを変更
+                        modeFlag = false;//モードのフラグを下げる
                     }
                 });
         builder.show();
@@ -173,13 +174,12 @@ public class LocationActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
-                boolean flag = gnaviRequest();
-                if (flag) {
-                    jump();
+                boolean flag = gnaviRequest();//実行し検索結果があるかどうか
+                if (flag) {//検索結果があれば
+                    jump();//一覧を表示
                 } else {
                     String str = "検索結果はありませんでした。";
                     Toast.makeText(LocationActivity.this, str, Toast.LENGTH_LONG).show();
-                    System.out.println(str);
                 }
             }
         });
@@ -189,15 +189,15 @@ public class LocationActivity extends AppCompatActivity {
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
-                if (position == 0) {
-                    seekBar.setProgress(1);
-                    position = 1;
+                if (position == 0) {//0には設定できない
+                    seekBar.setProgress(1);//強制セット
+                    position = 1;//positionを上書き
                 }
-                String num = String.valueOf(position);
-                pageTextView.setText(num);
-                pageTextView.setTypeface(Typeface.DEFAULT_BOLD);
-                pageTextView.setTextColor(Color.RED);
-                pageTextView.setTextSize(20);
+                String num = String.valueOf(position);//文字に変換
+                pageTextView.setText(num);//値を表示
+                pageTextView.setTypeface(Typeface.DEFAULT_BOLD);//太く
+                pageTextView.setTextColor(Color.RED);//色変更
+                pageTextView.setTextSize(20);//大きさ変更
             }
 
             @Override
@@ -214,19 +214,19 @@ public class LocationActivity extends AppCompatActivity {
         radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup radioGroup, int checkdId) {
-                setRangeText();
+                doSetRangeText();
             }
         });
     }
 
-    private void setRangeText() {
+    private void doSetRangeText() {//もじ変更
         String range = doChoiceRadioButton();
         rangeTextView.setText(rangeString + range + "圏内(" + doChangeRange(range) + ")");
     }
 
     private String doChangeRange(String str) {//範囲の分をmに変換する
-        if (str.equals(getString(R.string.M300))) {
-            return getString(R.string.m300);
+        if (str.equals(getString(R.string.M300))) {//M300と同じなら
+            return getString(R.string.m300);//m300を変換
         }
         if (str.equals(getString(R.string.M500))) {
             return getString(R.string.m500);
@@ -255,7 +255,6 @@ public class LocationActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
                 String select = (String) adapterView.getSelectedItem();//選択された文字列
                 Toast.makeText(LocationActivity.this, select, Toast.LENGTH_SHORT).show();
-                Log.d("sprinner", select);
                 changeCheckBox(select);//seekBarに変更があればcheckboxを変換
             }
 
@@ -277,8 +276,8 @@ public class LocationActivity extends AppCompatActivity {
         int index = 0;//配列のindex
         String[] genre = getResources().getStringArray(R.array.mainArray);
         for (int i = 0; i < genre.length; i++) {
-            if (genre[i].equals(str)) {
-                index = i;
+            if (genre[i].equals(str)) {//配列の中身と引数が同じなら
+                index = i;//indexセット
                 break;
             }
         }
@@ -393,25 +392,23 @@ public class LocationActivity extends AppCompatActivity {
                     location.getSpeed(),
                     location.getBearing()
             };
-
-            StringBuilder stringBuilder = new StringBuilder("---------- UpdateLocation ---------- \n");
-
+            StringBuilder builder = new StringBuilder("---------- UpdateLocation ---------- \n");
             for (int i = 0; i < fusedName.length; i++) {
-                stringBuilder.append(fusedName[i]);
-                stringBuilder.append(" = ");
-                stringBuilder.append(String.valueOf(fusedData[i]));
-                stringBuilder.append("\n");
+                builder.append(fusedName[i]);
+                builder.append(" = ");
+                builder.append(String.valueOf(fusedData[i]));
+                builder.append("\n");
             }
-            System.out.println(fusedData[0] + ":" + fusedData[1]);
             setGps(fusedData[0], fusedData[1]);
-            stringBuilder.append("Time");
-            stringBuilder.append(" = ");
-            stringBuilder.append(lastUpdateTime);
-            stringBuilder.append("\n");
+            builder.append("Time");
+            builder.append(" = ");
+            builder.append(lastUpdateTime);
+            builder.append("\n");
         }
 
     }
 
+    @SuppressLint("RestrictedApi")
     private void createLocationRequest() {
         locationRequest = new LocationRequest();
 
@@ -504,14 +501,6 @@ public class LocationActivity extends AppCompatActivity {
                                         LocationActivity.this,
                                         Manifest.permission.ACCESS_COARSE_LOCATION) !=
                                         PackageManager.PERMISSION_GRANTED) {
-
-                                    // TODO: Consider calling
-                                    //    ActivityCompat#requestPermissions
-                                    // here to request the missing permissions, and then overriding
-                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                    //                                          int[] grantResults)
-                                    // to handle the case where the user grants the permission. See the documentation
-                                    // for ActivityCompat#requestPermissions for more details.
                                     return;
                                 }
                                 fusedLocationClient.requestLocationUpdates(
@@ -553,8 +542,7 @@ public class LocationActivity extends AppCompatActivity {
 
     private void stopLocationUpdates() {
         if (!requestingLocationUpdates) {
-            Log.d("debug", "stopLocationUpdates: " +
-                    "updates never requested, no-op.");
+            Log.d("debug", "stopLocationUpdates: " + "updates never requested, no-op.");
             return;
         }
 
@@ -568,9 +556,8 @@ public class LocationActivity extends AppCompatActivity {
                         });
     }
 
-    //端末の戻るボタンを押下したとき
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {    //端末の戻るボタンを押下したとき
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             //homeに戻る
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -591,8 +578,8 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     public void setGps(double lat, double lon) {
-        gps[0] = lat;
-        gps[1] = lon;
+        gps[0] = lat;//gps(lat)のセット
+        gps[1] = lon;//gps(lon)のセット
         this.gps = gps;
     }
 
