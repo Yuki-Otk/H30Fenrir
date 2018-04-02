@@ -1,20 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/tools"
     xmlns:shareingsimpledata="http://schemas.android.com/apk/res-auto">
     <item
         android:id="@+id/web_menu"
-        android:icon="@drawable/web"
+        android:icon="@mipmap/ic_web"
         android:title="@string/web"
         shareingsimpledata:showAsAction="ifRoom" />
     <item
         android:id="@+id/tel_menu"
-        android:icon="@drawable/tel"
+        android:icon="@mipmap/ic_tel"
         android:title="@string/tel"
         shareingsimpledata:showAsAction="ifRoom" />
     <item
         android:id="@+id/share_menu"
-        android:icon="@drawable/share"
+        android:icon="@mipmap/ic_share"
         android:title="@string/share"
         shareingsimpledata:showAsAction="ifRoom" />
 </menu>

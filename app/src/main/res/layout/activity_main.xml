@@ -3,142 +3,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.example.otkyu.h30fenrir.MainActivity">
+    android:layout_height="match_parent">
 
-    <Button
-        style="@style/AppTheme"
-        android:id="@+id/search_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:layout_marginBottom="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginStart="8dp"
-        android:padding="8dp"
-        android:layout_weight="1"
-        android:text="@string/search"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/keyword_editText"
-        android:layout_width="0dp"
+    <TextView
+        android:id="@+id/help_textView"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:padding="8dp"
-        android:ems="10"
-        android:hint="@string/freewordHint"
-        android:inputType="textPersonName"
+        android:text="@string/wi_fi"
+        android:textSize="15sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/page_textView"
+    <ImageView
+        android:id="@+id/gif_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:paddingTop="4dp"
-        android:text="20"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/radiogroup" />
-
-    <TextView
-        android:id="@+id/search_textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:paddingStart="8dp"
-        android:paddingTop="8dp"
-        android:text="@string/rangeJa"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/keyword_editText"
-        tools:ignore="RtlSymmetry" />
-
-    <RadioGroup
-        android:id="@+id/radiogroup"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:paddingBottom="8dp"
-        android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/search_textView"
-        tools:ignore="MissingConstraints">
-
-        <RadioButton
-            android:id="@+id/three_m_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/threeM" />
-
-        <RadioButton
-            android:id="@+id/five_m_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:checked="true"
-            android:text="@string/fivem" />
-
-        <RadioButton
-            android:id="@+id/one_km_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/oneKm" />
-
-        <RadioButton
-            android:id="@+id/tow_km_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/twoKm" />
-
-        <RadioButton
-            android:id="@+id/three_km_radioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/fiveKm" />
-    </RadioGroup>
-
-    <SeekBar
-        android:id="@+id/page_seekBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
-        android:max="100"
-        android:padding="3dp"
-        android:progress="20"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.051"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        tools:ignore="RtlHardcoded" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:padding="8dp"
-        android:text="@string/resultPageNum"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/radiogroup" />
-
+        app:layout_constraintTop_toBottomOf="@+id/help_textView" />
 </android.support.constraint.ConstraintLayout>

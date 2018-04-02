@@ -6,7 +6,10 @@ package com.example.otkyu.h30fenrir;
  */
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
@@ -20,12 +23,17 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.SeekBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,130 +72,298 @@ public class LocationActivity extends AppCompatActivity {
     private Location location;
 
     private String lastUpdateTime;
-    private Boolean requestingLocationUpdates;
+    private Boolean requestingLocationUpdates, modeFlag;
     private static final int REQUEST_CHECK_SETTINGS = 0x1;
     private int priority = 0;
-    //    private TextView textView;
     private double[] gps = new double[2];
     private GnaviAPI gnaviAPI;
-    GnaviRequestEntity gnaviRequestEntity;
-    TextView pageTextView;
-
+    private GnaviRequestEntity gnaviRequestEntity;
+    private TextView pageTextView, rangeTextView;
+    private final int CHECKBOX_NUM = 9;//checkBoxの使用する数を固定値にしておく
+    private CheckBox[] checkBoxes = new CheckBox[CHECKBOX_NUM];
+    private Spinner spinner;
+    private SeekBar seekBar;
+    private RadioGroup radioGroup;
+    private Button searchButton;
+    private String rangeString;
+    private MenuItem menuItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_location);
 
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         settingsClient = LocationServices.getSettingsClient(this);
-        priority = 0;
-        createLocationCallback();
-        createLocationRequest();
-        buildLocationSettingsRequest();
+        init();//viewを読み込み&初期化
+        doGpsGet();//gpsを取得する
+        onRadioClick();//radioボタンが変更されたらイベント
+        radioGroup.check(R.id.five_m_radioButton);//初期値をチェックする
+        onSelectSprinner();//spinnerが変更されたらイベント
+        onChengeSeekBar();//SeekBarを変更したらイベント
+        onClickButton();//検索ボタンが押されたら
+        startLocationUpdates();//GPS読み込み強制開始
+    }
 
-        //スニークバー
-        SeekBar seekBar = (SeekBar) findViewById(R.id.page_seekBar);//pageスニーク
-        pageTextView = (TextView) findViewById(R.id.page_textView);//page表示
-        String num = String.valueOf(seekBar.getProgress());
-        pageTextView.setText(num);
+    private void init() {//view、変数の初期化
+        checkBoxes[0] = findViewById(R.id.checkBox1);
+        checkBoxes[1] = findViewById(R.id.checkBox2);
+        checkBoxes[2] = findViewById(R.id.checkBox3);
+        checkBoxes[3] = findViewById(R.id.checkBox4);
+        checkBoxes[4] = findViewById(R.id.checkBox5);
+        checkBoxes[5] = findViewById(R.id.checkBox6);
+        checkBoxes[6] = findViewById(R.id.checkBox7);
+        checkBoxes[7] = findViewById(R.id.checkBox8);
+        checkBoxes[8] = findViewById(R.id.checkBox9);
+        seekBar = findViewById(R.id.page_seekBar);//pageスニーク
+        pageTextView = findViewById(R.id.page_textView);//page表示
+        radioGroup = findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
+        rangeTextView = findViewById(R.id.range_textView);//徒歩何分か表示
+        rangeString = getString(R.string.rangeJa);//strings.xmlのrangeJaを取得
+        searchButton = findViewById(R.id.search_button);// 検索
+        spinner = findViewById(R.id.genre_spinner);
+        modeFlag = false;//制限モードかのフラグ(true=制限モード)
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {//アクションバーにメニューを表示させる
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        menuItem = menu.findItem(R.id.imgSwich_menu);//アクションバーのアイコン
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {//アクションバーのメニューを選択した時のイベント
+        switch (item.getItemId()) {
+            case R.id.imgSwich_menu:
+                doShowAlertDialog();//AlertDialogを表示
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void doShowAlertDialog() {//AlertDialogを表示
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("通信量の削減モードにしますか?");//タイトル
+        builder.setMessage("通信量の削減モードでは画像の読み込みを停止します。これにより最低限の通信のみとなります。\n停止しますか?");//内容
+        builder.setPositiveButton("制限モード",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(LocationActivity.this, "制限モード", Toast.LENGTH_SHORT).show();
+                        menuItem.setIcon(R.mipmap.ic_image_off);//アイコンを変更
+                        modeFlag = true;//モードのフラグを立てる
+
+                    }
+                });
+        builder.setNegativeButton("通常モード",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Toast.makeText(LocationActivity.this, "通常モード", Toast.LENGTH_SHORT).show();
+                        menuItem.setIcon(R.mipmap.ic_image_on);//アイコンを変更
+                        modeFlag = false;//モードのフラグを下げる
+                    }
+                });
+        builder.show();
+    }
+
+    private void onClickButton() {//ボタンが押されたら
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
+                boolean flag = gnaviRequest();//実行し検索結果があるかどうか
+                if (flag) {//検索結果があれば
+                    jump();//一覧を表示
+                } else {
+                    String str = "検索結果はありませんでした。";
+                    Toast.makeText(LocationActivity.this, str, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+    }
+
+    private void onChengeSeekBar() {//SeekBarを変更したら
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-
             @Override
             public void onProgressChanged(SeekBar seekBar, int position, boolean b) {//動かしたとき
-                if (position == 0) {
-                    seekBar.setProgress(1);
-                    position = 1;
+                if (position == 0) {//0には設定できない
+                    seekBar.setProgress(1);//強制セット
+                    position = 1;//positionを上書き
                 }
-                String num = String.valueOf(position);
-                pageTextView.setText(num);
-                pageTextView.setTypeface(Typeface.DEFAULT_BOLD);
-                pageTextView.setTextColor(Color.RED);
-                pageTextView.setTextSize(20);
+                String num = String.valueOf(position);//文字に変換
+                pageTextView.setText(num);//値を表示
+                pageTextView.setTypeface(Typeface.DEFAULT_BOLD);//太く
+                pageTextView.setTextColor(Color.RED);//色変更
+                pageTextView.setTextSize(20);//大きさ変更
             }
 
             @Override
             public void onStartTrackingTouch(SeekBar seekBar) {
-
             }
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-
             }
         });
+    }
 
-        // 検索
-        Button searchButton = (Button) findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new View.OnClickListener() {
+    private void onRadioClick() {
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int checkdId) {
+                doSetRangeText();
+            }
+        });
+    }
+
+    private void doSetRangeText() {//もじ変更
+        String range = doChoiceRadioButton();
+        rangeTextView.setText(rangeString + range + "圏内(" + doChangeRange(range) + ")");
+    }
+
+    private String doChangeRange(String str) {//範囲の分をmに変換する
+        if (str.equals(getString(R.string.M300))) {//M300と同じなら
+            return getString(R.string.m300);//m300を変換
+        }
+        if (str.equals(getString(R.string.M500))) {
+            return getString(R.string.m500);
+        }
+        if (str.equals(getString(R.string.M1000))) {
+            return getString(R.string.m1000);
+
+        }
+        if (str.equals(getString(R.string.M2000))) {
+            return getString(R.string.m2000);
+
+        }
+        return getString(R.string.m3000);
+    }
+
+    private void doGpsGet() {//GPSを取得する
+        priority = 0;
+        createLocationCallback();
+        createLocationRequest();
+        buildLocationSettingsRequest();
+    }
+
+    private void onSelectSprinner() {//sprinnerを変更したとき
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {//プルダウンで変更されたとき
+                String select = (String) adapterView.getSelectedItem();//選択された文字列
+                Toast.makeText(LocationActivity.this, select, Toast.LENGTH_SHORT).show();
+                changeCheckBox(select);//seekBarに変更があればcheckboxを変換
+            }
 
             @Override
-            public void onClick(View v) {
-                gnaviAPI = new GnaviAPI();//検索ボタン押した段階で初期化しないと何回も呼べない
-                boolean flag = gnaviRequest();
-                if (flag) {
-                    jump();
-                } else {
-                    String str = "検索結果はありませんでした。";
-                    Toast.makeText(LocationActivity.this, str, Toast.LENGTH_LONG).show();
-                    System.out.println(str);
-                }
+            public void onNothingSelected(AdapterView<?> adapterView) {//選択されなかったとき
+
             }
         });
-        startLocationUpdates();//強制開始
+    }
 
+    private void changeCheckBox(String str) {//seekBarに変更があればcheckboxを変換
+        unCheck();//変更があればすべてのチェックを外す
+        String[][] strings = {//dataSet
+                {"居酒屋", "カフェ", "ラーメン", "和食", "鍋", "イタリアン", "中華", "フレンチ", "韓国料理"},//ノンジャンル
+                {"焼き鳥", "寿司", "そば", "とんかつ", "焼肉", "お好み焼き", "うどん", "たこ焼き", "うなぎ"},//和食
+                {"ピザ", "パスタ", "ステーキ", "ハンバーガー", "カレー"},//洋食
+                {"ラーメン", "麻婆豆腐", "餃子"}//中華
+        };
+        int index = 0;//配列のindex
+        String[] genre = getResources().getStringArray(R.array.mainArray);
+        for (int i = 0; i < genre.length; i++) {
+            if (genre[i].equals(str)) {//配列の中身と引数が同じなら
+                index = i;//indexセット
+                break;
+            }
+        }
+        doCheckBox(strings[index].length);//Checkboxの表示を行う(大カテゴリの要素の中身の数)
+        for (int i = 0; i < strings[index].length; i++) {
+            checkBoxes[i].setText(strings[index][i]);//checkBoxに文字をセット
+        }
+    }
+
+    private void doCheckBox(int num) {//Checkboxの表示を行う(大カテゴリの要素の中身の数)
+        //CHECKBOX_NUM桁の2進数で各桁ごとに0はoff,1はonという仕様にする
+        //TODO;桁数が増えたら4桁ごとに16進数に直せばstringの領域を超えても問題ない(そもそもstringの領域は超えない,キャストするわけでないので特に問題なし)
+        String str = "";//on,offを入れる
+        for (int i = 0; i < num; i++) {//onの桁増やし
+            str = "1" + str;//桁増やし
+        }
+        for (int i = 0; i < CHECKBOX_NUM - num; i++) {//offの桁増やし
+            str = str + "0";//
+        }
+        for (int i = 0; i < CHECKBOX_NUM; i++) {//1桁ずつon,offを確認する
+            int index = Integer.parseInt(String.valueOf(str.charAt(i)));//i桁を取得する
+            if (index == 1) {//1ならon
+                checkBoxes[i].setVisibility(View.VISIBLE);
+            } else {//0ならoff
+                checkBoxes[i].setVisibility(View.INVISIBLE);
+            }
+        }
+    }
+
+    private void unCheck() {//すべてのチェックを外す
+        for (int i = 0; i < checkBoxes.length; i++) {
+            checkBoxes[i].setChecked(false);
+        }
+    }
+
+    private String doChoiceRadioButton() {//RadioButtonで選択されているindexを取得する
+        int id = radioGroup.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
+        RadioButton radioButton = findViewById(id);// チェックされているラジオボタンオブジェクトを取得
+        return radioButton.getText().toString();
     }
 
     private boolean gnaviRequest() {
         gnaviRequestEntity = new GnaviRequestEntity();
         gnaviRequestEntity.setGps(gps);//gps情報をセット
-        RadioGroup radioGroup = (RadioGroup) findViewById(R.id.radiogroup);// ラジオグループのオブジェクトを取得
-        int id = radioGroup.getCheckedRadioButtonId();// チェックされているラジオボタンの ID を取得
-        RadioButton radioButton = (RadioButton) findViewById(id);// チェックされているラジオボタンオブジェクトを取得
-        String checkStr = radioButton.getText().toString();
-        gnaviRequestEntity.setRange(checkStr);//範囲をセット
-        EditText keywordEditText = (EditText) findViewById(R.id.keyword_editText);
-        String freeword = keywordEditText.getText().toString();
-        String page = (String) pageTextView.getText();
-        if (page.equals("")) {
-            page = "20";
-        }
-        System.out.println("page=" + page);
-        try {
-            int hoge = Integer.parseInt(page);
-        } catch (Exception e) {
-            System.out.println("error=" + e);
-            Toast.makeText(LocationActivity.this, "ページ数に誤りがあります", Toast.LENGTH_LONG).show();
-            return false;
-        }
-        if (Integer.parseInt(page) > 100) {
-            Toast.makeText(LocationActivity.this, "100件以上一度に表示することはできません", Toast.LENGTH_LONG).show();
-            return false;
-        }
-//        int page= Integer.parseInt(temp);
+        String checkStr = doChoiceRadioButton();//RadioButtonで選択されているindexを取得する
+        gnaviRequestEntity.setRange(doChangeRange(checkStr));//範囲をセット
+        String page = (String) pageTextView.getText();//表示するページ数を取得
+        gnaviRequestEntity.setPage(page);//表示するページ数をセット
+        EditText keywordEditText = findViewById(R.id.keyword_editText);
+        String freeword = keywordEditText.getText().toString();//keyWordをセット
+        freeword = addKeyWord(freeword);
         gnaviRequestEntity.setFreeword(freeword);//フリーワード検索をセット
-        gnaviRequestEntity.setPage(page);
-        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);
-        boolean flag = false;
-        gnaviAPI.execute();
+        gnaviAPI.setGnaviRequestEntity(gnaviRequestEntity);//検索パラメータを渡す
+        gnaviAPI.setModeFlag(modeFlag);//検索モードを代入
+        gnaviAPI.execute();//非同期実行
         while (true) {//api結果取得するまでweit
-            if (GnaviAPI.isResultFlag()) {
-                if (GnaviAPI.isFinishFlag()) {
+            if (gnaviAPI.isResultFlag()) {
+                if (gnaviAPI.isFinishFlag()) {
                     return true;
                 }
-            } else if (GnaviAPI.isFinishFlag()) {
+            } else if (gnaviAPI.isFinishFlag()) {
                 return false;
             }
-
         }
+    }
+
+    private String addKeyWord(String str) {//キーワードを追加する
+        String add = "";
+        boolean flag = false;
+        for (int i = 0; i < checkBoxes.length; i++) {
+            if (checkBoxes[i].isChecked()) {
+                add = add + "%20" + checkBoxes[i].getText();//%20はスペースと同意
+                flag = true;
+            }
+        }
+        if (!flag) {
+            return str;
+        }
+        return str + "%20" + add;
     }
 
     private void jump() {
-        startActivity(ShowListActivity.createIntent(gnaviRequestEntity,getApplication()));
+        startActivity(ShowListActivity.createIntent(gnaviRequestEntity, getApplication()));
     }
 
-    // locationのコールバックを受け取る
-    private void createLocationCallback() {
+    private void createLocationCallback() {// locationのコールバックを受け取る
         locationCallback = new LocationCallback() {
             @Override
             public void onLocationResult(LocationResult locationResult) {
@@ -216,25 +392,23 @@ public class LocationActivity extends AppCompatActivity {
                     location.getSpeed(),
                     location.getBearing()
             };
-
-            StringBuilder stringBuilder = new StringBuilder("---------- UpdateLocation ---------- \n");
-
+            StringBuilder builder = new StringBuilder("---------- UpdateLocation ---------- \n");
             for (int i = 0; i < fusedName.length; i++) {
-                stringBuilder.append(fusedName[i]);
-                stringBuilder.append(" = ");
-                stringBuilder.append(String.valueOf(fusedData[i]));
-                stringBuilder.append("\n");
+                builder.append(fusedName[i]);
+                builder.append(" = ");
+                builder.append(String.valueOf(fusedData[i]));
+                builder.append("\n");
             }
-            System.out.println(fusedData[0] + ":" + fusedData[1]);
             setGps(fusedData[0], fusedData[1]);
-            stringBuilder.append("Time");
-            stringBuilder.append(" = ");
-            stringBuilder.append(lastUpdateTime);
-            stringBuilder.append("\n");
+            builder.append("Time");
+            builder.append(" = ");
+            builder.append(lastUpdateTime);
+            builder.append("\n");
         }
 
     }
 
+    @SuppressLint("RestrictedApi")
     private void createLocationRequest() {
         locationRequest = new LocationRequest();
 
@@ -279,8 +453,7 @@ public class LocationActivity extends AppCompatActivity {
 
     }
 
-    // 端末で測位できる状態か確認する。wifi, GPSなどがOffになっているとエラー情報のダイアログが出る
-    private void buildLocationSettingsRequest() {
+    private void buildLocationSettingsRequest() {// 端末で測位できる状態か確認する。wifi, GPSなどがOffになっているとエラー情報のダイアログが出る
         LocationSettingsRequest.Builder builder =
                 new LocationSettingsRequest.Builder();
 
@@ -292,7 +465,7 @@ public class LocationActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode,
                                     int resultCode, Intent data) {
         switch (requestCode) {
-            // Check for the integer request code originally supplied to startResolutionForResult().
+            // CheckModel for the integer request code originally supplied to startResolutionForResult().
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
@@ -328,14 +501,6 @@ public class LocationActivity extends AppCompatActivity {
                                         LocationActivity.this,
                                         Manifest.permission.ACCESS_COARSE_LOCATION) !=
                                         PackageManager.PERMISSION_GRANTED) {
-
-                                    // TODO: Consider calling
-                                    //    ActivityCompat#requestPermissions
-                                    // here to request the missing permissions, and then overriding
-                                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                    //                                          int[] grantResults)
-                                    // to handle the case where the user grants the permission. See the documentation
-                                    // for ActivityCompat#requestPermissions for more details.
                                     return;
                                 }
                                 fusedLocationClient.requestLocationUpdates(
@@ -377,8 +542,7 @@ public class LocationActivity extends AppCompatActivity {
 
     private void stopLocationUpdates() {
         if (!requestingLocationUpdates) {
-            Log.d("debug", "stopLocationUpdates: " +
-                    "updates never requested, no-op.");
+            Log.d("debug", "stopLocationUpdates: " + "updates never requested, no-op.");
             return;
         }
 
@@ -392,9 +556,8 @@ public class LocationActivity extends AppCompatActivity {
                         });
     }
 
-    //端末の戻るボタンを押下したとき
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {    //端末の戻るボタンを押下したとき
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             //homeに戻る
             Intent intent = new Intent(Intent.ACTION_MAIN);
@@ -415,8 +578,8 @@ public class LocationActivity extends AppCompatActivity {
     }
 
     public void setGps(double lat, double lon) {
-        gps[0] = lat;
-        gps[1] = lon;
+        gps[0] = lat;//gps(lat)のセット
+        gps[1] = lon;//gps(lon)のセット
         this.gps = gps;
     }
 
