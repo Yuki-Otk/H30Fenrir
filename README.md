@@ -1,7 +1,7 @@
 # H30Fenrir_簡易仕様書
 ## 仕様
 - 作者     :YukiOtake
-- アプリ名 ：H30Fenrir
+- アプリ名 ：RightNow(旧:H30Fenrir)
 - URL：開発者アカウントを持っていないため公開できない
 - git：https://github.com/Yuki-Otk/H30Fenrir
 - 対象OS  ：Android

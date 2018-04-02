@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast toast = Toast.makeText(this, "これ以上なにもできません", Toast.LENGTH_SHORT);
                 toast.show();
                 TextView textView = findViewById(R.id.help_textView);
-                textView.setText("アプリのタスクを切ってから再度アプリを開き\n位置情報の使用を許可してください");
+                textView.setText("アプリのタスクを切ってから再度アプリを開き\n位置情報の使用を許可してください _(._.)_");
                 ImageView imageView = findViewById(R.id.gif_imageView);
                 GlideDrawableImageViewTarget target = new GlideDrawableImageViewTarget(imageView);
                 Glide.with(this).load(R.raw.droid_cry).into(target);//gifを再生
