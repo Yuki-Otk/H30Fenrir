@@ -6,7 +6,7 @@
 - git：https://github.com/Yuki-Otk/H30Fenrir
 - 対象OS  ：Android
 - 対象Ver  ：Android 4.4以上
-- 開発環境 ：Android Studio 3.0.1
+- 開発環境 ：Android Studio 3.0.1 , Windows10Pro
 - 開発言語 ：Java (java version "9.0.1")
 - テスト端末(実機): Nexus 5(Android 6.0.1 API 23)
 - テスト端末(エミュレータ):Pixel 2(Android 8.0.0 API26)
@@ -27,30 +27,31 @@
 
 |画面名|画面概要|ファイル名|
 |:----:|:-----:|:-------:|
-|パーミッション取得|位置情報の許可をもらう画面|./layout/activity_main.xml|
-|検索|検索する際のパラメータを設定|./layout/activity_location.xml|
-|制限モード|制限モードにするためのボタン|./menu/main_menu.xml|
-|検索結果表示|検索した結果を表示|./layout/activity_list_show.xml|
-|検索結果表示|検索結果の1行分のカスタムレイアウト|./layout/format_row.xml|
-|詳細|検索結果から選んだ店舗情報を表示|./layout/activity_details_show_scroll.xml|
-|次のステップ|詳細画面に出ている店舗に電話したり情報をシェアする|./menu/details_menu.xml|
+|パーミッション取得|位置情報の許可をもらう画面|[./layout/activity_main.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/layout/activity_main.xml)|
+|検索|検索する際のパラメータを設定|[./layout/activity_location.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/layout/activity_location.xml)|
+|制限モード|制限モードにするためのボタン|[./menu/main_menu.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/menu/main_menu.xml)|
+|検索結果表示|検索した結果を表示|[./layout/activity_list_show.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/layout/activity_list_show.xml)|
+|検索結果表示|検索結果の1行分のカスタムレイアウト|[./layout/format_row.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/layout/format_row.xml)|
+|詳細|検索結果から選んだ店舗情報を表示|[./layout/activity_details_show_scroll.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/layout/activity_details_show_scroll.xml)|
+|次のステップ|詳細画面に出ている店舗に電話したり情報をシェアする|[./menu/details_menu.xml](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/res/menu/details_menu.xml)|
 
 ## クラス構成
 - app/src/main/java/com/example/otkyu/h30fenrir/ に 直下にActivity class、更にmodel等にほかのclassが配置されている
 
 |クラス名|概要|ファイル名(java)|
-|:-----:|:--:|:-------:|
-|MainActivity|位置情報のパーミッションを取得・チェックする|./MainActivity|
-|LocationActivity|検索パラメータを入力|./LocationActivity|
-|ShowListActivity|検索結果一覧を表示|./ShowListActivity|
-|ShowDetailsActivity|検索結果詳細を表示|./ShowDetailsActivity|
-|GnaviAPI|ぐるなびAPI呼び出しとデータパース|./asynchronous/api/GnaviAPI|
-|GnaviRequestEntity|ぐるなびAPIリクエストデータモデル|./asynchronous/api/model/GnaviRequestEntity|
-|GnaviResultEntity|ぐるなびAPIレスポンスデータモデル|./asynchronous/api/model/GnaviResultEntity|
-|ImgAsyncTaskHttpRequest|画像を取得する非同期処理|./asynchronous/img/ImgAsyncTaskHttpRequest|
-|ChangeModel|文字列を変換するクラス|./model/ChangeModel|
-|CheckModel|文字列等を判定するクラス|./model/CheckModel|
-|CasarealRecycleViewAdapter|検索結果一覧Adapter|./view/CasarealRecycleViewAdapter|
+|:-----:|:--:|:-------------:|
+|MainActivity|位置情報のパーミッションを取得・チェックする|[./MainActivity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/MainActivity.java)|
+|LocationActivity|検索パラメータを入力|[./LocationActivity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/LocationActivity.java)|
+|ShowListActivity|検索結果一覧を表示|[./ShowListActivity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/ShowListActivity.java)|
+|ShowDetailsActivity|検索結果詳細を表示|[./ShowDetailsActivity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/ShowDetailsActivity.java)|
+|GnaviAPI|ぐるなびAPI呼び出しとデータパース|[./asynchronous/api/GnaviAPI](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/GnaviAPI.java)|
+|GnaviRequestEntity|ぐるなびAPIリクエストデータモデル|[./asynchronous/api/model/GnaviRequestEntity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/model/GnaviRequestEntity.java)|
+|GnaviResultEntity|ぐるなびAPIレスポンスデータモデル|
+[./asynchronous/api/model/GnaviResultEntity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/model/GnaviResultEntity.java)|
+|ImgAsyncTaskHttpRequest|画像を取得する非同期処理|[./asynchronous/img/ImgAsyncTaskHttpRequest](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/img/ImgAsyncTaskHttpRequest.java)|
+|ChangeModel|文字列を変換するクラス|[./model/ChangeModel](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/model/ChangeModel.java)|
+|CheckModel|文字列等を判定するクラス|[./model/CheckModel](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/model/CheckModel.java)|
+|CasarealRecycleViewAdapter|検索結果一覧Adapter|[./view/CasarealRecycleViewAdapter](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/view/CasarealRecycleViewAdapter.java)|
 ## 使用したAPI
 - ぐるなびAPI
 
@@ -59,7 +60,7 @@
 - RightNowの名前のように今まさに、自分が調べたかったお店、正解のお店を知ることができる。
 
 ## ターゲット
-- 都内など「徒歩」で行動する人。ぐるなびAPIを使用する特性上、どうしても店舗が固まっている方が使いやすいため都市部をターゲットとする。
+- 都市部で検索する人。ぐるなびAPIを使用する特性上、どうしても店舗が固まっている方が使いやすいため都市部をターゲットとする。
 - また、都市部ということで徒歩で行動する人が大半であるため、徒歩のユーザーにスポットを当てて開発を行った。
 
 ## こだわりのポイント
@@ -100,3 +101,8 @@
 |チェックボックスのカスタム|検索時にしているチェックボックスを各々でカスタムできる|個人によってよく使用する検索値は異なるため|
 |全検索結果の読み込み|一度の検索で検索結果をすべて取得する|時間の絞り込む際に現状では表示されているページでしかできないためすべての検索結果で絞り込むのが理想|
 |プログレスバーの実装|APIを呼び出し時に発生する待ち時間にプログレスバーを表示する|フリーズしているのか通信をしている待ち時間なのかがわからないため|
+
+### 参考資料
+- 画像提供:[アイキャッチャー](https://ai-catcher.com/blog/2016/10/06/%E6%B6%99/)
+- GIF生成:[アニメーションGIFを作ろう!](https://ao-system.net/gifanima/)
+- 画像合成:[bannerkoubou](https://www.bannerkoubou.com/photoeditor/composite)
