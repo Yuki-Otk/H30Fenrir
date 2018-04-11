@@ -46,8 +46,7 @@
 |ShowDetailsActivity|検索結果詳細を表示|[./ShowDetailsActivity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/ShowDetailsActivity.java)|
 |GnaviAPI|ぐるなびAPI呼び出しとデータパース|[./asynchronous/api/GnaviAPI](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/GnaviAPI.java)|
 |GnaviRequestEntity|ぐるなびAPIリクエストデータモデル|[./asynchronous/api/model/GnaviRequestEntity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/model/GnaviRequestEntity.java)|
-|GnaviResultEntity|ぐるなびAPIレスポンスデータモデル|
-[./asynchronous/api/model/GnaviResultEntity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/model/GnaviResultEntity.java)|
+|GnaviResultEntity|ぐるなびAPIレスポンスデータモデル|[./asynchronous/api/model/GnaviResultEntity](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/api/model/GnaviResultEntity.java)|
 |ImgAsyncTaskHttpRequest|画像を取得する非同期処理|[./asynchronous/img/ImgAsyncTaskHttpRequest](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/asynchronous/img/ImgAsyncTaskHttpRequest.java)|
 |ChangeModel|文字列を変換するクラス|[./model/ChangeModel](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/model/ChangeModel.java)|
 |CheckModel|文字列等を判定するクラス|[./model/CheckModel](https://github.com/Yuki-Otk/H30Fenrir/blob/master/app/src/main/java/com/example/otkyu/h30fenrir/model/CheckModel.java)|
@@ -60,7 +59,7 @@
 - RightNowの名前のように今まさに、自分が調べたかったお店、正解のお店を知ることができる。
 
 ## ターゲット
-- 都市部で検索する人。ぐるなびAPIを使用する特性上、どうしても店舗が固まっている方が使いやすいため都市部をターゲットとする。
+- 都市部など「徒歩」で行動する人。ぐるなびAPIを使用する特性上、どうしても店舗が固まっている方が使いやすいため都市部をターゲットとする。
 - また、都市部ということで徒歩で行動する人が大半であるため、徒歩のユーザーにスポットを当てて開発を行った。
 
 ## こだわりのポイント
